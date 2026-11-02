@@ -26,20 +26,20 @@ def test_fixture_is_valid():
 @pytest.mark.parametrize(
     ("changes", "message"),
     [
-        ({"layers__2__requires": ["score"]}, "last layer"),
-        ({"layers__0__requires": ["nope"]}, "unknown input"),
-        ({"layers__2__survival__life_table": "nope"}, "unknown life table"),
+        ({"layers__3__requires": ["score"]}, "last layer"),
+        ({"layers__1__requires": ["nope"]}, "unknown input"),
+        ({"layers__3__survival__life_table": "nope"}, "unknown life table"),
         ({"inputs__1__missing": [{"value": "other", "weight": 1}]}, "wrong type"),
         (
             {
-                "layers__0__survival__terms": [
+                "layers__1__survival__terms": [
                     {"kind": "category", "input": "flag", "values": {"true": 1}}
                 ]
             },
             "cover exactly",
         ),
         (
-            {"layers__0__survival__terms": [{"kind": "linear", "input": "flag", "coef": 1}]},
+            {"layers__1__survival__terms": [{"kind": "linear", "input": "flag", "coef": 1}]},
             "needs a number",
         ),
         ({"group_codes": {"icd10": ["i50.1"]}}, "upper-case"),
@@ -48,11 +48,15 @@ def test_fixture_is_valid():
             r"\[0, 1\)",
         ),
         ({"surprise": True}, "Extra inputs"),
-        ({"layers__1__survival__curves__2__match": {"kind": "a"}}, "all-ages"),
-        ({"layers__1__survival__curves__2__match": {"other": "b"}}, "exactly the keys"),
-        ({"layers__1__survival__curves__2__relative": [0.5, 0.6]}, "non-increasing"),
-        ({"layers__1__survival__since_input": "kind"}, "since input must be a number"),
-        ({"layers__1__requires": []}, "without requiring it"),
+        ({"layers__2__survival__curves__2__match": {"kind": "a"}}, "all-ages"),
+        ({"layers__2__survival__curves__2__match": {"other": "b"}}, "exactly the keys"),
+        ({"layers__2__survival__curves__2__relative": [0.5, 0.6]}, "non-increasing"),
+        ({"layers__2__survival__since_input": "kind"}, "since input must be a number"),
+        ({"layers__2__requires": []}, "without requiring it"),
+        ({"layers__0__when": {"kind": ["z"]}}, "`when` value"),
+        ({"layers__3__when": {"kind": ["a"]}}, "no `when`"),
+        ({"layers__0__survival__survival": [[0.9, 0.95], [0.5, 0.4]]}, "1 > S"),
+        ({"layers__0__survival__terms__0__by": "sex"}, "grid term"),
     ],
 )
 def test_invalid_specs_rejected(changes, message):

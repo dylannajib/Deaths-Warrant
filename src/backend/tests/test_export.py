@@ -32,12 +32,25 @@ def write_model(tmp_path, golden_inputs):
 
 
 def test_discover_skips_shared_and_renders(tmp_path):
-    models = write_model(tmp_path, [{"age": 60, "score": 4}, {"age": 60, "kind": "b"}, {"age": 60}])
+    models = write_model(
+        tmp_path,
+        [
+            {"age": 60, "kind": "a", "score": 1},
+            {"age": 60, "score": 4},
+            {"age": 60, "kind": "b"},
+            {"age": 60},
+        ],
+    )
     folders = discover(models)
     assert [f.id for f in folders] == ["fixture"]
     files = render(folders[0])
     golden = json.loads(files["golden.json"])
-    assert [g["expected"]["layer"]["id"] for g in golden] == ["refined", "relative", "base"]
+    assert [g["expected"]["layer"]["id"] for g in golden] == [
+        "points",
+        "refined",
+        "relative",
+        "base",
+    ]
     assert json.loads(files["spec.json"])["id"] == "fixture"
 
 

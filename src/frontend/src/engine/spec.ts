@@ -47,8 +47,16 @@ export type Input =
 
 export type Term =
   | { kind: "linear"; input: string; coef: number; center: number; min: number | null; max: number | null }
-  | { kind: "bands"; input: string; bands: { lt: number | null; value: number }[] }
-  | { kind: "category"; input: string; values: Record<string, number> };
+  | { kind: "bands"; input: string; bands: Band[] }
+  | { kind: "category"; input: string; values: Record<string, number> }
+  | { kind: "grid"; input: string; by: string; rows: { lt: number | null; bands: Band[] }[] };
+
+export interface Band {
+  lt: number | null;
+  value: number;
+}
+
+export const termInputs = (t: Term): string[] => (t.kind === "grid" ? [t.input, t.by] : [t.input]);
 
 export type Survival =
   | { type: "weibull_ph"; shape: number; scale_years: number; terms: Term[] }
@@ -62,7 +70,21 @@ export type Survival =
       keys: string[];
       curves: RelativeSurvivalCurve[];
       terms: Term[];
+    }
+  | {
+      type: "score_weibull";
+      times: [number, number];
+      survival: [number, number][];
+      terms: Term[];
+      life_table: string | null;
+      age_input: string;
+      sex_input: string;
     };
+
+/** The life table a survival form reads (with its age and sex inputs), if any. */
+export function lifeTableOf(s: Survival): string | null {
+  return s.type === "weibull_ph" ? null : s.life_table;
+}
 
 export interface RelativeSurvivalCurve {
   match: Record<string, string>;
@@ -82,6 +104,7 @@ export interface Layer {
   label: string;
   description: string;
   requires: string[];
+  when: Record<string, Value[]>;
   survival: Survival;
   sources: string[];
 }
@@ -123,8 +146,8 @@ export interface ModelSpec {
 export function layerInputs(layer: Layer): string[] {
   const names: string[] = [];
   const s = layer.survival;
-  if (s.type !== "weibull_ph") names.push(s.age_input, s.sex_input);
+  if (s.type !== "weibull_ph" && lifeTableOf(s) !== null) names.push(s.age_input, s.sex_input);
   if (s.type === "relative_survival") names.push(s.since_input, ...s.keys);
-  for (const t of s.terms) names.push(t.input);
+  for (const t of s.terms) names.push(...termInputs(t));
   return [...new Set(names)];
 }

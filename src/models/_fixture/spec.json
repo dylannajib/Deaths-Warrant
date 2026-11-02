@@ -158,12 +158,98 @@
  ],
  "layers": [
   {
+   "id": "points",
+   "label": "Points",
+   "description": "Integer score table",
+   "requires": [
+    "score"
+   ],
+   "when": {
+    "kind": [
+     "a"
+    ]
+   },
+   "survival": {
+    "type": "score_weibull",
+    "times": [
+     1.0,
+     3.0
+    ],
+    "survival": [
+     [
+      0.95,
+      0.9
+     ],
+     [
+      0.8,
+      0.5
+     ],
+     [
+      0.7,
+      0.4
+     ],
+     [
+      0.6,
+      0.2
+     ]
+    ],
+    "terms": [
+     {
+      "kind": "grid",
+      "input": "score",
+      "by": "age",
+      "rows": [
+       {
+        "lt": 5.0,
+        "bands": [
+         {
+          "lt": 50.0,
+          "value": 0.0
+         },
+         {
+          "lt": null,
+          "value": 1.0
+         }
+        ]
+       },
+       {
+        "lt": null,
+        "bands": [
+         {
+          "lt": 50.0,
+          "value": 1.0
+         },
+         {
+          "lt": null,
+          "value": 2.0
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "category",
+      "input": "flag",
+      "values": {
+       "true": 1.0,
+       "false": 0.0
+      }
+     }
+    ],
+    "life_table": "flat",
+    "age_input": "age",
+    "sex_input": "sex"
+   },
+   "sources": []
+  },
+  {
    "id": "refined",
    "label": "Refined",
    "description": "Weibull",
    "requires": [
     "score"
    ],
+   "when": {},
    "survival": {
     "type": "weibull_ph",
     "shape": 1.0,
@@ -196,6 +282,7 @@
    "requires": [
     "kind"
    ],
+   "when": {},
    "survival": {
     "type": "relative_survival",
     "life_table": "flat",
@@ -258,6 +345,7 @@
    "label": "Base",
    "description": "Life table",
    "requires": [],
+   "when": {},
    "survival": {
     "type": "life_table_ph",
     "life_table": "flat",

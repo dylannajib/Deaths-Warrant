@@ -17356,6 +17356,7 @@
     "site",
     "stage"
    ],
+   "when": {},
    "survival": {
     "type": "relative_survival",
     "life_table": "us_2024",
@@ -24582,6 +24583,7 @@
    "requires": [
     "site"
    ],
+   "when": {},
    "survival": {
     "type": "relative_survival",
     "life_table": "us_2024",
@@ -26885,6 +26887,7 @@
    "label": "All cancers combined (SEER)",
    "description": "No cancer diagnosis was found in the record, so survival for all cancer sites combined is used. This is the least specific estimate. SEER publishes survival up to 10 years after diagnosis; beyond that the 10th year's excess mortality is assumed to continue.",
    "requires": [],
+   "when": {},
    "survival": {
     "type": "relative_survival",
     "life_table": "us_2024",

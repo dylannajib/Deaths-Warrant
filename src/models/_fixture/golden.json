@@ -185,5 +185,49 @@
     "5": 0.0165501994432709
    }
   }
+ },
+ {
+  "observed": {
+   "age": 70,
+   "sex": "male",
+   "kind": "a",
+   "score": 6,
+   "flag": true
+  },
+  "expected": {
+   "layer": {
+    "id": "points",
+    "label": "Points"
+   },
+   "median_years": 1.3393471812982556,
+   "range_low_years": 0.5771478300621955,
+   "range_high_years": 2.6005790356112826,
+   "survival_at": {
+    "1": 0.6,
+    "3": 0.2,
+    "5": 0.0642989105895122
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 40,
+   "kind": "a",
+   "score": 2
+  },
+  "expected": {
+   "layer": {
+    "id": "points",
+    "label": "Points"
+   },
+   "median_years": 6.74713044754931,
+   "range_low_years": 2.6100587155419284,
+   "range_high_years": 15.406843693325737,
+   "survival_at": {
+    "1": 0.8937499999999999,
+    "3": 0.7198906249999999,
+    "5": 0.5888759748791932
+   }
+  }
  }
 ]

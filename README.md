@@ -41,6 +41,10 @@ src/
   × SEER relative survival by site, stage and age at diagnosis. It is conditional on the years
   already survived, and the curves are rescaled to 2016–2022 diagnoses. On 24,067 real
   MSK-CHORD patients, Harrell's C-index is 0.71. See `src/models/cancer/sources.md`.
+  *Cardiovascular disease*. Heart failure with a recorded ejection fraction uses the MAGGIC
+  risk score. Heart failure without one uses UK survival by age at diagnosis. Other
+  cardiovascular conditions use population mortality × published hazard ratios. See
+  `src/models/cardiovascular/sources.md`.
 * **Two implementations, one answer.** Python is the reference; the browser runs a
   TypeScript port. CI replays every `golden.json` against the TypeScript evaluator.
 * **Accuracy** is tested only against real, published patient data, never data we invent.

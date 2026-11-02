@@ -59,6 +59,10 @@ describe("extractInputs", () => {
     expect(provenance.first).toMatch(/Stage IV/);
   });
 
+  it("treats medication as unknown when the record lists no medications", () => {
+    expect(extractInputs(spec, { ...record, medications: [] }, "2026-11-02").observed.bb).toBeNull();
+  });
+
   it("ignores measurements in unknown units", () => {
     expect(provenance.creat).toMatch(/100 umol\/L on 2025-01-01/);
   });

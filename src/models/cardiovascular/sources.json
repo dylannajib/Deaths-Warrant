@@ -1,0 +1,72 @@
+{
+ "model": [
+  {
+   "id": "maggic_2013",
+   "citation": "Pocock SJ, Ariti CA, McMurray JJV, et al. Predicting survival in heart failure: a risk score based on 39 372 patients from 30 studies. Eur Heart J 2013;34(19):1404-1413. doi:10.1093/eurheartj/ehs337. Integer score (Figure 2), mortality by score (Table 4), cohort characteristics (Table 1).",
+   "url": "https://doi.org/10.1093/eurheartj/ehs337",
+   "licence": "Published risk score; coefficients cited from the article"
+  },
+  {
+   "id": "taylor_2019",
+   "citation": "Taylor CJ, Ordóñez-Mena JM, Roalfe AK, et al. Trends in survival after a diagnosis of heart failure in the United Kingdom 2000-2017: population based cohort study. BMJ 2019;364:l223. Survival 1, 5, 10 and 15 years after diagnosis by age group (Table 3), 55,959 patients, 52.2% male (Table 1).",
+   "url": "https://doi.org/10.1136/bmj.l223",
+   "licence": "CC BY 4.0"
+  },
+  {
+   "id": "erfc_2015",
+   "citation": "Emerging Risk Factors Collaboration. Association of cardiometabolic multimorbidity with mortality. JAMA 2015;314(1):52-60. Age- and sex-adjusted HRs: MI 2.0 (1.9-2.2), stroke 2.1 (2.0-2.2), diabetes 1.9 (1.8-2.0); combinations multiplicative.",
+   "url": "https://doi.org/10.1001/jama.2015.7008",
+   "licence": "Free full text (PMC author manuscript)"
+  },
+  {
+   "id": "odutayo_2016",
+   "citation": "Odutayo A, Wong CX, Hsiao AJ, et al. Atrial fibrillation and risks of cardiovascular disease, renal disease, and death: systematic review and meta-analysis. BMJ 2016;354:i4482. All-cause mortality RR 1.46 (1.39-1.54).",
+   "url": "https://doi.org/10.1136/bmj.i4482",
+   "licence": null
+  },
+  {
+   "id": "matsushita_2022",
+   "citation": "Matsushita K, Gao Y, Sang Y, et al. Comparative mortality according to peripheral artery disease and coronary heart disease/stroke in the United States. Atherosclerosis 2022;354:57-62. PAD without CHD/stroke, adjusted HR 1.68 (1.35-2.08).",
+   "url": "https://doi.org/10.1016/j.atherosclerosis.2022.04.029",
+   "licence": null
+  },
+  {
+   "id": "jacobsen_2023",
+   "citation": "Jacobsen MB, Petersen JK, Modin D, et al. Long term mortality in patients with hypertrophic cardiomyopathy - a Danish nationwide study. Am Heart J Plus 2023;25:100244. HR 1.48 (1.18-1.84).",
+   "url": "https://doi.org/10.1016/j.ahjo.2022.100244",
+   "licence": "CC BY-NC-ND 4.0"
+  },
+  {
+   "id": "nchs_us_2024",
+   "citation": "Arias E, Xu JQ, Kochanek K. United States life tables, 2024. National Vital Statistics Reports vol 75 no 5. National Center for Health Statistics.",
+   "url": "https://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/NVSR/75-05/",
+   "licence": "U.S. Government work (public domain)"
+  }
+ ],
+ "validation": [
+  {
+   "id": "uci_hf_2015",
+   "citation": "Ahmad T, Munir A, Bhatti SH, et al. Survival analysis of heart failure patients: a case study. PLoS One 2017;12:e0181001. Heart failure clinical records, UCI Machine Learning Repository (dataset 519).",
+   "url": "https://archive.ics.uci.edu/dataset/519/heart+failure+clinical+records",
+   "licence": "CC BY 4.0 (testing only; data not redistributed)"
+  },
+  {
+   "id": "arulmurugananthavadivel_2022",
+   "citation": "Arulmurugananthavadivel A, Holt A, Strange JE, et al. Temporal trends in mortality and heart failure hospitalization in new-onset heart failure in Denmark 1997-2017. Eur Heart J Qual Care Clin Outcomes 2022;8:750-760.",
+   "url": "https://doi.org/10.1093/ehjqcco/qcab073",
+   "licence": "CC BY-NC 4.0"
+  },
+  {
+   "id": "peng_2022",
+   "citation": "Peng Y, Ngo L, Hay K, Alghamry A, Colebourne K, Ranasinghe I. Long-term survival, stroke recurrence, and life expectancy after an acute stroke in Australia and New Zealand from 2008-2017: a population-wide cohort study. Stroke 2022;53:2538-2548.",
+   "url": "https://doi.org/10.1161/STROKEAHA.121.038155",
+   "licence": null
+  },
+  {
+   "id": "vargas_2026",
+   "citation": "MAGGIC score in a Brazilian heart failure outpatient cohort (Hospital de Clínicas de Porto Alegre, enrolled 2008-2014). Arq Bras Cardiol 2026; doi:10.36660/abc.20250614.",
+   "url": "https://doi.org/10.36660/abc.20250614",
+   "licence": "CC BY 4.0"
+  }
+ ]
+}

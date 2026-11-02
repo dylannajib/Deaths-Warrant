@@ -4,7 +4,7 @@
  * file in evaluate.test.ts, so the two cannot silently drift. Change both together.
  */
 
-import { layerInputs, type Input, type ModelSpec, type RelativeSurvivalCurve, type Survival, type Term, type Value, type WeightedValue } from "./spec";
+import { layerInputs, termInputs, type Band, type Input, type ModelSpec, type RelativeSurvivalCurve, type Survival, type Term, type Value, type WeightedValue } from "./spec";
 
 export const HORIZON_YEARS = 60;
 const BISECTION_STEPS = 64;
@@ -56,18 +56,24 @@ export function resolveInputs(spec: ModelSpec, observed: Observed) {
   return { values, status };
 }
 
-export function termValue(term: Term, x: Value): number {
+function band<T extends { lt: number | null }>(bands: T[], x: number): T {
+  for (const b of bands) if (b.lt === null || x < b.lt) return b;
+  throw new Error("unreachable: the last band is a catch-all");
+}
+
+export function termValue(term: Term, values: Record<string, Value>): number {
+  const x = values[term.input]!;
   switch (term.kind) {
+    case "grid":
+      return band<Band>(band(term.rows, Number(x)).bands, Number(values[term.by])).value;
     case "linear": {
       let xf = Number(x);
       if (term.min !== null) xf = Math.max(xf, term.min);
       if (term.max !== null) xf = Math.min(xf, term.max);
       return term.coef * (xf - term.center);
     }
-    case "bands": {
-      for (const band of term.bands) if (band.lt === null || Number(x) < band.lt) return band.value;
-      throw new Error("unreachable: last band is a catch-all");
-    }
+    case "bands":
+      return band(term.bands, Number(x)).value;
     case "category": {
       const key = typeof x === "boolean" ? (x ? "true" : "false") : String(x);
       return term.values[key]!;
@@ -112,23 +118,57 @@ export function selectCurve(survival: Extract<Survival, { type: "relative_surviv
   return curve;
 }
 
-function survivalFn(spec: ModelSpec, layerIndex: number, values: Record<string, Value>): SurvivalFn {
+/** Integer risk score: the rounded term sum, clamped to the published table. */
+export function scoreOf(survival: Extract<Survival, { type: "score_weibull" }>, values: Record<string, Value>): number {
+  let total = 0;
+  for (const term of survival.terms) total += termValue(term, values);
+  return Math.min(Math.max(pyRound(total), 0), survival.survival.length - 1);
+}
+
+/** Python's round(): halves go to the even neighbour (Math.round sends them up). */
+function pyRound(x: number): number {
+  const r = Math.round(x);
+  return Math.abs(x % 1) === 0.5 && r % 2 !== 0 ? r - 1 : r;
+}
+
+const sexTable = (spec: ModelSpec, name: string, sex: Value) =>
+  sex === "female" ? spec.life_tables[name]!.female : spec.life_tables[name]!.male;
+
+/**
+ * The survival function for one set of input values, plus a key: combinations with equal keys
+ * have identical functions, so a mixture can merge them (null = never merged).
+ */
+function survivalFn(spec: ModelSpec, layerIndex: number, values: Record<string, Value>): [string | null, SurvivalFn] {
   const survival = spec.layers[layerIndex]!.survival;
+  if (survival.type === "score_weibull") return scoreWeibullFn(spec, survival, values);
   let lp = 0;
-  for (const term of survival.terms) lp += termValue(term, values[term.input]!);
+  for (const term of survival.terms) lp += termValue(term, values);
   const hr = Math.exp(lp);
   if (survival.type === "weibull_ph") {
     const { shape, scale_years: scale } = survival;
-    return (t) => Math.exp(-hr * (t / scale) ** shape);
+    return [null, (t) => Math.exp(-hr * (t / scale) ** shape)];
   }
-  const table = spec.life_tables[survival.life_table]!;
-  const q = values[survival.sex_input] === "female" ? table.female : table.male;
+  const q = sexTable(spec, survival.life_table, values[survival.sex_input]!);
   const age = Number(values[survival.age_input]);
-  if (survival.type === "life_table_ph") return (t) => Math.exp(-hr * populationCumHazard(q, age, t));
+  if (survival.type === "life_table_ph") return [null, (t) => Math.exp(-hr * populationCumHazard(q, age, t))];
   const since = Number(values[survival.since_input]);
   const knots = excessKnots(selectCurve(survival, values).relative);
   const x0 = excessCumHazard(knots, since);
-  return (t) => Math.exp(-populationCumHazard(q, age, t) - hr * (excessCumHazard(knots, since + t) - x0));
+  return [null, (t) => Math.exp(-populationCumHazard(q, age, t) - hr * (excessCumHazard(knots, since + t) - x0))];
+}
+
+function scoreWeibullFn(spec: ModelSpec, survival: Extract<Survival, { type: "score_weibull" }>, values: Record<string, Value>): [string, SurvivalFn] {
+  const score = scoreOf(survival, values);
+  const [t1, t2] = survival.times;
+  const [s1, s2] = survival.survival[score]!;
+  const h1 = -Math.log(s1);
+  const k = Math.log(Math.log(s2) / Math.log(s1)) / Math.log(t2 / t1);
+  const weibull = (t: number) => Math.exp(-h1 * (t / t1) ** k);
+  if (survival.life_table === null) return [JSON.stringify([score]), weibull];
+  const sex = values[survival.sex_input]!;
+  const q = sexTable(spec, survival.life_table, sex);
+  const age = Number(values[survival.age_input]);
+  return [JSON.stringify([score, age, sex]), (t) => Math.min(weibull(t), Math.exp(-populationCumHazard(q, age, t)))];
 }
 
 export function solveTime(s: SurvivalFn, p: number): number | null {
@@ -157,6 +197,7 @@ export function evaluate(spec: ModelSpec, observed: Observed): EvaluationResult 
   for (; layerIndex < spec.layers.length; layerIndex++) {
     const layer = spec.layers[layerIndex]!;
     const lacking = layer.requires.filter((r) => !(r in resolved.values));
+    for (const [n, allowed] of Object.entries(layer.when)) if (!allowed.includes(resolved.values[n] as Value)) lacking.push(n);
     if (!lacking.length) break;
     skipped.push({ id: layer.id, label: layer.label, lacking });
   }
@@ -167,6 +208,7 @@ export function evaluate(spec: ModelSpec, observed: Observed): EvaluationResult 
 
   const fns: SurvivalFn[] = [];
   const weights: number[] = [];
+  const slots = new Map<string, number>();
   for (const combo of product(unknown.map((n) => inputs.get(n)!.missing ?? []))) {
     const values = { ...resolved.values };
     let weight = 1;
@@ -174,7 +216,14 @@ export function evaluate(spec: ModelSpec, observed: Observed): EvaluationResult 
       values[unknown[k]!] = wv.value;
       weight *= wv.weight;
     });
-    fns.push(survivalFn(spec, layerIndex, values));
+    const [key, fn] = survivalFn(spec, layerIndex, values);
+    const slot = key === null ? undefined : slots.get(key);
+    if (slot !== undefined) {
+      weights[slot]! += weight;
+      continue;
+    }
+    if (key !== null) slots.set(key, fns.length);
+    fns.push(fn);
     weights.push(weight);
   }
   let totalWeight = 0;
@@ -209,7 +258,7 @@ export function evaluate(spec: ModelSpec, observed: Observed): EvaluationResult 
     terms: layer.survival.terms.map((t) => ({
       input: t.input,
       kind: t.kind,
-      contribution: t.input in resolved.values ? termValue(t, resolved.values[t.input]!) : null,
+      contribution: termInputs(t).every((n) => n in resolved.values) ? termValue(t, resolved.values) : null,
     })),
   };
 }

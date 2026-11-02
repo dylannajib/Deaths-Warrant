@@ -1,0 +1,15 @@
+{
+ "heart_failure": {"include": ["84114007"]},
+ "coronary": {"include": ["414545008", "53741008", "22298006", "399211009"]},
+ "stroke": {"include": ["230690007", "275526006"]},
+ "atrial_fibrillation": {"include": ["49436004"]},
+ "peripheral_artery": {"include": ["840580004", "399957001"]},
+ "cardiomyopathy": {"include": ["85898001"]},
+ "diabetes": {"include": ["73211009"]},
+ "copd": {"include": ["13645005"]},
+ "nyha_1": {"include": ["420300004"]},
+ "nyha_2": {"include": ["421704003"]},
+ "nyha_3": {"include": ["420913000"]},
+ "nyha_4": {"include": ["422293003"]},
+ "current_smoker": {"include": ["77176002"], "exclude": ["8517006"]}
+}

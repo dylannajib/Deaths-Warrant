@@ -103,6 +103,8 @@ function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value |
       return cat ? yearsSince(matchingConditions(record, cat.codes), asOf) : [null, "No matching diagnosis"];
     }
     case "medication_present": {
+      // A record with no medication list says nothing about treatment: unknown, not "not taken".
+      if (!record.medications.length) return [null, "No medications in the record"];
       const names = rule.names.map((n) => n.toLowerCase());
       const m = record.medications.find(
         (med) =>

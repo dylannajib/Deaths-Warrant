@@ -14,7 +14,7 @@ from typing import Annotated, Literal
 from pydantic import BaseModel, ConfigDict, Field, model_validator
 
 SCHEMA_VERSION = 1
-MAX_MISSING_COMBINATIONS = 4096
+MAX_MISSING_COMBINATIONS = 65536
 
 
 class _Strict(BaseModel):
@@ -135,7 +135,10 @@ class FirstOfRule(_Strict):
 
 
 class MedicationPresentRule(_Strict):
-    """True if any matching medication is recorded (RxNorm exact, ATC prefix, name substring)."""
+    """True if any matching medication is recorded (RxNorm exact, ATC prefix, name substring).
+
+    Unknown (missing) when the record contains no medications at all.
+    """
 
     rule: Literal["medication_present"] = "medication_present"
     rxnorm: list[str] = []
@@ -219,6 +222,11 @@ class Band(_Strict):
     value: float
 
 
+def _check_catch_all(bands: list[Band] | list[GridRow]) -> None:
+    if bands[-1].lt is not None or any(b.lt is None for b in bands[:-1]):
+        raise ValueError("only the last band, and it must, have lt=null")
+
+
 class BandsTerm(_Strict):
     """Value of the first band with x < lt."""
 
@@ -228,8 +236,34 @@ class BandsTerm(_Strict):
 
     @model_validator(mode="after")
     def _last_is_catch_all(self) -> BandsTerm:
-        if self.bands[-1].lt is not None or any(b.lt is None for b in self.bands[:-1]):
-            raise ValueError("only the last band, and it must, have lt=null")
+        _check_catch_all(self.bands)
+        return self
+
+
+class GridRow(_Strict):
+    lt: float | None  # upper bound on the row input (exclusive); None = catch-all, last
+    bands: list[Band] = Field(min_length=1)  # bands of the ``by`` input
+
+    @model_validator(mode="after")
+    def _last_is_catch_all(self) -> GridRow:
+        _check_catch_all(self.bands)
+        return self
+
+
+class GridTerm(_Strict):
+    """Two-way interaction: the first row with input < lt, then that row's band for ``by``.
+
+    E.g. MAGGIC's age points depend on the ejection-fraction band.
+    """
+
+    kind: Literal["grid"] = "grid"
+    input: str
+    by: str
+    rows: list[GridRow] = Field(min_length=1)
+
+    @model_validator(mode="after")
+    def _last_is_catch_all(self) -> GridTerm:
+        _check_catch_all(self.rows)
         return self
 
 
@@ -241,7 +275,11 @@ class CategoryTerm(_Strict):
     values: dict[str, float]
 
 
-Term = Annotated[LinearTerm | BandsTerm | CategoryTerm, Field(discriminator="kind")]
+Term = Annotated[LinearTerm | BandsTerm | CategoryTerm | GridTerm, Field(discriminator="kind")]
+
+
+def term_inputs(term: LinearTerm | BandsTerm | CategoryTerm | GridTerm) -> list[str]:
+    return [term.input, term.by] if isinstance(term, GridTerm) else [term.input]
 
 
 # ---------------------------------------------------------------- survival functions
@@ -313,7 +351,43 @@ class RelativeSurvival(_Strict):
         return self
 
 
-Survival = Annotated[WeibullPH | LifeTablePH | RelativeSurvival, Field(discriminator="type")]
+class ScoreWeibull(_Strict):
+    """A published integer risk score and its survival at two times (e.g. MAGGIC at 1 and 3 y).
+
+    score = sum of the term values, rounded and clamped to the table. Each score's two published
+    points are joined by a Weibull, H(t) = H1 * (t / t1) ** k with H1 = -ln S(t1) and
+    k = ln(ln S(t2) / ln S(t1)) / ln(t2 / t1), which also extends it beyond t2. With a life
+    table, survival is never better than the general population of the same age and sex.
+    """
+
+    type: Literal["score_weibull"] = "score_weibull"
+    times: list[float] = Field(min_length=2, max_length=2)
+    survival: list[list[float]] = Field(min_length=2)  # row k = score k: [S(t1), S(t2)]
+    terms: list[Term] = Field(min_length=1)
+    life_table: str | None = None
+    age_input: str = "age"
+    sex_input: str = "sex"
+
+    @model_validator(mode="after")
+    def _table(self) -> ScoreWeibull:
+        if not 0 < self.times[0] < self.times[1]:
+            raise ValueError("score times must be positive and increasing")
+        for row in self.survival:
+            if len(row) != 2 or not 1 > row[0] > row[1] > 0:
+                raise ValueError("each score row must be [S(t1), S(t2)] with 1 > S(t1) > S(t2) > 0")
+        return self
+
+
+Survival = Annotated[
+    WeibullPH | LifeTablePH | RelativeSurvival | ScoreWeibull, Field(discriminator="type")
+]
+
+
+def life_table_of(survival: Survival) -> str | None:
+    """The life table a survival form reads (with its age and sex inputs), if any."""
+    if isinstance(survival, LifeTablePH | RelativeSurvival | ScoreWeibull):
+        return survival.life_table
+    return None
 
 
 class LifeTable(_Strict):
@@ -336,6 +410,8 @@ class Layer(_Strict):
     label: str
     description: str
     requires: list[str] = []  # inputs that must be observed (not marginalised) to use this layer
+    # Inputs that must be observed with one of the listed values (e.g. diagnosis = heart failure)
+    when: dict[str, list[Value]] = {}
     survival: Survival
     sources: list[str] = []
 
@@ -391,13 +467,20 @@ class ModelSpec(_Strict):
             raise ValueError(
                 "the last layer must have no requirements (every record needs a result)"
             )
+        if self.layers[-1].when:
+            raise ValueError("the last layer must have no `when` conditions")
         for layer in self.layers:
             used = layer_inputs(layer)
-            for name in [*used, *layer.requires]:
+            needed = layer_needs(layer)
+            for name in [*used, *needed]:
                 if name not in inputs:
                     raise ValueError(f"layer {layer.id!r} references unknown input {name!r}")
-            if isinstance(layer.survival, LifeTablePH | RelativeSurvival):
-                if layer.survival.life_table not in self.life_tables:
+            for name, allowed in layer.when.items():
+                for v in allowed:
+                    _check_value(inputs[name], v, f"layer {layer.id!r} `when`")
+            table = life_table_of(layer.survival)
+            if table is not None:
+                if table not in self.life_tables:
                     raise ValueError(f"layer {layer.id!r} references unknown life table")
                 sex = inputs[layer.survival.sex_input]
                 if not isinstance(sex, EnumInput) or set(sex.values) != {"female", "male"}:
@@ -407,16 +490,14 @@ class ModelSpec(_Strict):
             if isinstance(layer.survival, RelativeSurvival):
                 _check_curves(layer.survival, inputs)
             for term in layer.survival.terms:
-                _check_term(term, inputs[term.input])
+                _check_term(term, inputs)
             for name in used:
-                if name not in layer.requires and inputs[name].missing == []:
+                if name not in needed and inputs[name].missing == []:
                     raise ValueError(
                         f"layer {layer.id!r} uses {name!r}, which has no missing-value"
                         " distribution, without requiring it"
                     )
-            combos = math.prod(
-                len(inputs[n].missing or [None]) for n in used if n not in layer.requires
-            )
+            combos = math.prod(len(inputs[n].missing or [None]) for n in used if n not in needed)
             if combos > MAX_MISSING_COMBINATIONS:
                 raise ValueError(f"layer {layer.id!r} has {combos} missing-value combinations")
         for i in self.inputs:
@@ -427,12 +508,20 @@ class ModelSpec(_Strict):
 def layer_inputs(layer: Layer) -> list[str]:
     """Inputs a layer's survival function reads, in first-use order (the evaluation order)."""
     names: list[str] = []
-    if isinstance(layer.survival, LifeTablePH | RelativeSurvival):
-        names += [layer.survival.age_input, layer.survival.sex_input]
-    if isinstance(layer.survival, RelativeSurvival):
-        names += [layer.survival.since_input, *layer.survival.keys]
-    names += [t.input for t in layer.survival.terms]
+    survival = layer.survival
+    if life_table_of(survival) is not None:
+        assert isinstance(survival, LifeTablePH | RelativeSurvival | ScoreWeibull)
+        names += [survival.age_input, survival.sex_input]
+    if isinstance(survival, RelativeSurvival):
+        names += [survival.since_input, *survival.keys]
+    for t in survival.terms:
+        names += term_inputs(t)
     return list(dict.fromkeys(names))
+
+
+def layer_needs(layer: Layer) -> list[str]:
+    """Inputs that must be observed for the layer to apply (never marginalised)."""
+    return list(dict.fromkeys([*layer.requires, *layer.when]))
 
 
 def _check_curves(survival: RelativeSurvival, inputs: dict[str, Input]) -> None:
@@ -454,7 +543,12 @@ def _check_curves(survival: RelativeSurvival, inputs: dict[str, Input]) -> None:
             raise ValueError(f"no all-ages relative-survival curve for {combo}")
 
 
-def _check_term(term: LinearTerm | BandsTerm | CategoryTerm, i: Input) -> None:
+def _check_term(term: Term, inputs: dict[str, Input]) -> None:
+    i = inputs[term.input]
+    if isinstance(term, GridTerm):
+        if not isinstance(i, NumberInput) or not isinstance(inputs[term.by], NumberInput):
+            raise ValueError(f"grid term on {term.input!r} x {term.by!r} needs number inputs")
+        return
     if isinstance(term, CategoryTerm):
         expected = set(i.values) if isinstance(i, EnumInput) else {"true", "false"}
         if isinstance(i, NumberInput) or set(term.values) != expected:
@@ -465,11 +559,14 @@ def _check_term(term: LinearTerm | BandsTerm | CategoryTerm, i: Input) -> None:
 
 def _check_values(i: NumberInput | EnumInput | BooleanInput) -> None:
     for wv in i.missing or []:
-        v = wv.value
-        ok = (
-            (isinstance(i, NumberInput) and isinstance(v, int | float) and not isinstance(v, bool))
-            or (isinstance(i, EnumInput) and v in i.values)
-            or (isinstance(i, BooleanInput) and isinstance(v, bool))
-        )
-        if not ok:
-            raise ValueError(f"input {i.id!r}: missing-distribution value {v!r} has the wrong type")
+        _check_value(i, wv.value, "missing-distribution")
+
+
+def _check_value(i: NumberInput | EnumInput | BooleanInput, v: Value, where: str) -> None:
+    ok = (
+        (isinstance(i, NumberInput) and isinstance(v, int | float) and not isinstance(v, bool))
+        or (isinstance(i, EnumInput) and v in i.values)
+        or (isinstance(i, BooleanInput) and isinstance(v, bool))
+    )
+    if not ok:
+        raise ValueError(f"input {i.id!r}: {where} value {v!r} has the wrong type")

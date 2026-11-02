@@ -17,6 +17,7 @@ from .spec import (
     BandsTerm,
     CategoryTerm,
     EnumInput,
+    GridTerm,
     Input,
     LifeTable,
     LifeTablePH,
@@ -25,10 +26,12 @@ from .spec import (
     NumberInput,
     RelativeSurvival,
     RelativeSurvivalCurve,
+    ScoreWeibull,
     Term,
     Value,
     WeibullPH,
     layer_inputs,
+    term_inputs,
 )
 
 HORIZON_YEARS = 60.0
@@ -81,7 +84,17 @@ def _plausible(i: Input, v: Value) -> bool:
     return isinstance(v, bool)
 
 
-def term_value(term: Term, x: Value) -> float:
+def _band(bands: list, x: float):
+    for band in bands:
+        if band.lt is None or x < band.lt:
+            return band
+    raise AssertionError("unreachable: the last band is a catch-all")
+
+
+def term_value(term: Term, values: Mapping[str, Value]) -> float:
+    x = values[term.input]
+    if isinstance(term, GridTerm):
+        return _band(_band(term.rows, float(x)).bands, float(values[term.by])).value
     if isinstance(term, LinearTerm):
         xf = float(x)
         if term.min is not None:
@@ -90,10 +103,7 @@ def term_value(term: Term, x: Value) -> float:
             xf = min(xf, term.max)
         return term.coef * (xf - term.center)
     if isinstance(term, BandsTerm):
-        for band in term.bands:
-            if band.lt is None or float(x) < band.lt:
-                return band.value
-        raise AssertionError("unreachable: last band is a catch-all")
+        return _band(term.bands, float(x)).value
     assert isinstance(term, CategoryTerm)
     key = ("true" if x else "false") if isinstance(x, bool) else str(x)
     return term.values[key]
@@ -138,27 +148,64 @@ def select_curve(survival: RelativeSurvival, values: Mapping[str, Value]) -> Rel
     raise AssertionError("unreachable: the spec guarantees an all-ages curve")
 
 
-def _survival_fn(spec: ModelSpec, layer_index: int, values: Mapping[str, Value]) -> SurvivalFn:
+def score_of(survival: ScoreWeibull, values: Mapping[str, Value]) -> int:
+    """Integer risk score: the rounded term sum, clamped to the published table."""
+    total = 0.0
+    for term in survival.terms:
+        total += term_value(term, values)
+    return min(max(round(total), 0), len(survival.survival) - 1)
+
+
+def _survival_fn(
+    spec: ModelSpec, layer_index: int, values: Mapping[str, Value]
+) -> tuple[tuple[Any, ...] | None, SurvivalFn]:
+    """The survival function for one set of input values, plus a key: combinations with equal
+    keys have identical functions, so a mixture can merge them (None = never merged)."""
     survival = spec.layers[layer_index].survival
+    if isinstance(survival, ScoreWeibull):
+        return _score_weibull_fn(spec, survival, values)
     lp = 0.0
     for term in survival.terms:
-        lp += term_value(term, values[term.input])
+        lp += term_value(term, values)
     hr = math.exp(lp)
     if isinstance(survival, WeibullPH):
         shape, scale = survival.shape, survival.scale_years
-        return lambda t: math.exp(-hr * (t / scale) ** shape)
+        return None, lambda t: math.exp(-hr * (t / scale) ** shape)
     assert isinstance(survival, LifeTablePH | RelativeSurvival)
-    table: LifeTable = spec.life_tables[survival.life_table]
-    q = table.female if values[survival.sex_input] == "female" else table.male
+    q = _sex_table(spec, survival.life_table, values[survival.sex_input])
     age = float(values[survival.age_input])
     if isinstance(survival, LifeTablePH):
-        return lambda t: math.exp(-hr * population_cum_hazard(q, age, t))
+        return None, lambda t: math.exp(-hr * population_cum_hazard(q, age, t))
     since = float(values[survival.since_input])
     knots = excess_knots(select_curve(survival, values).relative)
     x0 = excess_cum_hazard(knots, since)
-    return lambda t: math.exp(
+    return None, lambda t: math.exp(
         -population_cum_hazard(q, age, t) - hr * (excess_cum_hazard(knots, since + t) - x0)
     )
+
+
+def _sex_table(spec: ModelSpec, name: str, sex: Value) -> list[float]:
+    table: LifeTable = spec.life_tables[name]
+    return table.female if sex == "female" else table.male
+
+
+def _score_weibull_fn(
+    spec: ModelSpec, survival: ScoreWeibull, values: Mapping[str, Value]
+) -> tuple[tuple[Any, ...], SurvivalFn]:
+    score = score_of(survival, values)
+    (t1, t2), (s1, s2) = survival.times, survival.survival[score]
+    h1 = -math.log(s1)
+    k = math.log(math.log(s2) / math.log(s1)) / math.log(t2 / t1)
+
+    def weibull(t: float) -> float:
+        return math.exp(-h1 * (t / t1) ** k)
+
+    if survival.life_table is None:
+        return (score,), weibull
+    sex = values[survival.sex_input]
+    q = _sex_table(spec, survival.life_table, sex)
+    age = float(values[survival.age_input])
+    return (score, age, sex), lambda t: min(weibull(t), math.exp(-population_cum_hazard(q, age, t)))
 
 
 def solve_time(s: SurvivalFn, p: float) -> float | None:
@@ -181,6 +228,7 @@ def evaluate(spec: ModelSpec, observed: Observed) -> dict[str, Any]:
     layer_index = 0
     for layer_index, layer in enumerate(spec.layers):  # noqa: B007 - used after the loop
         lacking = [r for r in layer.requires if r not in resolved.values]
+        lacking += [n for n, allowed in layer.when.items() if resolved.values.get(n) not in allowed]
         if not lacking:
             break
         skipped.append({"id": layer.id, "label": layer.label, "lacking": lacking})
@@ -191,13 +239,20 @@ def evaluate(spec: ModelSpec, observed: Observed) -> dict[str, Any]:
 
     fns: list[SurvivalFn] = []
     weights: list[float] = []
+    slots: dict[tuple[Any, ...], int] = {}
     for combo in itertools.product(*(inputs[n].missing or [] for n in unknown)):
         values = dict(resolved.values)
         weight = 1.0
         for name, wv in zip(unknown, combo, strict=True):
             values[name] = wv.value
             weight *= wv.weight
-        fns.append(_survival_fn(spec, layer_index, values))
+        key, fn = _survival_fn(spec, layer_index, values)
+        if key is not None and key in slots:
+            weights[slots[key]] += weight
+            continue
+        if key is not None:
+            slots[key] = len(fns)
+        fns.append(fn)
         weights.append(weight)
     total_weight = sum(weights)
 
@@ -235,7 +290,9 @@ def evaluate(spec: ModelSpec, observed: Observed) -> dict[str, Any]:
                 "input": t.input,
                 "kind": t.kind,
                 "contribution": (
-                    term_value(t, resolved.values[t.input]) if t.input in resolved.values else None
+                    term_value(t, resolved.values)
+                    if all(n in resolved.values for n in term_inputs(t))
+                    else None
                 ),
             }
             for t in layer.survival.terms

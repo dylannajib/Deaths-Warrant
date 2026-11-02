@@ -31,6 +31,7 @@ def test_falls_back_to_base_layer_when_requirement_missing(spec):
     result = evaluate(spec, {"age": 60, "sex": "male"})
     assert result["layer"]["id"] == "base"
     assert result["skipped_layers"] == [
+        {"id": "points", "label": "Points", "lacking": ["score", "kind"]},
         {"id": "refined", "label": "Refined", "lacking": ["score"]},
         {"id": "relative", "label": "Relative", "lacking": ["kind"]},
     ]
@@ -96,3 +97,33 @@ def test_relative_survival_is_conditional_on_time_since_diagnosis(spec):
 def test_relative_survival_terms_scale_the_excess_hazard_only(spec):
     result = evaluate(spec, {"age": 60, "sex": "female", "kind": "b", "since": 0, "flag": True})
     assert result["survival_at"]["1"] == pytest.approx(0.95 * 0.5 ** math.exp(0.5))
+
+
+def test_score_weibull_joins_the_published_points(spec):
+    # age 70, score 6 => grid row "score >= 5", band "age >= 50" => 2; flag => +1; score 3
+    result = evaluate(spec, {"age": 70, "sex": "male", "kind": "a", "score": 6, "flag": True})
+    assert result["layer"]["id"] == "points"
+    assert result["survival_at"]["1"] == pytest.approx(0.6)
+    assert result["survival_at"]["3"] == pytest.approx(0.2)
+    k = math.log(math.log(0.2) / math.log(0.6)) / math.log(3)
+    assert result["survival_at"]["5"] == pytest.approx(math.exp(math.log(0.6) * 5**k))
+
+
+def test_score_weibull_is_capped_at_population_survival(spec):
+    # score 0 => published S(1) = 0.95, but a male on the flat table survives 0.9 a year
+    result = evaluate(spec, {"age": 40, "sex": "male", "kind": "a", "score": 2, "flag": False})
+    assert result["survival_at"]["1"] == pytest.approx(0.9)
+
+
+def test_identical_mixture_components_are_merged(spec):
+    # flag missing (3:1) and sex missing (1:1): four combinations, each a distinct score/sex key
+    result = evaluate(spec, {"age": 40, "kind": "a", "score": 2})
+    s0 = 0.5 * 0.9 + 0.5 * 0.95  # score 0, capped for males at 0.9, females at 0.95
+    s1 = 0.8  # score 1: below both populations
+    assert result["survival_at"]["1"] == pytest.approx(0.75 * s0 + 0.25 * s1)
+
+
+def test_when_skips_layer_for_other_values(spec):
+    result = evaluate(spec, {"age": 60, "kind": "b", "score": 4, "flag": False})
+    assert result["layer"]["id"] == "refined"
+    assert result["skipped_layers"][0]["lacking"] == ["kind"]

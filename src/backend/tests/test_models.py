@@ -70,3 +70,67 @@ def test_cancer_survival_since_diagnosis_improves_prognosis():
     new = evaluate(spec, {**base, "since": 0})["survival_at"]["5"]
     survivor = evaluate(spec, {**base, "since": 5})["survival_at"]["5"]
     assert survivor > new  # conditional survival: having survived 5 years is good news
+
+
+CARDIO = ModelFolder("cardiovascular", MODELS_DIR / "cardiovascular").load()
+NO_CVD = {
+    "heart_failure": False,
+    "coronary": False,
+    "stroke": False,
+    "atrial_fibrillation": False,
+    "peripheral_artery": False,
+    "cardiomyopathy": False,
+    "diabetes": False,
+    "copd": False,
+}
+
+
+def test_maggic_score_matches_hand_calculation_and_table_4():
+    # Pocock 2013 Figure 2: EF 25 -> 5; age 72 with EF < 30 -> 6; SBP 105 with EF < 30 -> 5;
+    # BMI 23 -> 3; creatinine 160 -> 4; NYHA III -> 6; male -> 1; diabetes -> 3;
+    # HF >= 18 months -> 2; on beta-blocker and ACE-I -> 0. Total 35.
+    spec = CARDIO.build()
+    observed = {
+        **NO_CVD, "heart_failure": True, "diabetes": True, "age": 72, "sex": "male", "ef": 25,
+        "sbp": 105, "bmi": 23, "creatinine": 160, "nyha": "III", "smoker": "not_current",
+        "hf_years": 4, "beta_blocker": True, "acei_arb": True,
+    }  # fmt: skip
+    result = evaluate(spec, observed)
+    assert result["layer"]["id"] == "maggic"
+    assert result["survival_at"]["1"] == pytest.approx(1 - 0.369)
+    assert result["survival_at"]["3"] == pytest.approx(1 - 0.692)
+
+
+def test_maggic_never_beats_population_survival():
+    # A young, low-score patient: published MAGGIC survival would exceed the population's
+    spec = CARDIO.build()
+    observed = {
+        **NO_CVD, "heart_failure": True, "age": 40, "sex": "female", "ef": 60, "sbp": 160,
+        "bmi": 32, "creatinine": 70, "nyha": "I", "smoker": "not_current", "hf_years": 0.5,
+        "beta_blocker": True, "acei_arb": True,
+    }  # fmt: skip
+    q = load_life_table("us_2024").female
+    s30 = next(s for t, s in evaluate(spec, observed)["curve"] if t == 30)
+    assert s30 <= math.exp(-population_cum_hazard(q, 40, 30)) + 1e-12
+
+
+def test_heart_failure_without_ef_reproduces_taylor_2019():
+    spec = CARDIO.build()
+    for _, age, published in CARDIO.TAYLOR_SURVIVAL[:3]:
+        obs = {**NO_CVD, "heart_failure": True, "age": age, "hf_years": 0}
+        male = evaluate(spec, {**obs, "sex": "male"})
+        female = evaluate(spec, {**obs, "sex": "female"})
+        assert male["layer"]["id"] == "heart_failure"
+        mix = CARDIO.TAYLOR_MALE * male["survival_at"]["5"]
+        mix += (1 - CARDIO.TAYLOR_MALE) * female["survival_at"]["5"]
+        assert mix == pytest.approx(published[5], abs=1e-6)
+
+
+def test_other_cardiovascular_conditions_multiply_hazard_ratios():
+    spec = CARDIO.build()
+    base = {**NO_CVD, "age": 66, "sex": "female"}
+    q = load_life_table("us_2024").female
+    h = population_cum_hazard(q, 66, 1)
+    both = evaluate(spec, {**base, "coronary": True, "stroke": True})
+    assert both["layer"]["id"] == "base"
+    assert both["survival_at"]["1"] == pytest.approx(math.exp(-2.0 * 2.1 * h), rel=1e-5)

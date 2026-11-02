@@ -69,6 +69,34 @@ FIXTURE_SPEC = {
     ],
     "layers": [
         {
+            "id": "points",
+            "label": "Points",
+            "description": "Integer score table",
+            "requires": ["score"],
+            "when": {"kind": ["a"]},
+            "survival": {
+                "type": "score_weibull",
+                "times": [1, 3],
+                "survival": [[0.95, 0.9], [0.8, 0.5], [0.7, 0.4], [0.6, 0.2]],
+                "life_table": "flat",
+                "terms": [
+                    {
+                        "kind": "grid",
+                        "input": "score",
+                        "by": "age",
+                        "rows": [
+                            {"lt": 5, "bands": [{"lt": 50, "value": 0}, {"lt": None, "value": 1}]},
+                            {
+                                "lt": None,
+                                "bands": [{"lt": 50, "value": 1}, {"lt": None, "value": 2}],
+                            },
+                        ],
+                    },
+                    {"kind": "category", "input": "flag", "values": {"true": 1, "false": 0}},
+                ],
+            },
+        },
+        {
             "id": "refined",
             "label": "Refined",
             "description": "Weibull",
@@ -139,4 +167,6 @@ def golden_inputs() -> list[dict]:
         {"age": 60, "sex": "female", "kind": "a", "since": 0},
         {"age": 55, "sex": "male", "kind": "a", "since": 10},
         {"age": 60, "kind": "b"},
+        {"age": 70, "sex": "male", "kind": "a", "score": 6, "flag": True},
+        {"age": 40, "kind": "a", "score": 2},
     ]

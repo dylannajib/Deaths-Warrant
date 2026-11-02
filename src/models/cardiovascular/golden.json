@@ -1,0 +1,180 @@
+[
+ {
+  "observed": {
+   "heart_failure": true,
+   "coronary": false,
+   "stroke": false,
+   "atrial_fibrillation": false,
+   "peripheral_artery": false,
+   "cardiomyopathy": false,
+   "age": 72,
+   "sex": "male",
+   "ef": 25,
+   "sbp": 105,
+   "bmi": 23,
+   "creatinine": 160,
+   "nyha": "III",
+   "smoker": "not_current",
+   "diabetes": true,
+   "copd": false,
+   "hf_years": 4,
+   "beta_blocker": true,
+   "acei_arb": true
+  },
+  "expected": {
+   "layer": {
+    "id": "maggic",
+    "label": "Heart failure: MAGGIC risk score"
+   },
+   "median_years": 1.6136983323249416,
+   "range_low_years": 0.5768046994435083,
+   "range_high_years": 3.6307183710281805,
+   "survival_at": {
+    "1": 0.631,
+    "3": 0.30800000000000005,
+    "5": 0.16163216418640797
+   }
+  }
+ },
+ {
+  "observed": {
+   "heart_failure": true,
+   "coronary": false,
+   "stroke": false,
+   "atrial_fibrillation": false,
+   "peripheral_artery": false,
+   "cardiomyopathy": false,
+   "age": 58,
+   "sex": "female",
+   "ef": 55,
+   "diabetes": false,
+   "copd": false
+  },
+  "expected": {
+   "layer": {
+    "id": "maggic",
+    "label": "Heart failure: MAGGIC risk score"
+   },
+   "median_years": 13.512754835154155,
+   "range_low_years": 4.851136061567805,
+   "range_high_years": 30.369599789836002,
+   "survival_at": {
+    "1": 0.930641451288659,
+    "3": 0.8276847690641616,
+    "5": 0.7442794439441964
+   }
+  }
+ },
+ {
+  "observed": {
+   "heart_failure": true,
+   "coronary": false,
+   "stroke": false,
+   "atrial_fibrillation": false,
+   "peripheral_artery": false,
+   "cardiomyopathy": false,
+   "age": 85,
+   "ef": 35,
+   "diabetes": false,
+   "copd": true,
+   "creatinine": 300
+  },
+  "expected": {
+   "layer": {
+    "id": "maggic",
+    "label": "Heart failure: MAGGIC risk score"
+   },
+   "median_years": 1.3979065776011836,
+   "range_low_years": 0.47915389908069794,
+   "range_high_years": 3.3116407542391926,
+   "survival_at": {
+    "1": 0.5901711676935775,
+    "3": 0.2775721571131208,
+    "5": 0.14714260733251014
+   }
+  }
+ },
+ {
+  "observed": {
+   "heart_failure": true,
+   "coronary": false,
+   "stroke": false,
+   "atrial_fibrillation": false,
+   "peripheral_artery": false,
+   "cardiomyopathy": false,
+   "age": 70,
+   "sex": "male",
+   "diabetes": false,
+   "copd": false
+  },
+  "expected": {
+   "layer": {
+    "id": "heart_failure",
+    "label": "Heart failure: survival by age at diagnosis (UK cohort)"
+   },
+   "median_years": 7.0660204095744525,
+   "range_low_years": 2.976063857212914,
+   "range_high_years": 12.346429165792326,
+   "survival_at": {
+    "1": 0.8952860091894919,
+    "3": 0.7483573823797668,
+    "5": 0.6183673068633788
+   }
+  }
+ },
+ {
+  "observed": {
+   "heart_failure": false,
+   "coronary": true,
+   "stroke": true,
+   "atrial_fibrillation": false,
+   "peripheral_artery": false,
+   "cardiomyopathy": false,
+   "age": 66,
+   "sex": "female",
+   "diabetes": true,
+   "copd": false
+  },
+  "expected": {
+   "layer": {
+    "id": "base",
+    "label": "Other cardiovascular disease x population mortality"
+   },
+   "median_years": 6.443682694318149,
+   "range_low_years": 3.0578384030198507,
+   "range_high_years": 10.534158307692074,
+   "survival_at": {
+    "1": 0.9167074684007525,
+    "3": 0.7547190933884486,
+    "5": 0.6027996569218795
+   }
+  }
+ },
+ {
+  "observed": {
+   "heart_failure": false,
+   "coronary": false,
+   "stroke": false,
+   "atrial_fibrillation": true,
+   "peripheral_artery": false,
+   "cardiomyopathy": false,
+   "age": 50,
+   "diabetes": false,
+   "copd": false
+  },
+  "expected": {
+   "layer": {
+    "id": "base",
+    "label": "Other cardiovascular disease x population mortality"
+   },
+   "median_years": 29.53008588328111,
+   "range_low_years": 19.95208521621756,
+   "range_high_years": 36.57740169064941,
+   "survival_at": {
+    "1": 0.9938052295848655,
+    "3": 0.980069007054547,
+    "5": 0.9644053732784976
+   }
+  }
+ }
+]
