@@ -46,6 +46,26 @@ FIXTURE_SPEC = {
             "extract": {"rule": "condition_present", "codes": {"icd10": ["X991"]}},
             "missing": [{"value": False, "weight": 3}, {"value": True, "weight": 1}],
         },
+        {
+            "id": "kind",
+            "label": "Kind",
+            "type": "enum",
+            "values": ["a", "b"],
+            "extract": {
+                "rule": "condition_category",
+                "categories": [{"value": "a", "codes": {"icd10": ["X98"]}}],
+            },
+            "missing": [],
+        },
+        {
+            "id": "since",
+            "label": "Years since diagnosis",
+            "type": "number",
+            "min": 0,
+            "max": 60,
+            "extract": {"rule": "years_since_condition", "codes": {"icd10": ["X98"]}},
+            "missing": [{"value": 0, "weight": 1}],
+        },
     ],
     "layers": [
         {
@@ -59,6 +79,26 @@ FIXTURE_SPEC = {
                 "scale_years": 5.0,
                 "terms": [
                     {"kind": "linear", "input": "score", "coef": 0.1, "center": 4},
+                    {"kind": "category", "input": "flag", "values": {"true": 0.5, "false": 0.0}},
+                ],
+            },
+        },
+        {
+            "id": "relative",
+            "label": "Relative",
+            "description": "Relative survival",
+            "requires": ["kind"],
+            "survival": {
+                "type": "relative_survival",
+                "life_table": "flat",
+                "since_input": "since",
+                "keys": ["kind"],
+                "curves": [
+                    {"match": {"kind": "a"}, "age_lt": 50, "relative": [0.9, 0.8]},
+                    {"match": {"kind": "a"}, "relative": [0.8, 0.6, 0.5]},
+                    {"match": {"kind": "b"}, "relative": [0.5]},
+                ],
+                "terms": [
                     {"kind": "category", "input": "flag", "values": {"true": 0.5, "false": 0.0}},
                 ],
             },
@@ -96,4 +136,7 @@ def golden_inputs() -> list[dict]:
         {"age": 70.5, "sex": "female", "score": 6, "flag": True},
         {"age": 60, "score": 99},
         {"age": 0, "sex": "female"},
+        {"age": 60, "sex": "female", "kind": "a", "since": 0},
+        {"age": 55, "sex": "male", "kind": "a", "since": 10},
+        {"age": 60, "kind": "b"},
     ]

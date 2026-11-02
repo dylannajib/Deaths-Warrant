@@ -103,6 +103,57 @@
    ],
    "source": null,
    "type": "boolean"
+  },
+  {
+   "id": "kind",
+   "label": "Kind",
+   "extract": {
+    "rule": "condition_category",
+    "categories": [
+     {
+      "value": "a",
+      "codes": {
+       "icd10": [
+        "X98"
+       ],
+       "icd9": [],
+       "snomed": []
+      }
+     }
+    ]
+   },
+   "missing": [],
+   "source": null,
+   "type": "enum",
+   "values": [
+    "a",
+    "b"
+   ]
+  },
+  {
+   "id": "since",
+   "label": "Years since diagnosis",
+   "extract": {
+    "rule": "years_since_condition",
+    "codes": {
+     "icd10": [
+      "X98"
+     ],
+     "icd9": [],
+     "snomed": []
+    }
+   },
+   "missing": [
+    {
+     "value": 0.0,
+     "weight": 1.0
+    }
+   ],
+   "source": null,
+   "type": "number",
+   "unit": null,
+   "min": 0.0,
+   "max": 60.0
   }
  ],
  "layers": [
@@ -126,6 +177,70 @@
       "min": null,
       "max": null
      },
+     {
+      "kind": "category",
+      "input": "flag",
+      "values": {
+       "true": 0.5,
+       "false": 0.0
+      }
+     }
+    ]
+   },
+   "sources": []
+  },
+  {
+   "id": "relative",
+   "label": "Relative",
+   "description": "Relative survival",
+   "requires": [
+    "kind"
+   ],
+   "survival": {
+    "type": "relative_survival",
+    "life_table": "flat",
+    "age_input": "age",
+    "sex_input": "sex",
+    "since_input": "since",
+    "keys": [
+     "kind"
+    ],
+    "curves": [
+     {
+      "match": {
+       "kind": "a"
+      },
+      "age_lt": 50.0,
+      "relative": [
+       0.9,
+       0.8
+      ],
+      "note": ""
+     },
+     {
+      "match": {
+       "kind": "a"
+      },
+      "age_lt": null,
+      "relative": [
+       0.8,
+       0.6,
+       0.5
+      ],
+      "note": ""
+     },
+     {
+      "match": {
+       "kind": "b"
+      },
+      "age_lt": null,
+      "relative": [
+       0.5
+      ],
+      "note": ""
+     }
+    ],
+    "terms": [
      {
       "kind": "category",
       "input": "flag",

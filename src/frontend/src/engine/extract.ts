@@ -46,6 +46,12 @@ function latestObservation(record: PatientRecord, loinc: string[], asOf: string,
   return best;
 }
 
+function yearsSince(matches: ReturnType<typeof matchingConditions>, asOf: string): [Value | null, string] {
+  const onsets = matches.map((m) => m.cond.onset).filter((d): d is string => !!d).sort();
+  if (!onsets[0]) return [null, "No dated matching diagnosis"];
+  return [Math.max(0, yearsBetween(onsets[0], asOf)), `Earliest matching diagnosis dated ${onsets[0]}`];
+}
+
 function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value | null, string] {
   switch (rule.rule) {
     case "age": {
@@ -90,10 +96,11 @@ function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value |
       }
       return [total, hits.length ? hits.join(", ") : "No qualifying conditions recorded (score 0)"];
     }
-    case "years_since_condition": {
-      const onsets = matchingConditions(record, rule.codes).map((m) => m.cond.onset).filter((d): d is string => !!d).sort();
-      if (!onsets[0]) return [null, "No dated matching diagnosis"];
-      return [Math.max(0, yearsBetween(onsets[0], asOf)), `Earliest matching diagnosis dated ${onsets[0]}`];
+    case "years_since_condition":
+      return yearsSince(matchingConditions(record, rule.codes), asOf);
+    case "years_since_category": {
+      const cat = rule.categories.find((c) => matchingConditions(record, c.codes).length);
+      return cat ? yearsSince(matchingConditions(record, cat.codes), asOf) : [null, "No matching diagnosis"];
     }
     case "medication_present": {
       const names = rule.names.map((n) => n.toLowerCase());
@@ -103,6 +110,14 @@ function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value |
           names.some((n) => [med.text, ...med.codes.map((c) => c.display)].some((t) => t?.toLowerCase().includes(n))),
       );
       return m ? [true, `Medication ${m.text ?? (m.codes[0] ? describe(m.codes[0]) : "")}`] : [false, "Not recorded (assumed not taken)"];
+    }
+    case "first_of": {
+      let last: [Value | null, string] = [null, "Not recorded"];
+      for (const r of rule.rules) {
+        last = apply(r, record, asOf);
+        if (last[0] !== null) return last;
+      }
+      return last;
     }
   }
 }

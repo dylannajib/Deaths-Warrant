@@ -31,5 +31,6 @@ export default defineConfig({
   plugins: [react(), cspMeta],
   worker: { format: "es" },
   server: { fs: { allow: [".."] } }, // model specs live in ../models
-  test: { include: ["src/**/*.test.ts"] },
+  // fsModuleCache would keep stale import.meta.glob results when a new model folder appears.
+  test: { include: ["src/**/*.test.ts"], fsModuleCache: false },
 });

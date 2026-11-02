@@ -18,7 +18,12 @@ const spec = {
     input("copd", { rule: "condition_present", codes: { ...none, snomed: ["13645005"] } }, "boolean"),
     input("cci", { rule: "condition_weighted_sum", groups: [{ weight: 1, codes: { ...none, icd10: ["I50"] } }, { weight: 2, codes: { ...none, icd10: ["E11"] } }] }),
     input("years", { rule: "years_since_condition", codes: { ...none, icd10: ["I50"] } }),
+    input("cat_years", { rule: "years_since_category", categories: [{ value: "x", codes: { ...none, icd10: ["Z99"] } }, { value: "a", codes: { ...none, icd10: ["I50"] } }] }),
     input("bb", { rule: "medication_present", rxnorm: [], atc: ["C07"], names: ["bisoprolol"] }, "boolean"),
+    input("first", { rule: "first_of", rules: [
+      { rule: "condition_category", categories: [{ value: "a", codes: { ...none, icd10: ["C79"] } }] },
+      { rule: "observation_coded", loinc: ["21908-9"], values: { "text:stage iv": "b" }, max_age_days: null },
+    ] }, "enum"),
   ],
 } as unknown as ModelSpec;
 
@@ -45,8 +50,13 @@ describe("extractInputs", () => {
 
   it("applies every rule type", () => {
     expect(observed.age).toBeCloseTo(76, 1);
-    expect(observed).toMatchObject({ sex: "male", creat: 100, stage: "b", dx: "a", copd: true, cci: 1, bb: true });
+    expect(observed).toMatchObject({ sex: "male", creat: 100, stage: "b", dx: "a", copd: true, cci: 1, bb: true, first: "b" });
     expect(observed.years).toBeCloseTo(6, 1);
+    expect(observed.cat_years).toBeCloseTo(6, 1);
+  });
+
+  it("first_of falls through to the first rule that yields a value", () => {
+    expect(provenance.first).toMatch(/Stage IV/);
   });
 
   it("ignores measurements in unknown units", () => {

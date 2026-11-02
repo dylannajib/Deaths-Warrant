@@ -1,0 +1,175 @@
+[
+ {
+  "observed": {
+   "age": 67,
+   "sex": "male",
+   "site": "lung",
+   "stage": "distant",
+   "since": 0
+  },
+  "expected": {
+   "layer": {
+    "id": "site_stage",
+    "label": "Cancer site and stage (SEER)"
+   },
+   "median_years": 0.6731108319228982,
+   "range_low_years": 0.2793662364187819,
+   "range_high_years": 1.662310108633946,
+   "survival_at": {
+    "1": 0.3570902279475704,
+    "3": 0.14827713525920766,
+    "5": 0.09308377775080184
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 58,
+   "sex": "female",
+   "site": "breast",
+   "stage": "regional",
+   "since": 4.5
+  },
+  "expected": {
+   "layer": {
+    "id": "site_stage",
+    "label": "Cancer site and stage (SEER)"
+   },
+   "median_years": 21.946483999834037,
+   "range_low_years": 11.170986627080705,
+   "range_high_years": 30.48936028779581,
+   "survival_at": {
+    "1": 0.9716401689153664,
+    "3": 0.9218637616480355,
+    "5": 0.8784515726560549
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 30,
+   "sex": "male",
+   "site": "testis",
+   "stage": "localized",
+   "since": 12
+  },
+  "expected": {
+   "layer": {
+    "id": "site_stage",
+    "label": "Cancer site and stage (SEER)"
+   },
+   "median_years": 51.301841475703455,
+   "range_low_years": 40.14160720465942,
+   "range_high_years": 58.734611001222405,
+   "survival_at": {
+    "1": 0.9982406166382134,
+    "3": 0.9944454302736851,
+    "5": 0.9902999215368795
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 72,
+   "site": "leukaemia",
+   "stage": "regional"
+  },
+  "expected": {
+   "layer": {
+    "id": "site_stage",
+    "label": "Cancer site and stage (SEER)"
+   },
+   "median_years": 7.421900088605906,
+   "range_low_years": 1.523568834503544,
+   "range_high_years": 14.809260157928733,
+   "survival_at": {
+    "1": 0.7891622575722244,
+    "3": 0.6668779358378604,
+    "5": 0.5883611569548388
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 49,
+   "sex": "female",
+   "site": "colorectal",
+   "since": 1
+  },
+  "expected": {
+   "layer": {
+    "id": "site",
+    "label": "Cancer site, all stages (SEER)"
+   },
+   "median_years": 24.27304707111245,
+   "range_low_years": 4.865740032336314,
+   "range_high_years": 37.52027538876375,
+   "survival_at": {
+    "1": 0.9145316548114011,
+    "3": 0.804998296192361,
+    "5": 0.7467347989852287
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 80,
+   "sex": "male",
+   "site": "other"
+  },
+  "expected": {
+   "layer": {
+    "id": "site",
+    "label": "Cancer site, all stages (SEER)"
+   },
+   "median_years": 3.021188462135213,
+   "range_low_years": 0.7091185629851906,
+   "range_high_years": 8.535934325424002,
+   "survival_at": {
+    "1": 0.6665169787017703,
+    "3": 0.5012213118382829,
+    "5": 0.39768805253316103
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 64
+  },
+  "expected": {
+   "layer": {
+    "id": "all_sites",
+    "label": "All cancers combined (SEER)"
+   },
+   "median_years": 13.912506372119942,
+   "range_low_years": 2.9046272169244833,
+   "range_high_years": 23.356277986778572,
+   "survival_at": {
+    "1": 0.8531723945358312,
+    "3": 0.7461566486664883,
+    "5": 0.6889632944852215
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 90,
+   "sex": "female",
+   "since": 30
+  },
+  "expected": {
+   "layer": {
+    "id": "all_sites",
+    "label": "All cancers combined (SEER)"
+   },
+   "median_years": 3.987924062837571,
+   "range_low_years": 1.8650949307785893,
+   "range_high_years": 6.770250694682751,
+   "survival_at": {
+    "1": 0.8639435317274309,
+    "3": 0.6112558284490021,
+    "5": 0.3978286111777632
+   }
+  }
+ }
+]

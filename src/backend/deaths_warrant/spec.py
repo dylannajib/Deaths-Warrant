@@ -7,6 +7,7 @@ bump ``SCHEMA_VERSION`` on any breaking change.
 
 from __future__ import annotations
 
+import itertools
 import math
 from typing import Annotated, Literal
 
@@ -115,6 +116,24 @@ class YearsSinceConditionRule(_Strict):
     codes: CodeSet
 
 
+class YearsSinceCategoryRule(_Strict):
+    """Years since the earliest dated condition in the first category the record matches.
+
+    Uses the same priority as ``condition_category``, so with several primary cancers the time
+    since diagnosis belongs to the cancer the model is using.
+    """
+
+    rule: Literal["years_since_category"] = "years_since_category"
+    categories: list[Category] = Field(min_length=1)
+
+
+class FirstOfRule(_Strict):
+    """The first of ``rules`` (in priority order) that yields a value."""
+
+    rule: Literal["first_of"] = "first_of"
+    rules: list[ExtractRule] = Field(min_length=2)
+
+
 class MedicationPresentRule(_Strict):
     """True if any matching medication is recorded (RxNorm exact, ATC prefix, name substring)."""
 
@@ -133,9 +152,12 @@ ExtractRule = Annotated[
     | ConditionPresentRule
     | ConditionWeightedSumRule
     | YearsSinceConditionRule
-    | MedicationPresentRule,
+    | YearsSinceCategoryRule
+    | MedicationPresentRule
+    | FirstOfRule,
     Field(discriminator="rule"),
 ]
+FirstOfRule.model_rebuild()
 
 
 # ---------------------------------------------------------------- inputs
@@ -152,7 +174,8 @@ class _InputBase(_Strict):
     id: str = Field(pattern=r"^[a-z][a-z0-9_]*$")
     label: str
     extract: ExtractRule
-    # Population distribution used when the record lacks this input. None => required.
+    # Population distribution used when the record lacks this input. None => required by
+    # every layer; [] => optional, usable only by layers that require it.
     missing: list[WeightedValue] | None = None
     source: str | None = None  # Source id backing the missing-value distribution
 
@@ -243,7 +266,54 @@ class LifeTablePH(_Strict):
     terms: list[Term] = []
 
 
-Survival = Annotated[WeibullPH | LifeTablePH, Field(discriminator="type")]
+class RelativeSurvivalCurve(_Strict):
+    """Published relative survival R(k) at whole years k = 1..n since diagnosis (R(0) = 1).
+
+    ``match`` selects the curve by enum inputs; ``age_lt`` bounds the age at diagnosis
+    (exclusive, None = any age). The first matching curve is used.
+    """
+
+    match: dict[str, str]
+    age_lt: float | None = None
+    relative: list[float] = Field(min_length=1)
+    note: str = ""
+
+    @model_validator(mode="after")
+    def _non_increasing(self) -> RelativeSurvivalCurve:
+        prev = 1.0
+        for r in self.relative:
+            if not 0 < r <= prev:
+                raise ValueError("relative survival must be in (0, 1] and non-increasing")
+            prev = r
+        return self
+
+
+class RelativeSurvival(_Strict):
+    """Net (relative) survival on top of population mortality, conditional on survival so far.
+
+    With d years since diagnosis and excess cumulative hazard X(t) = -ln R(t) (linear between
+    whole years, last slope continued): S(t) = S_pop(age, t) * exp(-exp(lp) * (X(d+t) - X(d))).
+    The curve is chosen by the age at diagnosis, age - d.
+    """
+
+    type: Literal["relative_survival"] = "relative_survival"
+    life_table: str
+    age_input: str = "age"
+    sex_input: str = "sex"
+    since_input: str
+    keys: list[str] = []  # enum inputs that every curve's ``match`` uses
+    curves: list[RelativeSurvivalCurve] = Field(min_length=1)
+    terms: list[Term] = []  # multiply the excess hazard
+
+    @model_validator(mode="after")
+    def _keys(self) -> RelativeSurvival:
+        for c in self.curves:
+            if list(c.match) != self.keys:
+                raise ValueError(f"curve match {c.match} must use exactly the keys {self.keys}")
+        return self
+
+
+Survival = Annotated[WeibullPH | LifeTablePH | RelativeSurvival, Field(discriminator="type")]
 
 
 class LifeTable(_Strict):
@@ -326,7 +396,7 @@ class ModelSpec(_Strict):
             for name in [*used, *layer.requires]:
                 if name not in inputs:
                     raise ValueError(f"layer {layer.id!r} references unknown input {name!r}")
-            if isinstance(layer.survival, LifeTablePH):
+            if isinstance(layer.survival, LifeTablePH | RelativeSurvival):
                 if layer.survival.life_table not in self.life_tables:
                     raise ValueError(f"layer {layer.id!r} references unknown life table")
                 sex = inputs[layer.survival.sex_input]
@@ -334,8 +404,16 @@ class ModelSpec(_Strict):
                     raise ValueError("life-table sex input must be an enum of female/male")
                 if not isinstance(inputs[layer.survival.age_input], NumberInput):
                     raise ValueError("life-table age input must be a number")
+            if isinstance(layer.survival, RelativeSurvival):
+                _check_curves(layer.survival, inputs)
             for term in layer.survival.terms:
                 _check_term(term, inputs[term.input])
+            for name in used:
+                if name not in layer.requires and inputs[name].missing == []:
+                    raise ValueError(
+                        f"layer {layer.id!r} uses {name!r}, which has no missing-value"
+                        " distribution, without requiring it"
+                    )
             combos = math.prod(
                 len(inputs[n].missing or [None]) for n in used if n not in layer.requires
             )
@@ -349,10 +427,31 @@ class ModelSpec(_Strict):
 def layer_inputs(layer: Layer) -> list[str]:
     """Inputs a layer's survival function reads, in first-use order (the evaluation order)."""
     names: list[str] = []
-    if isinstance(layer.survival, LifeTablePH):
+    if isinstance(layer.survival, LifeTablePH | RelativeSurvival):
         names += [layer.survival.age_input, layer.survival.sex_input]
+    if isinstance(layer.survival, RelativeSurvival):
+        names += [layer.survival.since_input, *layer.survival.keys]
     names += [t.input for t in layer.survival.terms]
     return list(dict.fromkeys(names))
+
+
+def _check_curves(survival: RelativeSurvival, inputs: dict[str, Input]) -> None:
+    if not isinstance(inputs[survival.since_input], NumberInput):
+        raise ValueError("relative-survival since input must be a number")
+    domains: dict[str, list[str]] = {}
+    for key in survival.keys:
+        i = inputs[key]
+        if not isinstance(i, EnumInput):
+            raise ValueError(f"relative-survival key {key!r} must be an enum input")
+        domains[key] = i.values
+    for c in survival.curves:
+        for key, value in c.match.items():
+            if value not in domains[key]:
+                raise ValueError(f"curve matches unknown {key} value {value!r}")
+    covered = {tuple(c.match.values()) for c in survival.curves if c.age_lt is None}
+    for combo in itertools.product(*domains.values()):
+        if combo not in covered:
+            raise ValueError(f"no all-ages relative-survival curve for {combo}")
 
 
 def _check_term(term: LinearTerm | BandsTerm | CategoryTerm, i: Input) -> None:

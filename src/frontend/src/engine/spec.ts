@@ -20,7 +20,9 @@ export type ExtractRule =
   | { rule: "condition_present"; codes: CodeSet }
   | { rule: "condition_weighted_sum"; groups: { weight: number; codes: CodeSet }[] }
   | { rule: "years_since_condition"; codes: CodeSet }
-  | { rule: "medication_present"; rxnorm: string[]; atc: string[]; names: string[] };
+  | { rule: "years_since_category"; categories: { value: string; codes: CodeSet }[] }
+  | { rule: "medication_present"; rxnorm: string[]; atc: string[]; names: string[] }
+  | { rule: "first_of"; rules: ExtractRule[] };
 
 export type Value = number | string | boolean;
 
@@ -33,6 +35,7 @@ interface InputBase {
   id: string;
   label: string;
   extract: ExtractRule;
+  /** null => required by every layer; [] => optional, used only by layers requiring it. */
   missing: WeightedValue[] | null;
   source: string | null;
 }
@@ -49,7 +52,24 @@ export type Term =
 
 export type Survival =
   | { type: "weibull_ph"; shape: number; scale_years: number; terms: Term[] }
-  | { type: "life_table_ph"; life_table: string; age_input: string; sex_input: string; terms: Term[] };
+  | { type: "life_table_ph"; life_table: string; age_input: string; sex_input: string; terms: Term[] }
+  | {
+      type: "relative_survival";
+      life_table: string;
+      age_input: string;
+      sex_input: string;
+      since_input: string;
+      keys: string[];
+      curves: RelativeSurvivalCurve[];
+      terms: Term[];
+    };
+
+export interface RelativeSurvivalCurve {
+  match: Record<string, string>;
+  age_lt: number | null;
+  relative: number[];
+  note: string;
+}
 
 export interface LifeTable {
   source: string;
@@ -102,7 +122,9 @@ export interface ModelSpec {
 /** Inputs a layer's survival function reads, in first-use order (the evaluation order). */
 export function layerInputs(layer: Layer): string[] {
   const names: string[] = [];
-  if (layer.survival.type === "life_table_ph") names.push(layer.survival.age_input, layer.survival.sex_input);
-  for (const t of layer.survival.terms) names.push(t.input);
+  const s = layer.survival;
+  if (s.type !== "weibull_ph") names.push(s.age_input, s.sex_input);
+  if (s.type === "relative_survival") names.push(s.since_input, ...s.keys);
+  for (const t of s.terms) names.push(t.input);
   return [...new Set(names)];
 }

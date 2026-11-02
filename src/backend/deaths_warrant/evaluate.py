@@ -23,6 +23,8 @@ from .spec import (
     LinearTerm,
     ModelSpec,
     NumberInput,
+    RelativeSurvival,
+    RelativeSurvivalCurve,
     Term,
     Value,
     WeibullPH,
@@ -111,6 +113,31 @@ def population_cum_hazard(table: list[float], age: float, t: float) -> float:
     return total
 
 
+def excess_knots(relative: list[float]) -> list[float]:
+    """Excess cumulative hazard -ln R(k) at whole years k = 0..n."""
+    return [0.0, *(-math.log(r) for r in relative)]
+
+
+def excess_cum_hazard(knots: list[float], t: float) -> float:
+    """Linear between whole years; beyond the last year the last year's slope continues."""
+    n = len(knots) - 1
+    if t >= n:
+        return knots[n] + (knots[n] - knots[n - 1]) * (t - n)
+    k = math.floor(t)
+    return knots[k] + (knots[k + 1] - knots[k]) * (t - k)
+
+
+def select_curve(survival: RelativeSurvival, values: Mapping[str, Value]) -> RelativeSurvivalCurve:
+    """First curve matching the keys and the age at diagnosis (age - years since diagnosis)."""
+    age_at_diagnosis = float(values[survival.age_input]) - float(values[survival.since_input])
+    for c in survival.curves:
+        if all(values[k] == v for k, v in c.match.items()) and (
+            c.age_lt is None or age_at_diagnosis < c.age_lt
+        ):
+            return c
+    raise AssertionError("unreachable: the spec guarantees an all-ages curve")
+
+
 def _survival_fn(spec: ModelSpec, layer_index: int, values: Mapping[str, Value]) -> SurvivalFn:
     survival = spec.layers[layer_index].survival
     lp = 0.0
@@ -120,11 +147,18 @@ def _survival_fn(spec: ModelSpec, layer_index: int, values: Mapping[str, Value])
     if isinstance(survival, WeibullPH):
         shape, scale = survival.shape, survival.scale_years
         return lambda t: math.exp(-hr * (t / scale) ** shape)
-    assert isinstance(survival, LifeTablePH)
+    assert isinstance(survival, LifeTablePH | RelativeSurvival)
     table: LifeTable = spec.life_tables[survival.life_table]
     q = table.female if values[survival.sex_input] == "female" else table.male
     age = float(values[survival.age_input])
-    return lambda t: math.exp(-hr * population_cum_hazard(q, age, t))
+    if isinstance(survival, LifeTablePH):
+        return lambda t: math.exp(-hr * population_cum_hazard(q, age, t))
+    since = float(values[survival.since_input])
+    knots = excess_knots(select_curve(survival, values).relative)
+    x0 = excess_cum_hazard(knots, since)
+    return lambda t: math.exp(
+        -population_cum_hazard(q, age, t) - hr * (excess_cum_hazard(knots, since + t) - x0)
+    )
 
 
 def solve_time(s: SurvivalFn, p: float) -> float | None:

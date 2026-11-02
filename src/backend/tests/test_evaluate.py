@@ -30,7 +30,10 @@ def test_missing_input_is_marginalised(spec):
 def test_falls_back_to_base_layer_when_requirement_missing(spec):
     result = evaluate(spec, {"age": 60, "sex": "male"})
     assert result["layer"]["id"] == "base"
-    assert result["skipped_layers"] == [{"id": "refined", "label": "Refined", "lacking": ["score"]}]
+    assert result["skipped_layers"] == [
+        {"id": "refined", "label": "Refined", "lacking": ["score"]},
+        {"id": "relative", "label": "Relative", "lacking": ["kind"]},
+    ]
     # score marginalised over {2, 6}: bands give HR 1 or e^0.3 on a constant q=0.1 table
     mu = -math.log(0.9)
     expected = 0.5 * math.exp(-mu) + 0.5 * math.exp(-math.exp(0.3) * mu)
@@ -68,3 +71,28 @@ def test_beyond_reliable_flag(spec):
     long_lived = evaluate(strict, {"age": 0, "sex": "female"})  # base layer median ~11.6 y
     assert long_lived["median_years"] > 10
     assert long_lived["beyond_reliable"] is True
+
+
+def test_relative_survival_closed_form(spec):
+    # kind b: R(1) = 0.5, extended at the same excess hazard (ln 2 per year); flag off => HR 1
+    result = evaluate(spec, {"age": 60, "sex": "female", "kind": "b", "since": 0, "flag": False})
+    assert result["layer"]["id"] == "relative"
+    assert result["survival_at"]["1"] == pytest.approx(0.95 * 0.5)
+    assert result["survival_at"]["3"] == pytest.approx(0.95**3 * 0.5**3)
+
+
+def test_relative_survival_is_conditional_on_time_since_diagnosis(spec):
+    # age 55, 10 years since diagnosis => diagnosed at 45 => the age<50 curve [0.9, 0.8],
+    # whose last-year excess hazard ln(0.9/0.8) continues beyond year 2
+    result = evaluate(spec, {"age": 55, "sex": "male", "kind": "a", "since": 10, "flag": False})
+    assert result["survival_at"]["1"] == pytest.approx(0.9 * 0.8 / 0.9)
+    later = evaluate(spec, {"age": 55, "sex": "male", "kind": "a", "since": 0.5, "flag": False})
+    # diagnosed at 54.5 => all-ages curve; X(1.5) - X(0.5) on knots [0, -ln .8, -ln .6]
+    x = [0.0, -math.log(0.8), -math.log(0.6)]
+    expected = 0.9 * math.exp(-((x[1] + 0.5 * (x[2] - x[1])) - 0.5 * x[1]))
+    assert later["survival_at"]["1"] == pytest.approx(expected)
+
+
+def test_relative_survival_terms_scale_the_excess_hazard_only(spec):
+    result = evaluate(spec, {"age": 60, "sex": "female", "kind": "b", "since": 0, "flag": True})
+    assert result["survival_at"]["1"] == pytest.approx(0.95 * 0.5 ** math.exp(0.5))

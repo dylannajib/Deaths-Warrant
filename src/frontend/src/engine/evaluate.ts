@@ -4,7 +4,7 @@
  * file in evaluate.test.ts, so the two cannot silently drift. Change both together.
  */
 
-import { layerInputs, type Input, type ModelSpec, type Term, type Value, type WeightedValue } from "./spec";
+import { layerInputs, type Input, type ModelSpec, type RelativeSurvivalCurve, type Survival, type Term, type Value, type WeightedValue } from "./spec";
 
 export const HORIZON_YEARS = 60;
 const BISECTION_STEPS = 64;
@@ -89,6 +89,29 @@ export function populationCumHazard(table: number[], age: number, t: number): nu
   return total;
 }
 
+/** Excess cumulative hazard -ln R(k) at whole years k = 0..n. */
+export function excessKnots(relative: number[]): number[] {
+  return [0, ...relative.map((r) => -Math.log(r))];
+}
+
+/** Linear between whole years; beyond the last year the last year's slope continues. */
+export function excessCumHazard(knots: number[], t: number): number {
+  const n = knots.length - 1;
+  if (t >= n) return knots[n]! + (knots[n]! - knots[n - 1]!) * (t - n);
+  const k = Math.floor(t);
+  return knots[k]! + (knots[k + 1]! - knots[k]!) * (t - k);
+}
+
+/** First curve matching the keys and the age at diagnosis (age - years since diagnosis). */
+export function selectCurve(survival: Extract<Survival, { type: "relative_survival" }>, values: Record<string, Value>): RelativeSurvivalCurve {
+  const ageAtDiagnosis = Number(values[survival.age_input]) - Number(values[survival.since_input]);
+  const curve = survival.curves.find(
+    (c) => Object.entries(c.match).every(([k, v]) => values[k] === v) && (c.age_lt === null || ageAtDiagnosis < c.age_lt),
+  );
+  if (!curve) throw new Error("unreachable: the spec guarantees an all-ages curve");
+  return curve;
+}
+
 function survivalFn(spec: ModelSpec, layerIndex: number, values: Record<string, Value>): SurvivalFn {
   const survival = spec.layers[layerIndex]!.survival;
   let lp = 0;
@@ -101,7 +124,11 @@ function survivalFn(spec: ModelSpec, layerIndex: number, values: Record<string, 
   const table = spec.life_tables[survival.life_table]!;
   const q = values[survival.sex_input] === "female" ? table.female : table.male;
   const age = Number(values[survival.age_input]);
-  return (t) => Math.exp(-hr * populationCumHazard(q, age, t));
+  if (survival.type === "life_table_ph") return (t) => Math.exp(-hr * populationCumHazard(q, age, t));
+  const since = Number(values[survival.since_input]);
+  const knots = excessKnots(selectCurve(survival, values).relative);
+  const x0 = excessCumHazard(knots, since);
+  return (t) => Math.exp(-populationCumHazard(q, age, t) - hr * (excessCumHazard(knots, since + t) - x0));
 }
 
 export function solveTime(s: SurvivalFn, p: number): number | null {

@@ -121,5 +121,69 @@
     "5": 0.7405782578989619
    }
   }
+ },
+ {
+  "observed": {
+   "age": 60,
+   "sex": "female",
+   "kind": "a",
+   "since": 0
+  },
+  "expected": {
+   "layer": {
+    "id": "relative",
+    "label": "Relative"
+   },
+   "median_years": 2.0257681671551095,
+   "range_low_years": 0.9314988543860421,
+   "range_high_years": 4.75879236014649,
+   "survival_at": {
+    "1": 0.7343940194638705,
+    "3": 0.3898747141868068,
+    "5": 0.2353234485140921
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 55,
+   "sex": "male",
+   "kind": "a",
+   "since": 10
+  },
+  "expected": {
+   "layer": {
+    "id": "relative",
+    "label": "Relative"
+   },
+   "median_years": 2.8793782954410103,
+   "range_low_years": 1.1907180627692249,
+   "range_high_years": 5.792815843294523,
+   "survival_at": {
+    "1": 0.7852875617285653,
+    "3": 0.4857791410908705,
+    "5": 0.301667657613686
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 60,
+   "kind": "b"
+  },
+  "expected": {
+   "layer": {
+    "id": "relative",
+    "label": "Relative"
+   },
+   "median_years": 0.797269697055834,
+   "range_low_years": 0.32776438520782936,
+   "range_high_years": 1.61875848924511,
+   "survival_at": {
+    "1": 0.4206258762184532,
+    "3": 0.08079371562369259,
+    "5": 0.0165501994432709
+   }
+  }
  }
 ]

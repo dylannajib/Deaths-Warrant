@@ -23,7 +23,10 @@ src/
     model.py             model definition, built only from published, citable sources
     spec.json            exported coefficients (generated)
     golden.json          reference test cases (generated)
-    sources.md           citations and licences
+    sources.md           method, citations, licences, validation summary
+    validate.py          accuracy test on real patient data (data kept in git-ignored data/)
+    validation.json      aggregate validation results (generated)
+  models/_shared/        data shared by models (population life tables)
   backend/               offline Python pipeline: spec schema, reference evaluator,
                          export, accuracy validation (never runs on the website)
   frontend/              React + TypeScript site; parses uploads and runs spec.json
@@ -34,6 +37,10 @@ src/
   *Refinement layers* (e.g. cancer site × stage survival, MAGGIC for heart failure, ADO/BODE
   for COPD) take over when the record has the inputs they need. Missing inputs are averaged
   over published population distributions, which widens the reported range.
+* **Models so far:** *Cancer*. This is U.S. population mortality (NCHS 2024 life tables)
+  × SEER relative survival by site, stage and age at diagnosis. It is conditional on the years
+  already survived, and the curves are rescaled to 2016–2022 diagnoses. On 24,067 real
+  MSK-CHORD patients, Harrell's C-index is 0.71. See `src/models/cancer/sources.md`.
 * **Two implementations, one answer.** Python is the reference; the browser runs a
   TypeScript port. CI replays every `golden.json` against the TypeScript evaluator.
 * **Accuracy** is tested only against real, published patient data, never data we invent.
