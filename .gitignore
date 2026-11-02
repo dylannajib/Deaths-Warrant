@@ -1,1 +1,23 @@
-n.venv/n__pycache__/n*.py[cod]n
+# Private project docs
+AGENTS.md
+web-draft.png
+
+# Python
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+
+# Node / build output
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Validation datasets: licences forbid redistribution; only aggregate results are committed
+data/
+
+# Environment / editor
+.env
+.env.*
+.DS_Store

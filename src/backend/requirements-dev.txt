@@ -1,0 +1,4 @@
+# Offline pipeline only — nothing here ships to the website.
+pydantic==2.14.2
+pytest==9.2.0
+ruff==0.17.3

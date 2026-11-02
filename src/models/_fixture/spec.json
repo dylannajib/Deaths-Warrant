@@ -1,0 +1,187 @@
+{
+ "schema_version": 1,
+ "id": "fixture",
+ "name": "Fixture",
+ "version": "0.0.0",
+ "order": 100,
+ "description": "Unit-test spec",
+ "group_codes": {
+  "icd10": [
+   "X99"
+  ],
+  "icd9": [],
+  "snomed": []
+ },
+ "inputs": [
+  {
+   "id": "age",
+   "label": "Age",
+   "extract": {
+    "rule": "age"
+   },
+   "missing": null,
+   "source": null,
+   "type": "number",
+   "unit": null,
+   "min": 0.0,
+   "max": 120.0
+  },
+  {
+   "id": "sex",
+   "label": "Sex",
+   "extract": {
+    "rule": "sex"
+   },
+   "missing": [
+    {
+     "value": "female",
+     "weight": 1.0
+    },
+    {
+     "value": "male",
+     "weight": 1.0
+    }
+   ],
+   "source": null,
+   "type": "enum",
+   "values": [
+    "female",
+    "male"
+   ]
+  },
+  {
+   "id": "score",
+   "label": "Score",
+   "extract": {
+    "rule": "observation_number",
+    "loinc": [
+     "0000-0"
+    ],
+    "units": {
+     "": 1.0
+    },
+    "max_age_days": null
+   },
+   "missing": [
+    {
+     "value": 2.0,
+     "weight": 1.0
+    },
+    {
+     "value": 6.0,
+     "weight": 1.0
+    }
+   ],
+   "source": null,
+   "type": "number",
+   "unit": null,
+   "min": 0.0,
+   "max": 10.0
+  },
+  {
+   "id": "flag",
+   "label": "Flag",
+   "extract": {
+    "rule": "condition_present",
+    "codes": {
+     "icd10": [
+      "X991"
+     ],
+     "icd9": [],
+     "snomed": []
+    }
+   },
+   "missing": [
+    {
+     "value": false,
+     "weight": 3.0
+    },
+    {
+     "value": true,
+     "weight": 1.0
+    }
+   ],
+   "source": null,
+   "type": "boolean"
+  }
+ ],
+ "layers": [
+  {
+   "id": "refined",
+   "label": "Refined",
+   "description": "Weibull",
+   "requires": [
+    "score"
+   ],
+   "survival": {
+    "type": "weibull_ph",
+    "shape": 1.0,
+    "scale_years": 5.0,
+    "terms": [
+     {
+      "kind": "linear",
+      "input": "score",
+      "coef": 0.1,
+      "center": 4.0,
+      "min": null,
+      "max": null
+     },
+     {
+      "kind": "category",
+      "input": "flag",
+      "values": {
+       "true": 0.5,
+       "false": 0.0
+      }
+     }
+    ]
+   },
+   "sources": []
+  },
+  {
+   "id": "base",
+   "label": "Base",
+   "description": "Life table",
+   "requires": [],
+   "survival": {
+    "type": "life_table_ph",
+    "life_table": "flat",
+    "age_input": "age",
+    "sex_input": "sex",
+    "terms": [
+     {
+      "kind": "bands",
+      "input": "score",
+      "bands": [
+       {
+        "lt": 5.0,
+        "value": 0.0
+       },
+       {
+        "lt": null,
+        "value": 0.3
+       }
+      ]
+     }
+    ]
+   },
+   "sources": []
+  }
+ ],
+ "life_tables": {
+  "flat": {
+   "source": "test",
+   "female": [
+    0.05,
+    0.05
+   ],
+   "male": [
+    0.1,
+    0.1
+   ]
+  }
+ },
+ "max_reliable_years": 20.0,
+ "validation": [],
+ "sources": []
+}

@@ -1,0 +1,125 @@
+[
+ {
+  "observed": {
+   "age": 60,
+   "score": 4,
+   "flag": false
+  },
+  "expected": {
+   "layer": {
+    "id": "refined",
+    "label": "Refined"
+   },
+   "median_years": 3.465735902799726,
+   "range_low_years": 1.4384103622589044,
+   "range_high_years": 6.931471805599452,
+   "survival_at": {
+    "1": 0.8187307530779818,
+    "3": 0.5488116360940264,
+    "5": 0.36787944117144233
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 60,
+   "score": 4
+  },
+  "expected": {
+   "layer": {
+    "id": "refined",
+    "label": "Refined"
+   },
+   "median_years": 3.0406820092303004,
+   "range_low_years": 1.2479691177998293,
+   "range_high_years": 6.188958895049009,
+   "survival_at": {
+    "1": 0.7938249694868205,
+    "3": 0.504574199074559,
+    "5": 0.323983492265573
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 60,
+   "sex": "male"
+  },
+  "expected": {
+   "layer": {
+    "id": "base",
+    "label": "Base"
+   },
+   "median_years": 5.6429370844645135,
+   "range_low_years": 2.3313856652891296,
+   "range_high_years": 11.374891529470197,
+   "survival_at": {
+    "1": 0.8837144110275972,
+    "3": 0.6908409319190039,
+    "5": 0.5407946085394946
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 70.5,
+   "sex": "female",
+   "score": 6,
+   "flag": true
+  },
+  "expected": {
+   "layer": {
+    "id": "refined",
+    "label": "Refined"
+   },
+   "median_years": 1.721033516152597,
+   "range_low_years": 0.7142934467190494,
+   "range_high_years": 3.442067032305194,
+   "survival_at": {
+    "1": 0.6684788362574441,
+    "3": 0.2987190962856744,
+    "5": 0.13348679665808386
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 60,
+   "score": 99
+  },
+  "expected": {
+   "layer": {
+    "id": "base",
+    "label": "Base"
+   },
+   "median_years": 7.934159191568334,
+   "range_low_years": 3.1926914819453422,
+   "range_high_years": 16.758720490614373,
+   "survival_at": {
+    "1": 0.9126331846978223,
+    "3": 0.7628736265479291,
+    "5": 0.6406864332192282
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 0,
+   "sex": "female"
+  },
+  "expected": {
+   "layer": {
+    "id": "base",
+    "label": "Base"
+   },
+   "median_years": 11.591042613713554,
+   "range_low_years": 4.788852009313434,
+   "range_high_years": 23.36493398224195,
+   "survival_at": {
+    "1": 0.9415519583680473,
+    "3": 0.8349063211768544,
+    "5": 0.7405782578989619
+   }
+  }
+ }
+]
