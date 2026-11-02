@@ -1,0 +1,168 @@
+[
+ {
+  "observed": {
+   "copd": true,
+   "bronchiectasis": false,
+   "asthma": false,
+   "age": 68,
+   "sex": "male",
+   "fev1_pct": 42,
+   "mmrc": 3
+  },
+  "expected": {
+   "layer": {
+    "id": "ado",
+    "label": "COPD: updated ADO index"
+   },
+   "median_years": 7.686472160595123,
+   "range_low_years": 3.738075235505555,
+   "range_high_years": 12.271741432857475,
+   "survival_at": {
+    "1": 0.932515800803396,
+    "3": 0.799,
+    "5": 0.6684407988099478
+   }
+  }
+ },
+ {
+  "observed": {
+   "copd": true,
+   "bronchiectasis": false,
+   "asthma": false,
+   "age": 55,
+   "fev1_pct": 75
+  },
+  "expected": {
+   "layer": {
+    "id": "ado",
+    "label": "COPD: updated ADO index"
+   },
+   "median_years": 23.669249139418064,
+   "range_low_years": 14.86723115754625,
+   "range_high_years": 30.652534943832812,
+   "survival_at": {
+    "1": 0.989649003626965,
+    "3": 0.966686906,
+    "5": 0.9397776007321837
+   }
+  }
+ },
+ {
+  "observed": {
+   "copd": true,
+   "bronchiectasis": false,
+   "asthma": false,
+   "age": 85,
+   "sex": "female",
+   "fev1_pct": 30,
+   "mmrc": 4
+  },
+  "expected": {
+   "layer": {
+    "id": "ado",
+    "label": "COPD: updated ADO index"
+   },
+   "median_years": 2.121756156639897,
+   "range_low_years": 0.9521038772380237,
+   "range_high_years": 3.793326597802711,
+   "survival_at": {
+    "1": 0.7392241553999214,
+    "3": 0.355,
+    "5": 0.13838133518549464
+   }
+  }
+ },
+ {
+  "observed": {
+   "copd": true,
+   "bronchiectasis": false,
+   "asthma": false,
+   "age": 35,
+   "sex": "female",
+   "fev1_pct": 90,
+   "mmrc": 0
+  },
+  "expected": {
+   "layer": {
+    "id": "ado",
+    "label": "COPD: updated ADO index"
+   },
+   "median_years": 43.3069848169056,
+   "range_low_years": 33.04566658489999,
+   "range_high_years": 50.326347490999,
+   "survival_at": {
+    "1": 0.9978106525912505,
+    "3": 0.993,
+    "5": 0.9875351513413742
+   }
+  }
+ },
+ {
+  "observed": {
+   "copd": true,
+   "bronchiectasis": false,
+   "asthma": false,
+   "age": 72,
+   "sex": "female"
+  },
+  "expected": {
+   "layer": {
+    "id": "base",
+    "label": "Respiratory conditions x population mortality"
+   },
+   "median_years": 11.73547609474408,
+   "range_low_years": 6.753242696742383,
+   "range_high_years": 16.51910703870724,
+   "survival_at": {
+    "1": 0.969408711971586,
+    "3": 0.9021205359763653,
+    "5": 0.8252902173198858
+   }
+  }
+ },
+ {
+  "observed": {
+   "copd": false,
+   "bronchiectasis": true,
+   "asthma": true,
+   "age": 60,
+   "sex": "male"
+  },
+  "expected": {
+   "layer": {
+    "id": "base",
+    "label": "Respiratory conditions x population mortality"
+   },
+   "median_years": 12.979539631521895,
+   "range_low_years": 6.868402133774531,
+   "range_high_years": 19.30362879184795,
+   "survival_at": {
+    "1": 0.9673098315607056,
+    "3": 0.8975582953670161,
+    "5": 0.8232347463746544
+   }
+  }
+ },
+ {
+  "observed": {
+   "copd": false,
+   "bronchiectasis": false,
+   "asthma": false,
+   "age": 50
+  },
+  "expected": {
+   "layer": {
+    "id": "base",
+    "label": "Respiratory conditions x population mortality"
+   },
+   "median_years": 33.66969872247965,
+   "range_low_years": 24.356240142314967,
+   "range_high_years": 40.33198589288962,
+   "survival_at": {
+    "1": 0.9959001055918635,
+    "3": 0.9867761603141143,
+    "5": 0.976310554498778
+   }
+  }
+ }
+]

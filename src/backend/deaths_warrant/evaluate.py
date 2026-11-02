@@ -26,6 +26,7 @@ from .spec import (
     NumberInput,
     RelativeSurvival,
     RelativeSurvivalCurve,
+    ScoreLifeTable,
     ScoreWeibull,
     Term,
     Value,
@@ -148,7 +149,7 @@ def select_curve(survival: RelativeSurvival, values: Mapping[str, Value]) -> Rel
     raise AssertionError("unreachable: the spec guarantees an all-ages curve")
 
 
-def score_of(survival: ScoreWeibull, values: Mapping[str, Value]) -> int:
+def score_of(survival: ScoreWeibull | ScoreLifeTable, values: Mapping[str, Value]) -> int:
     """Integer risk score: the rounded term sum, clamped to the published table."""
     total = 0.0
     for term in survival.terms:
@@ -164,6 +165,8 @@ def _survival_fn(
     survival = spec.layers[layer_index].survival
     if isinstance(survival, ScoreWeibull):
         return _score_weibull_fn(spec, survival, values)
+    if isinstance(survival, ScoreLifeTable):
+        return _score_life_table_fn(spec, survival, values)
     lp = 0.0
     for term in survival.terms:
         lp += term_value(term, values)
@@ -187,6 +190,18 @@ def _survival_fn(
 def _sex_table(spec: ModelSpec, name: str, sex: Value) -> list[float]:
     table: LifeTable = spec.life_tables[name]
     return table.female if sex == "female" else table.male
+
+
+def _score_life_table_fn(
+    spec: ModelSpec, survival: ScoreLifeTable, values: Mapping[str, Value]
+) -> tuple[tuple[Any, ...], SurvivalFn]:
+    score = score_of(survival, values)
+    sex = values[survival.sex_input]
+    q = _sex_table(spec, survival.life_table, sex)
+    age = float(values[survival.age_input])
+    h_pop = population_cum_hazard(q, age, survival.time)
+    hr = max(1.0, -math.log(survival.survival[score]) / h_pop)
+    return (score, age, sex), lambda t: math.exp(-hr * population_cum_hazard(q, age, t))
 
 
 def _score_weibull_fn(
@@ -222,7 +237,18 @@ def solve_time(s: SurvivalFn, p: float) -> float | None:
     return (lo + hi) / 2
 
 
-def evaluate(spec: ModelSpec, observed: Observed) -> dict[str, Any]:
+@dataclass(frozen=True)
+class _Mixture:
+    resolved: _Resolved
+    layer_index: int
+    skipped: list[dict[str, Any]]
+    used: list[str]
+    unknown: list[str]
+    survival: SurvivalFn
+
+
+def _mixture(spec: ModelSpec, observed: Observed) -> _Mixture:
+    """Choose the layer, then average its survival over the missing inputs' distributions."""
     resolved = resolve_inputs(spec, observed)
     skipped = []
     layer_index = 0
@@ -261,6 +287,19 @@ def evaluate(spec: ModelSpec, observed: Observed) -> dict[str, Any]:
         for fn, w in zip(fns, weights, strict=True):
             acc += w * fn(t)
         return acc / total_weight
+
+    return _Mixture(resolved, layer_index, skipped, used, unknown, s)
+
+
+def survival_function(spec: ModelSpec, observed: Observed) -> SurvivalFn:
+    """S(t) for a record (Python-side helper for validation, e.g. life expectancy)."""
+    return _mixture(spec, observed).survival
+
+
+def evaluate(spec: ModelSpec, observed: Observed) -> dict[str, Any]:
+    m = _mixture(spec, observed)
+    resolved, skipped, used, unknown, s = m.resolved, m.skipped, m.used, m.unknown, m.survival
+    layer = spec.layers[m.layer_index]
 
     median = solve_time(s, 0.5)
     steps = round(CURVE_END_YEARS / CURVE_STEP_YEARS)

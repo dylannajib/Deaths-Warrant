@@ -10819,6 +10819,7 @@
        "21907-1",
        "21901-4"
       ],
+      "snomed": [],
       "values": {
        "other:CM1": "distant",
        "other:CM1A": "distant",
@@ -10919,6 +10920,7 @@
        "21902-2",
        "21914-7"
       ],
+      "snomed": [],
       "values": {
        "other:4": "distant",
        "other:4A": "distant",
@@ -10984,6 +10986,7 @@
        "21906-3",
        "21900-6"
       ],
+      "snomed": [],
       "values": {
        "other:CN1": "regional",
        "other:CN1A": "regional",
@@ -11208,6 +11211,7 @@
        "21902-2",
        "21914-7"
       ],
+      "snomed": [],
       "values": {
        "other:3": "regional",
        "other:3A": "regional",
@@ -11368,6 +11372,7 @@
        "21902-2",
        "21914-7"
       ],
+      "snomed": [],
       "values": {
        "other:1": "localized",
        "other:1A": "localized",

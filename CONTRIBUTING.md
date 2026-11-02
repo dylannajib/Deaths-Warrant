@@ -20,7 +20,7 @@ def golden_inputs() -> list[dict]:
 
 * **Inputs** say how to read a value from the record (`extract`):
   * age and sex;
-  * the latest LOINC observation, with unit conversion;
+  * the latest LOINC (or SNOMED) observation, with unit conversion;
   * a coded observation;
   * diagnoses: diagnosis category, condition present, weighted condition sum (e.g. Charlson);
   * years since a diagnosis, or since the diagnosis in the matched category;
@@ -41,6 +41,8 @@ def golden_inputs() -> list[dict]:
     the years since diagnosis.
   * `score_weibull`: a published integer risk score and its survival at two times, with an
     optional cap at population survival (e.g. MAGGIC).
+  * `score_life_table`: a published integer risk score and its survival at one time, applied
+    as a hazard ratio on population mortality (e.g. ADO at 3 years).
 
   Terms can be `linear`, `bands`, `category`, or `grid` (a two-way interaction, e.g. age
   points that depend on the ejection-fraction band). A new form needs the same change in
@@ -51,7 +53,8 @@ def golden_inputs() -> list[dict]:
   published table into the git-ignored `data/` cache and writes a small JSON file into your
   model folder. Commit the JSON so the export is reproducible offline. Builders exist for NCHS
   life tables, SEER*Explorer and SNOMED CT hierarchies (`snomed_roots.json` →
-  `snomed_sets.json`, because the browser matches SNOMED codes exactly).
+  `snomed_sets.json`, because the browser matches SNOMED codes exactly). `sources/xpt.py`
+  reads NHANES SAS transport files for validation.
 * **Validation**: put a `validate.py` in your folder that reads real, published patient data
   from `data/` and writes `validation.json`. `build()` loads that file into the spec. Report
   only aggregate results (`n >= 20`), never commit patient-level data, and never train on

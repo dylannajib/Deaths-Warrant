@@ -132,6 +132,29 @@ FIXTURE_SPEC = {
             },
         },
         {
+            "id": "points_3y",
+            "label": "Points at 3 years",
+            "description": "Integer score with one published time point",
+            "when": {"flag": [True]},
+            "survival": {
+                "type": "score_life_table",
+                "time": 3,
+                "survival": [0.95, 0.8, 0.5],
+                "life_table": "flat",
+                "terms": [
+                    {
+                        "kind": "bands",
+                        "input": "age",
+                        "bands": [
+                            {"lt": 50, "value": 0},
+                            {"lt": 70, "value": 1},
+                            {"lt": None, "value": 2},
+                        ],
+                    }
+                ],
+            },
+        },
+        {
             "id": "base",
             "label": "Base",
             "description": "Life table",
@@ -169,4 +192,6 @@ def golden_inputs() -> list[dict]:
         {"age": 60, "kind": "b"},
         {"age": 70, "sex": "male", "kind": "a", "score": 6, "flag": True},
         {"age": 40, "kind": "a", "score": 2},
+        {"age": 75, "sex": "female", "flag": True},
+        {"age": 30, "flag": True},
     ]

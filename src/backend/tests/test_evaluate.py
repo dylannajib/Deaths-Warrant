@@ -34,6 +34,7 @@ def test_falls_back_to_base_layer_when_requirement_missing(spec):
         {"id": "points", "label": "Points", "lacking": ["score", "kind"]},
         {"id": "refined", "label": "Refined", "lacking": ["score"]},
         {"id": "relative", "label": "Relative", "lacking": ["kind"]},
+        {"id": "points_3y", "label": "Points at 3 years", "lacking": ["flag"]},
     ]
     # score marginalised over {2, 6}: bands give HR 1 or e^0.3 on a constant q=0.1 table
     mu = -math.log(0.9)
@@ -127,3 +128,18 @@ def test_when_skips_layer_for_other_values(spec):
     result = evaluate(spec, {"age": 60, "kind": "b", "score": 4, "flag": False})
     assert result["layer"]["id"] == "refined"
     assert result["skipped_layers"][0]["lacking"] == ["kind"]
+
+
+def test_score_life_table_hits_the_published_point_and_follows_ageing(spec):
+    # age 75 => score 2 => S(3) = 0.5; flat female table q = 0.05 => HR = ln 2 / (-3 ln 0.95)
+    result = evaluate(spec, {"age": 75, "sex": "female", "flag": True})
+    assert result["layer"]["id"] == "points_3y"
+    assert result["survival_at"]["3"] == pytest.approx(0.5)
+    hr = math.log(2) / (-3 * math.log(0.95))
+    assert result["survival_at"]["1"] == pytest.approx(0.95**hr)
+
+
+def test_score_life_table_is_never_better_than_population(spec):
+    # age 30 => score 0 => published S(3) = 0.95 > male population 0.9**3: HR floored at 1
+    result = evaluate(spec, {"age": 30, "sex": "male", "flag": True})
+    assert result["survival_at"]["3"] == pytest.approx(0.9**3)

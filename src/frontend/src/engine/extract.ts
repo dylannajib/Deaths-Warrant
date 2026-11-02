@@ -36,10 +36,11 @@ function matchingConditions(record: PatientRecord, set: CodeSet) {
   });
 }
 
-function latestObservation(record: PatientRecord, loinc: string[], asOf: string, maxAgeDays: number | null, accept: (o: Observation) => boolean) {
+function latestObservation(record: PatientRecord, rule: { loinc: string[]; snomed: string[] }, asOf: string, maxAgeDays: number | null, accept: (o: Observation) => boolean) {
   let best: Observation | undefined;
+  const wanted = (c: Code) => (c.system === "loinc" && rule.loinc.includes(c.code)) || (c.system === "snomed" && rule.snomed.includes(c.code));
   for (const o of record.observations) {
-    if (!o.codes.some((c) => c.system === "loinc" && loinc.includes(c.code)) || !accept(o)) continue;
+    if (!o.codes.some(wanted) || !accept(o)) continue;
     if (maxAgeDays !== null && (!o.date || yearsBetween(o.date, asOf) * 365.25 > maxAgeDays)) continue;
     if (!best || (o.date ?? "") > (best.date ?? "")) best = o;
   }
@@ -61,7 +62,7 @@ function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value |
     case "sex":
       return record.sex ? [record.sex, "From the patient's recorded sex"] : [null, "Sex not recorded as female or male"];
     case "observation_number": {
-      const o = latestObservation(record, rule.loinc, asOf, rule.max_age_days, (x) => x.value !== undefined && (x.unit ?? "").toLowerCase() in rule.units);
+      const o = latestObservation(record, rule, asOf, rule.max_age_days, (x) => x.value !== undefined && (x.unit ?? "").toLowerCase() in rule.units);
       if (!o) return [null, "No usable measurement in the record"];
       const value = o.value! * rule.units[(o.unit ?? "").toLowerCase()]!;
       return [value, `Latest measurement: ${o.value} ${o.unit ?? ""}`.trim() + (o.date ? ` on ${o.date}` : "")];
@@ -69,7 +70,7 @@ function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value |
     case "observation_coded": {
       const key = (o: Observation) =>
         [...(o.valueCodes ?? []).map((c) => `${c.system}:${c.code}`), ...(o.valueText ? [`text:${o.valueText.trim().toLowerCase()}`] : [])].find((k) => k in rule.values);
-      const o = latestObservation(record, rule.loinc, asOf, rule.max_age_days, (x) => key(x) !== undefined);
+      const o = latestObservation(record, rule, asOf, rule.max_age_days, (x) => key(x) !== undefined);
       if (!o) return [null, "Not recorded"];
       return [rule.values[key(o)!]!, `Recorded as ${o.valueCodes?.[0] ? describe(o.valueCodes[0]) : o.valueText}` + (o.date ? ` on ${o.date}` : "")];
     }

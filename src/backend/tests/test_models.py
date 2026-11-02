@@ -134,3 +134,26 @@ def test_other_cardiovascular_conditions_multiply_hazard_ratios():
     both = evaluate(spec, {**base, "coronary": True, "stroke": True})
     assert both["layer"]["id"] == "base"
     assert both["survival_at"]["1"] == pytest.approx(math.exp(-2.0 * 2.1 * h), rel=1e-5)
+
+
+RESP = ModelFolder("respiratory", MODELS_DIR / "respiratory").load()
+NO_CLRD = {"copd": False, "bronchiectasis": False, "asthma": False}
+
+
+def test_updated_ado_score_matches_hand_calculation_and_table():
+    # Puhan 2012 Table 3: FEV1 42% -> 3; mMRC 3 -> 2; age 68 -> 4. Score 9 -> 20.1% at 3 years
+    spec = RESP.build()
+    obs = {**NO_CLRD, "copd": True, "age": 68, "sex": "male", "fev1_pct": 42, "mmrc": 3}
+    result = evaluate(spec, obs)
+    assert result["layer"]["id"] == "ado"
+    assert result["survival_at"]["3"] == pytest.approx(1 - 0.201)
+
+
+def test_ado_follows_ageing_through_the_published_point():
+    spec = RESP.build()
+    obs = {**NO_CLRD, "copd": True, "age": 68, "sex": "male", "fev1_pct": 42, "mmrc": 3}
+    q = load_life_table("us_2024").male
+    hr = -math.log(1 - 0.201) / population_cum_hazard(q, 68, 3)
+    assert evaluate(spec, obs)["survival_at"]["1"] == pytest.approx(
+        math.exp(-hr * population_cum_hazard(q, 68, 1))
+    )

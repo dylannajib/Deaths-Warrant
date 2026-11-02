@@ -1,0 +1,355 @@
+{
+ "results": [
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: Harrell's C-index",
+   "value": 0.781,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: predicted 1-year survival",
+   "value": 0.986,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.98,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: predicted 3-year survival",
+   "value": 0.955,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.948,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: predicted 5-year survival",
+   "value": 0.921,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.914,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: Harrell's C-index",
+   "value": 0.692,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: predicted 1-year survival",
+   "value": 0.975,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.958,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: predicted 3-year survival",
+   "value": 0.922,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.896,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: predicted 5-year survival",
+   "value": 0.865,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.836,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: Harrell's C-index",
+   "value": 0.753,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: predicted 1-year survival",
+   "value": 0.993,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.996,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: predicted 3-year survival",
+   "value": 0.977,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.983,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: predicted 5-year survival",
+   "value": 0.959,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.965,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 947,
+   "metric": "COPD aged 40-49: predicted 5-year mortality",
+   "value": 0.029,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 947,
+   "metric": "COPD aged 40-49: observed 5-year mortality",
+   "value": 0.031,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 2063,
+   "metric": "COPD aged 50-59: predicted 5-year mortality",
+   "value": 0.062,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 2063,
+   "metric": "COPD aged 50-59: observed 5-year mortality",
+   "value": 0.078,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 3885,
+   "metric": "COPD aged 60-69: predicted 5-year mortality",
+   "value": 0.131,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 3885,
+   "metric": "COPD aged 60-69: observed 5-year mortality",
+   "value": 0.141,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 4676,
+   "metric": "COPD aged 70-79: predicted 5-year mortality",
+   "value": 0.276,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 4676,
+   "metric": "COPD aged 70-79: observed 5-year mortality",
+   "value": 0.304,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 2571,
+   "metric": "COPD aged 80-89: predicted 5-year mortality",
+   "value": 0.628,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 2571,
+   "metric": "COPD aged 80-89: observed 5-year mortality",
+   "value": 0.551,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 1: predicted life expectancy at 65 relative to no COPD",
+   "value": 0.911,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 1: observed life expectancy at 65 relative to no COPD",
+   "value": 0.93,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 2: predicted life expectancy at 65 relative to no COPD",
+   "value": 0.793,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 2: observed life expectancy at 65 relative to no COPD",
+   "value": 0.763,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 3: predicted life expectancy at 65 relative to no COPD",
+   "value": 0.547,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 3: observed life expectancy at 65 relative to no COPD",
+   "value": 0.609,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 4: predicted life expectancy at 65 relative to no COPD",
+   "value": 0.444,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 4: observed life expectancy at 65 relative to no COPD",
+   "value": 0.498,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  }
+ ]
+}

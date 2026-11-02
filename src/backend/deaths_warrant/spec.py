@@ -40,6 +40,8 @@ class CodeSet(_Strict):
         return self
 
 
+Value = float | str | bool
+
 # ---------------------------------------------------------------- extraction rules
 # How the browser turns a parsed patient record into an input value.
 
@@ -60,9 +62,16 @@ class ObservationNumberRule(_Strict):
     """
 
     rule: Literal["observation_number"] = "observation_number"
-    loinc: list[str] = Field(min_length=1)
+    loinc: list[str] = []
+    snomed: list[str] = []  # for scales without a LOINC code (e.g. mMRC dyspnoea)
     units: dict[str, float] = Field(min_length=1)
     max_age_days: int | None = None
+
+    @model_validator(mode="after")
+    def _has_code(self) -> ObservationNumberRule:
+        if not self.loinc and not self.snomed:
+            raise ValueError("an observation rule needs LOINC or SNOMED codes")
+        return self
 
 
 class ObservationCodedRule(_Strict):
@@ -73,13 +82,20 @@ class ObservationCodedRule(_Strict):
     """
 
     rule: Literal["observation_coded"] = "observation_coded"
-    loinc: list[str] = Field(min_length=1)
+    loinc: list[str] = []
+    snomed: list[str] = []
     values: dict[str, str] = Field(min_length=1)
     max_age_days: int | None = None
 
+    @model_validator(mode="after")
+    def _has_code(self) -> ObservationCodedRule:
+        if not self.loinc and not self.snomed:
+            raise ValueError("an observation rule needs LOINC or SNOMED codes")
+        return self
+
 
 class Category(_Strict):
-    value: str
+    value: Value
     codes: CodeSet
 
 
@@ -164,8 +180,6 @@ FirstOfRule.model_rebuild()
 
 
 # ---------------------------------------------------------------- inputs
-
-Value = float | str | bool
 
 
 class WeightedValue(_Strict):
@@ -378,14 +392,38 @@ class ScoreWeibull(_Strict):
         return self
 
 
+class ScoreLifeTable(_Strict):
+    """A published integer risk score with survival at one time (e.g. ADO at 3 years).
+
+    The score's published S(t1) sets a hazard ratio on the patient's own population mortality,
+    HR = -ln S(t1) / H_pop(age, t1), floored at 1 (never better than the population), so the
+    curve follows normal ageing and passes through the published point.
+    """
+
+    type: Literal["score_life_table"] = "score_life_table"
+    time: float = Field(gt=0)
+    survival: list[float] = Field(min_length=2)  # index k = score k: S(time)
+    terms: list[Term] = Field(min_length=1)
+    life_table: str
+    age_input: str = "age"
+    sex_input: str = "sex"
+
+    @model_validator(mode="after")
+    def _table(self) -> ScoreLifeTable:
+        if not all(0 < x < 1 for x in self.survival):
+            raise ValueError("score survival values must be in (0, 1)")
+        return self
+
+
 Survival = Annotated[
-    WeibullPH | LifeTablePH | RelativeSurvival | ScoreWeibull, Field(discriminator="type")
+    WeibullPH | LifeTablePH | RelativeSurvival | ScoreWeibull | ScoreLifeTable,
+    Field(discriminator="type"),
 ]
 
 
 def life_table_of(survival: Survival) -> str | None:
     """The life table a survival form reads (with its age and sex inputs), if any."""
-    if isinstance(survival, LifeTablePH | RelativeSurvival | ScoreWeibull):
+    if isinstance(survival, LifeTablePH | RelativeSurvival | ScoreWeibull | ScoreLifeTable):
         return survival.life_table
     return None
 
@@ -510,7 +548,7 @@ def layer_inputs(layer: Layer) -> list[str]:
     names: list[str] = []
     survival = layer.survival
     if life_table_of(survival) is not None:
-        assert isinstance(survival, LifeTablePH | RelativeSurvival | ScoreWeibull)
+        assert isinstance(survival, LifeTablePH | RelativeSurvival | ScoreWeibull | ScoreLifeTable)
         names += [survival.age_input, survival.sex_input]
     if isinstance(survival, RelativeSurvival):
         names += [survival.since_input, *survival.keys]

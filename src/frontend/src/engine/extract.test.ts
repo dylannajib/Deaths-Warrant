@@ -12,17 +12,18 @@ const spec = {
   inputs: [
     input("age", { rule: "age" }),
     input("sex", { rule: "sex" }, "enum"),
-    input("creat", { rule: "observation_number", loinc: ["2160-0"], units: { "mg/dl": 88.4, "umol/l": 1 }, max_age_days: null }),
-    input("stage", { rule: "observation_coded", loinc: ["21908-9"], values: { "snomed:1": "a", "text:stage iv": "b" }, max_age_days: null }, "enum"),
+    input("creat", { rule: "observation_number", loinc: ["2160-0"], snomed: [], units: { "mg/dl": 88.4, "umol/l": 1 }, max_age_days: null }),
+    input("stage", { rule: "observation_coded", loinc: ["21908-9"], snomed: [], values: { "snomed:1": "a", "text:stage iv": "b" }, max_age_days: null }, "enum"),
     input("dx", { rule: "condition_category", categories: [{ value: "a", codes: { ...none, icd10: ["I50"] } }, { value: "b", codes: { ...none, snomed: ["13645005"] } }] }, "enum"),
     input("copd", { rule: "condition_present", codes: { ...none, snomed: ["13645005"] } }, "boolean"),
     input("cci", { rule: "condition_weighted_sum", groups: [{ weight: 1, codes: { ...none, icd10: ["I50"] } }, { weight: 2, codes: { ...none, icd10: ["E11"] } }] }),
     input("years", { rule: "years_since_condition", codes: { ...none, icd10: ["I50"] } }),
+    input("mmrc", { rule: "observation_number", loinc: [], snomed: ["870179002"], units: { "": 1 }, max_age_days: null }),
     input("cat_years", { rule: "years_since_category", categories: [{ value: "x", codes: { ...none, icd10: ["Z99"] } }, { value: "a", codes: { ...none, icd10: ["I50"] } }] }),
     input("bb", { rule: "medication_present", rxnorm: [], atc: ["C07"], names: ["bisoprolol"] }, "boolean"),
     input("first", { rule: "first_of", rules: [
       { rule: "condition_category", categories: [{ value: "a", codes: { ...none, icd10: ["C79"] } }] },
-      { rule: "observation_coded", loinc: ["21908-9"], values: { "text:stage iv": "b" }, max_age_days: null },
+      { rule: "observation_coded", loinc: ["21908-9"], snomed: [], values: { "text:stage iv": "b" }, max_age_days: null },
     ] }, "enum"),
   ],
 } as unknown as ModelSpec;
@@ -40,6 +41,7 @@ const record: PatientRecord = {
     { codes: [{ system: "loinc", code: "2160-0" }], value: 100, unit: "umol/L", date: "2025-01-01" },
     { codes: [{ system: "loinc", code: "2160-0" }], value: 9, unit: "furlongs", date: "2026-01-01" },
     { codes: [{ system: "loinc", code: "21908-9" }], valueText: "Stage IV", date: "2025-01-01" },
+    { codes: [{ system: "snomed", code: "870179002" }], value: 2, date: "2025-06-01" },
   ],
   medications: [{ codes: [], text: "Bisoprolol 2.5mg" }],
   notes: [],
@@ -53,6 +55,7 @@ describe("extractInputs", () => {
     expect(observed).toMatchObject({ sex: "male", creat: 100, stage: "b", dx: "a", copd: true, cci: 1, bb: true, first: "b" });
     expect(observed.years).toBeCloseTo(6, 1);
     expect(observed.cat_years).toBeCloseTo(6, 1);
+    expect(observed.mmrc).toBe(2); // SNOMED-coded observation
   });
 
   it("first_of falls through to the first rule that yields a value", () => {

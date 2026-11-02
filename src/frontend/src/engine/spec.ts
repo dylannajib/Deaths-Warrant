@@ -14,13 +14,13 @@ export interface CodeSet {
 export type ExtractRule =
   | { rule: "age" }
   | { rule: "sex" }
-  | { rule: "observation_number"; loinc: string[]; units: Record<string, number>; max_age_days: number | null }
-  | { rule: "observation_coded"; loinc: string[]; values: Record<string, string>; max_age_days: number | null }
-  | { rule: "condition_category"; categories: { value: string; codes: CodeSet }[] }
+  | { rule: "observation_number"; loinc: string[]; snomed: string[]; units: Record<string, number>; max_age_days: number | null }
+  | { rule: "observation_coded"; loinc: string[]; snomed: string[]; values: Record<string, string>; max_age_days: number | null }
+  | { rule: "condition_category"; categories: { value: Value; codes: CodeSet }[] }
   | { rule: "condition_present"; codes: CodeSet }
   | { rule: "condition_weighted_sum"; groups: { weight: number; codes: CodeSet }[] }
   | { rule: "years_since_condition"; codes: CodeSet }
-  | { rule: "years_since_category"; categories: { value: string; codes: CodeSet }[] }
+  | { rule: "years_since_category"; categories: { value: Value; codes: CodeSet }[] }
   | { rule: "medication_present"; rxnorm: string[]; atc: string[]; names: string[] }
   | { rule: "first_of"; rules: ExtractRule[] };
 
@@ -77,6 +77,15 @@ export type Survival =
       survival: [number, number][];
       terms: Term[];
       life_table: string | null;
+      age_input: string;
+      sex_input: string;
+    }
+  | {
+      type: "score_life_table";
+      time: number;
+      survival: number[];
+      terms: Term[];
+      life_table: string;
       age_input: string;
       sex_input: string;
     };

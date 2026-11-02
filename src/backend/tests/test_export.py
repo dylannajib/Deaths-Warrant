@@ -38,6 +38,7 @@ def test_discover_skips_shared_and_renders(tmp_path):
             {"age": 60, "kind": "a", "score": 1},
             {"age": 60, "score": 4},
             {"age": 60, "kind": "b"},
+            {"age": 60, "flag": True},
             {"age": 60},
         ],
     )
@@ -49,6 +50,7 @@ def test_discover_skips_shared_and_renders(tmp_path):
         "points",
         "refined",
         "relative",
+        "points_3y",
         "base",
     ]
     assert json.loads(files["spec.json"])["id"] == "fixture"

@@ -119,7 +119,7 @@ export function selectCurve(survival: Extract<Survival, { type: "relative_surviv
 }
 
 /** Integer risk score: the rounded term sum, clamped to the published table. */
-export function scoreOf(survival: Extract<Survival, { type: "score_weibull" }>, values: Record<string, Value>): number {
+export function scoreOf(survival: Extract<Survival, { type: "score_weibull" | "score_life_table" }>, values: Record<string, Value>): number {
   let total = 0;
   for (const term of survival.terms) total += termValue(term, values);
   return Math.min(Math.max(pyRound(total), 0), survival.survival.length - 1);
@@ -141,6 +141,7 @@ const sexTable = (spec: ModelSpec, name: string, sex: Value) =>
 function survivalFn(spec: ModelSpec, layerIndex: number, values: Record<string, Value>): [string | null, SurvivalFn] {
   const survival = spec.layers[layerIndex]!.survival;
   if (survival.type === "score_weibull") return scoreWeibullFn(spec, survival, values);
+  if (survival.type === "score_life_table") return scoreLifeTableFn(spec, survival, values);
   let lp = 0;
   for (const term of survival.terms) lp += termValue(term, values);
   const hr = Math.exp(lp);
@@ -155,6 +156,16 @@ function survivalFn(spec: ModelSpec, layerIndex: number, values: Record<string, 
   const knots = excessKnots(selectCurve(survival, values).relative);
   const x0 = excessCumHazard(knots, since);
   return [null, (t) => Math.exp(-populationCumHazard(q, age, t) - hr * (excessCumHazard(knots, since + t) - x0))];
+}
+
+function scoreLifeTableFn(spec: ModelSpec, survival: Extract<Survival, { type: "score_life_table" }>, values: Record<string, Value>): [string, SurvivalFn] {
+  const score = scoreOf(survival, values);
+  const sex = values[survival.sex_input]!;
+  const q = sexTable(spec, survival.life_table, sex);
+  const age = Number(values[survival.age_input]);
+  const hPop = populationCumHazard(q, age, survival.time);
+  const hr = Math.max(1, -Math.log(survival.survival[score]!) / hPop);
+  return [JSON.stringify([score, age, sex]), (t) => Math.exp(-hr * populationCumHazard(q, age, t))];
 }
 
 function scoreWeibullFn(spec: ModelSpec, survival: Extract<Survival, { type: "score_weibull" }>, values: Record<string, Value>): [string, SurvivalFn] {

@@ -57,6 +57,7 @@
     "loinc": [
      "0000-0"
     ],
+    "snomed": [],
     "units": {
      "": 1.0
     },
@@ -337,6 +338,50 @@
       }
      }
     ]
+   },
+   "sources": []
+  },
+  {
+   "id": "points_3y",
+   "label": "Points at 3 years",
+   "description": "Integer score with one published time point",
+   "requires": [],
+   "when": {
+    "flag": [
+     true
+    ]
+   },
+   "survival": {
+    "type": "score_life_table",
+    "time": 3.0,
+    "survival": [
+     0.95,
+     0.8,
+     0.5
+    ],
+    "terms": [
+     {
+      "kind": "bands",
+      "input": "age",
+      "bands": [
+       {
+        "lt": 50.0,
+        "value": 0.0
+       },
+       {
+        "lt": 70.0,
+        "value": 1.0
+       },
+       {
+        "lt": null,
+        "value": 2.0
+       }
+      ]
+     }
+    ],
+    "life_table": "flat",
+    "age_input": "age",
+    "sex_input": "sex"
    },
    "sources": []
   },

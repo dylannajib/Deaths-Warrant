@@ -26,9 +26,9 @@ def test_fixture_is_valid():
 @pytest.mark.parametrize(
     ("changes", "message"),
     [
-        ({"layers__3__requires": ["score"]}, "last layer"),
+        ({"layers__4__requires": ["score"]}, "last layer"),
         ({"layers__1__requires": ["nope"]}, "unknown input"),
-        ({"layers__3__survival__life_table": "nope"}, "unknown life table"),
+        ({"layers__4__survival__life_table": "nope"}, "unknown life table"),
         ({"inputs__1__missing": [{"value": "other", "weight": 1}]}, "wrong type"),
         (
             {
@@ -54,9 +54,10 @@ def test_fixture_is_valid():
         ({"layers__2__survival__since_input": "kind"}, "since input must be a number"),
         ({"layers__2__requires": []}, "without requiring it"),
         ({"layers__0__when": {"kind": ["z"]}}, "`when` value"),
-        ({"layers__3__when": {"kind": ["a"]}}, "no `when`"),
+        ({"layers__4__when": {"kind": ["a"]}}, "no `when`"),
         ({"layers__0__survival__survival": [[0.9, 0.95], [0.5, 0.4]]}, "1 > S"),
         ({"layers__0__survival__terms__0__by": "sex"}, "grid term"),
+        ({"layers__3__survival__survival": [0.9, 1.0]}, r"\(0, 1\)"),
     ],
 )
 def test_invalid_specs_rejected(changes, message):

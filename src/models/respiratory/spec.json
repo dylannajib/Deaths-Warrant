@@ -1,0 +1,1415 @@
+{
+ "schema_version": 1,
+ "id": "respiratory",
+ "name": "Chronic lower respiratory disease",
+ "version": "1.0.0",
+ "order": 30,
+ "description": "COPD with a recorded lung function test uses the updated ADO index (age, breathlessness, airflow obstruction); otherwise U.S. population mortality is multiplied by a published hazard ratio for each recorded condition.",
+ "group_codes": {
+  "icd10": [
+   "J40",
+   "J41",
+   "J42",
+   "J43",
+   "J44",
+   "J45",
+   "J46",
+   "J47"
+  ],
+  "icd9": [
+   "490",
+   "491",
+   "492",
+   "493",
+   "494",
+   "495",
+   "496"
+  ],
+  "snomed": [
+   "4981000",
+   "11641008",
+   "12295008",
+   "12310001",
+   "12428000",
+   "13217005",
+   "13645005",
+   "16003001",
+   "16846004",
+   "18041002",
+   "19325002",
+   "19849005",
+   "23022004",
+   "23958009",
+   "31898008",
+   "33325001",
+   "34015007",
+   "41553006",
+   "42402006",
+   "47895001",
+   "47938003",
+   "49691004",
+   "51068008",
+   "52500008",
+   "52571006",
+   "55570000",
+   "56968009",
+   "57607007",
+   "57686001",
+   "59786004",
+   "60805002",
+   "61937009",
+   "63088003",
+   "63480004",
+   "66987001",
+   "68328006",
+   "70756004",
+   "74417001",
+   "77593006",
+   "77690003",
+   "83457000",
+   "84409004",
+   "86680006",
+   "87433001",
+   "89099002",
+   "92807009",
+   "93432008",
+   "135836000",
+   "185086009",
+   "195949008",
+   "195951007",
+   "195953005",
+   "195957006",
+   "195958001",
+   "195959009",
+   "195967001",
+   "195977004",
+   "195984007",
+   "195985008",
+   "196001008",
+   "196026004",
+   "225057002",
+   "233627004",
+   "233628009",
+   "233629001",
+   "233630006",
+   "233631005",
+   "233632003",
+   "233633008",
+   "233634002",
+   "233674008",
+   "233675009",
+   "233677001",
+   "233678006",
+   "233679003",
+   "233683003",
+   "233687002",
+   "233688007",
+   "233691007",
+   "266355005",
+   "266356006",
+   "266361008",
+   "281239006",
+   "285381006",
+   "313296004",
+   "313297008",
+   "313299006",
+   "370218001",
+   "370219009",
+   "370220003",
+   "370221004",
+   "389145006",
+   "404804003",
+   "404806001",
+   "404808000",
+   "405944004",
+   "407674008",
+   "409663006",
+   "418395004",
+   "423889005",
+   "424643009",
+   "425748003",
+   "425969006",
+   "426656000",
+   "426979002",
+   "427295004",
+   "427603009",
+   "427679007",
+   "442025000",
+   "445378003",
+   "445427006",
+   "703953004",
+   "703954005",
+   "707444001",
+   "707445000",
+   "707446004",
+   "707447008",
+   "707511009",
+   "707512002",
+   "707513007",
+   "707979007",
+   "707980005",
+   "707981009",
+   "708030004",
+   "708090002",
+   "708093000",
+   "708094006",
+   "708095007",
+   "708096008",
+   "714203003",
+   "733858005",
+   "734904007",
+   "734905008",
+   "735465007",
+   "735588005",
+   "735589002",
+   "762521001",
+   "762618008",
+   "782513000",
+   "782520007",
+   "785736001",
+   "786836003",
+   "829976001",
+   "836477007",
+   "840350008",
+   "840351007",
+   "879963005",
+   "1010333003",
+   "1010334009",
+   "1177120001",
+   "1290026000",
+   "401000119107",
+   "1741000119102",
+   "1751000119100",
+   "72301000119103",
+   "99031000119107",
+   "106001000119101",
+   "124991000119109",
+   "125001000119103",
+   "125011000119100",
+   "125021000119107",
+   "293241000119100",
+   "2360001000004109",
+   "10674711000119105",
+   "10674791000119101",
+   "10674991000119104",
+   "10675391000119101",
+   "10675431000119106",
+   "10675471000119109",
+   "10675551000119104",
+   "10675711000119106",
+   "10675751000119107",
+   "10675871000119106",
+   "10675911000119109",
+   "10675991000119100",
+   "10676231000119102",
+   "10676271000119104",
+   "10676391000119108",
+   "10676431000119103",
+   "10676511000119109",
+   "10676671000119102",
+   "10692681000119108",
+   "10692721000119102",
+   "10692761000119107",
+   "10742121000119104",
+   "16584951000119101"
+  ]
+ },
+ "inputs": [
+  {
+   "id": "age",
+   "label": "Age",
+   "extract": {
+    "rule": "age"
+   },
+   "missing": null,
+   "source": null,
+   "type": "number",
+   "unit": "years",
+   "min": 18.0,
+   "max": 120.0
+  },
+  {
+   "id": "sex",
+   "label": "Sex",
+   "extract": {
+    "rule": "sex"
+   },
+   "missing": [
+    {
+     "value": "male",
+     "weight": 0.6
+    },
+    {
+     "value": "female",
+     "weight": 0.4
+    }
+   ],
+   "source": "puhan_2012",
+   "type": "enum",
+   "values": [
+    "female",
+    "male"
+   ]
+  },
+  {
+   "id": "copd",
+   "label": "COPD (including emphysema and chronic bronchitis)",
+   "extract": {
+    "rule": "condition_present",
+    "codes": {
+     "icd10": [
+      "J41",
+      "J42",
+      "J43",
+      "J44"
+     ],
+     "icd9": [
+      "491",
+      "492",
+      "496"
+     ],
+     "snomed": [
+      "4981000",
+      "13645005",
+      "16003001",
+      "16846004",
+      "23958009",
+      "31898008",
+      "33325001",
+      "47895001",
+      "47938003",
+      "49691004",
+      "52571006",
+      "57686001",
+      "60805002",
+      "61937009",
+      "63480004",
+      "66987001",
+      "68328006",
+      "70756004",
+      "74417001",
+      "77690003",
+      "84409004",
+      "86680006",
+      "87433001",
+      "89099002",
+      "135836000",
+      "185086009",
+      "195949008",
+      "195951007",
+      "195953005",
+      "195957006",
+      "195958001",
+      "195959009",
+      "196001008",
+      "196026004",
+      "233674008",
+      "233675009",
+      "233677001",
+      "266355005",
+      "266356006",
+      "285381006",
+      "313296004",
+      "313297008",
+      "313299006",
+      "425748003",
+      "442025000",
+      "708030004",
+      "735465007",
+      "762618008",
+      "785736001",
+      "836477007",
+      "840350008",
+      "840351007",
+      "1010333003",
+      "1010334009",
+      "1177120001",
+      "1751000119100",
+      "106001000119101",
+      "293241000119100",
+      "10692761000119107"
+     ]
+    }
+   },
+   "missing": null,
+   "source": null,
+   "type": "boolean"
+  },
+  {
+   "id": "bronchiectasis",
+   "label": "Bronchiectasis",
+   "extract": {
+    "rule": "condition_present",
+    "codes": {
+     "icd10": [
+      "J47"
+     ],
+     "icd9": [
+      "494"
+     ],
+     "snomed": [
+      "12295008",
+      "12310001",
+      "13217005",
+      "19325002",
+      "23022004",
+      "42402006",
+      "51068008",
+      "52500008",
+      "77593006",
+      "83457000",
+      "195984007",
+      "195985008",
+      "233627004",
+      "233628009",
+      "233629001",
+      "233630006",
+      "233631005",
+      "233632003",
+      "233633008",
+      "233634002",
+      "445378003",
+      "714203003",
+      "879963005"
+     ]
+    }
+   },
+   "missing": null,
+   "source": null,
+   "type": "boolean"
+  },
+  {
+   "id": "asthma",
+   "label": "Asthma",
+   "extract": {
+    "rule": "condition_present",
+    "codes": {
+     "icd10": [
+      "J45",
+      "J46"
+     ],
+     "icd9": [
+      "493"
+     ],
+     "snomed": [
+      "11641008",
+      "12428000",
+      "18041002",
+      "19849005",
+      "34015007",
+      "41553006",
+      "55570000",
+      "56968009",
+      "57607007",
+      "59786004",
+      "63088003",
+      "92807009",
+      "93432008",
+      "195949008",
+      "195967001",
+      "195977004",
+      "225057002",
+      "233678006",
+      "233679003",
+      "233683003",
+      "233687002",
+      "233688007",
+      "233691007",
+      "266361008",
+      "281239006",
+      "370218001",
+      "370219009",
+      "370220003",
+      "370221004",
+      "389145006",
+      "404804003",
+      "404806001",
+      "404808000",
+      "405944004",
+      "407674008",
+      "409663006",
+      "418395004",
+      "423889005",
+      "424643009",
+      "425969006",
+      "426656000",
+      "426979002",
+      "427295004",
+      "427603009",
+      "427679007",
+      "442025000",
+      "445427006",
+      "703953004",
+      "703954005",
+      "707444001",
+      "707445000",
+      "707446004",
+      "707447008",
+      "707511009",
+      "707512002",
+      "707513007",
+      "707979007",
+      "707980005",
+      "707981009",
+      "708090002",
+      "708093000",
+      "708094006",
+      "708095007",
+      "708096008",
+      "733858005",
+      "734904007",
+      "734905008",
+      "735588005",
+      "735589002",
+      "762521001",
+      "782513000",
+      "782520007",
+      "786836003",
+      "829976001",
+      "1290026000",
+      "401000119107",
+      "1741000119102",
+      "1751000119100",
+      "72301000119103",
+      "99031000119107",
+      "124991000119109",
+      "125001000119103",
+      "125011000119100",
+      "125021000119107",
+      "2360001000004109",
+      "10674711000119105",
+      "10674791000119101",
+      "10674991000119104",
+      "10675391000119101",
+      "10675431000119106",
+      "10675471000119109",
+      "10675551000119104",
+      "10675711000119106",
+      "10675751000119107",
+      "10675871000119106",
+      "10675911000119109",
+      "10675991000119100",
+      "10676231000119102",
+      "10676271000119104",
+      "10676391000119108",
+      "10676431000119103",
+      "10676511000119109",
+      "10676671000119102",
+      "10692681000119108",
+      "10692721000119102",
+      "10692761000119107",
+      "10742121000119104",
+      "16584951000119101"
+     ]
+    }
+   },
+   "missing": null,
+   "source": null,
+   "type": "boolean"
+  },
+  {
+   "id": "fev1_pct",
+   "label": "FEV1 % predicted",
+   "extract": {
+    "rule": "observation_number",
+    "loinc": [
+     "20152-5"
+    ],
+    "snomed": [],
+    "units": {
+     "%": 1.0,
+     "": 1.0
+    },
+    "max_age_days": 1095
+   },
+   "missing": [],
+   "source": null,
+   "type": "number",
+   "unit": "%",
+   "min": 5.0,
+   "max": 150.0
+  },
+  {
+   "id": "mmrc",
+   "label": "Breathlessness (mMRC grade 0-4)",
+   "extract": {
+    "rule": "first_of",
+    "rules": [
+     {
+      "rule": "observation_number",
+      "loinc": [],
+      "snomed": [
+       "870179002"
+      ],
+      "units": {
+       "": 1.0,
+       "{score}": 1.0
+      },
+      "max_age_days": 730
+     },
+     {
+      "rule": "condition_category",
+      "categories": [
+       {
+        "value": 0.0,
+        "codes": {
+         "icd10": [],
+         "icd9": [],
+         "snomed": [
+          "391120009"
+         ]
+        }
+       },
+       {
+        "value": 1.0,
+        "codes": {
+         "icd10": [],
+         "icd9": [],
+         "snomed": [
+          "391123006"
+         ]
+        }
+       },
+       {
+        "value": 2.0,
+        "codes": {
+         "icd10": [],
+         "icd9": [],
+         "snomed": [
+          "391124000"
+         ]
+        }
+       },
+       {
+        "value": 3.0,
+        "codes": {
+         "icd10": [],
+         "icd9": [],
+         "snomed": [
+          "391125004"
+         ]
+        }
+       },
+       {
+        "value": 4.0,
+        "codes": {
+         "icd10": [],
+         "icd9": [],
+         "snomed": [
+          "391126003"
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "missing": [
+    {
+     "value": 0.0,
+     "weight": 0.322206
+    },
+    {
+     "value": 1.0,
+     "weight": 0.298636
+    },
+    {
+     "value": 2.0,
+     "weight": 0.238401
+    },
+    {
+     "value": 3.0,
+     "weight": 0.108322
+    },
+    {
+     "value": 4.0,
+     "weight": 0.032435
+    }
+   ],
+   "source": "puhan_2012",
+   "type": "number",
+   "unit": null,
+   "min": 0.0,
+   "max": 4.0
+  }
+ ],
+ "layers": [
+  {
+   "id": "ado",
+   "label": "COPD: updated ADO index",
+   "description": "The updated ADO index scores age, breathlessness (mMRC) and airflow obstruction (FEV1 % predicted); its published 3-year mortality (13,914 people with COPD in 10 cohorts) sets how much higher your mortality is than the general population of your age and sex, which then follows normal ageing. Never better than the general population.",
+   "requires": [
+    "fev1_pct"
+   ],
+   "when": {
+    "copd": [
+     true
+    ]
+   },
+   "survival": {
+    "type": "score_life_table",
+    "time": 3.0,
+    "survival": [
+     0.993,
+     0.99,
+     0.984,
+     0.977,
+     0.966,
+     0.951,
+     0.928,
+     0.897,
+     0.855,
+     0.799,
+     0.728,
+     0.643,
+     0.549,
+     0.45,
+     0.355
+    ],
+    "terms": [
+     {
+      "kind": "bands",
+      "input": "fev1_pct",
+      "bands": [
+       {
+        "lt": 36.0,
+        "value": 4.0
+       },
+       {
+        "lt": 51.0,
+        "value": 3.0
+       },
+       {
+        "lt": 65.0,
+        "value": 2.0
+       },
+       {
+        "lt": 81.0,
+        "value": 1.0
+       },
+       {
+        "lt": null,
+        "value": 0.0
+       }
+      ]
+     },
+     {
+      "kind": "bands",
+      "input": "mmrc",
+      "bands": [
+       {
+        "lt": 1.0,
+        "value": 0.0
+       },
+       {
+        "lt": 3.0,
+        "value": 1.0
+       },
+       {
+        "lt": 4.0,
+        "value": 2.0
+       },
+       {
+        "lt": null,
+        "value": 3.0
+       }
+      ]
+     },
+     {
+      "kind": "bands",
+      "input": "age",
+      "bands": [
+       {
+        "lt": 50.0,
+        "value": 0.0
+       },
+       {
+        "lt": 60.0,
+        "value": 2.0
+       },
+       {
+        "lt": 70.0,
+        "value": 4.0
+       },
+       {
+        "lt": 80.0,
+        "value": 5.0
+       },
+       {
+        "lt": null,
+        "value": 7.0
+       }
+      ]
+     }
+    ],
+    "life_table": "us_2024",
+    "age_input": "age",
+    "sex_input": "sex"
+   },
+   "sources": [
+    "puhan_2012",
+    "nchs_us_2024"
+   ]
+  },
+  {
+   "id": "base",
+   "label": "Respiratory conditions x population mortality",
+   "description": "U.S. population mortality for your age and sex, multiplied by the published all-cause mortality hazard ratio of each recorded condition (COPD, bronchiectasis, asthma).",
+   "requires": [],
+   "when": {},
+   "survival": {
+    "type": "life_table_ph",
+    "life_table": "us_2024",
+    "age_input": "age",
+    "sex_input": "sex",
+    "terms": [
+     {
+      "kind": "category",
+      "input": "copd",
+      "values": {
+       "true": 0.587787,
+       "false": 0.0
+      }
+     },
+     {
+      "kind": "category",
+      "input": "bronchiectasis",
+      "values": {
+       "true": 0.788457,
+       "false": 0.0
+      }
+     },
+     {
+      "kind": "category",
+      "input": "asthma",
+      "values": {
+       "true": 0.322083,
+       "false": 0.0
+      }
+     }
+    ]
+   },
+   "sources": [
+    "nchs_us_2024",
+    "quint_2016",
+    "zhang_2022",
+    "zhao_2025"
+   ]
+  }
+ ],
+ "life_tables": {
+  "us_2024": {
+   "source": "nchs_us_2024",
+   "female": [
+    0.00516108050942421,
+    0.0003555437724571675,
+    0.00022928440012037754,
+    0.0001701733417576179,
+    0.00015450437786057591,
+    0.00013440332259051502,
+    0.00012181152851553634,
+    0.00011332330905133858,
+    0.00010740214929683134,
+    0.00010391370597062632,
+    0.00010417999146739021,
+    0.00011076726514147595,
+    0.0001266235631192103,
+    0.0001528284774394706,
+    0.00018605389050208032,
+    0.00022262886341195554,
+    0.00025863663177005947,
+    0.00029252481181174517,
+    0.00032309279777109623,
+    0.0003517374861985445,
+    0.00038399285404011607,
+    0.0004184228600934148,
+    0.0004482579533942044,
+    0.0004714501556009054,
+    0.0004913863958790898,
+    0.0005099073750898242,
+    0.0005348722916096449,
+    0.0005736121674999595,
+    0.000629448622930795,
+    0.0006962710176594555,
+    0.0007666125311516225,
+    0.0008341083885170519,
+    0.0008985847234725952,
+    0.0009598494507372379,
+    0.0010214197682216763,
+    0.0010868810350075364,
+    0.0011588658671826124,
+    0.0012376034865155816,
+    0.0013229312608018517,
+    0.0014133246149867773,
+    0.001512496848590672,
+    0.0016166785499081016,
+    0.00171874079387635,
+    0.001818052027374506,
+    0.0019217513035982847,
+    0.00204085698351264,
+    0.0021816224325448275,
+    0.002340537030249834,
+    0.0025144070386886597,
+    0.0027015216182917356,
+    0.0029091439209878445,
+    0.0031390273943543434,
+    0.0033867929596453905,
+    0.0036579142324626446,
+    0.003962039481848478,
+    0.004286978859454393,
+    0.004652865696698427,
+    0.005093676503747702,
+    0.005611331667751074,
+    0.006174980662763119,
+    0.006751384120434523,
+    0.007328271400183439,
+    0.007921612821519375,
+    0.008547589182853699,
+    0.009222075343132019,
+    0.009962989017367363,
+    0.010838938876986504,
+    0.011665957048535347,
+    0.01255229115486145,
+    0.013497952371835709,
+    0.014469927176833153,
+    0.015648752450942993,
+    0.017112422734498978,
+    0.018741386011242867,
+    0.020826473832130432,
+    0.023079900071024895,
+    0.02576356753706932,
+    0.028037432581186295,
+    0.032269369810819626,
+    0.03546250984072685,
+    0.040006913244724274,
+    0.04476064443588257,
+    0.05047272890806198,
+    0.05633280426263809,
+    0.06286084651947021,
+    0.07021649926900864,
+    0.0794358104467392,
+    0.08968359231948853,
+    0.10102596879005432,
+    0.11352059245109558,
+    0.12721297144889832,
+    0.14213252067565918,
+    0.15828841924667358,
+    0.1756656914949417,
+    0.1942218691110611,
+    0.21388433873653412,
+    0.2345491349697113,
+    0.2560812830924988,
+    0.27831700444221497,
+    0.3010677397251129,
+    0.35518819748775765
+   ],
+   "male": [
+    0.005885756108909845,
+    0.00044387017260305583,
+    0.00028934230795130134,
+    0.00023921373940538615,
+    0.00017701640899758786,
+    0.00016123011300805956,
+    0.0001485174725530669,
+    0.00013721888535656035,
+    0.00012195391900604591,
+    0.00010407313675386831,
+    9.19757439987734e-05,
+    0.00010031223791884258,
+    0.00014599265705328435,
+    0.00023685146879870445,
+    0.0003579833428375423,
+    0.0004882793582510203,
+    0.0006115534924902022,
+    0.0007271517533808947,
+    0.0008309316472150385,
+    0.0009263553656637669,
+    0.0010279922280460596,
+    0.00113119394518435,
+    0.0012166143860667944,
+    0.0012777503579854965,
+    0.0013224899303168058,
+    0.001360344816930592,
+    0.001406719908118248,
+    0.0014701500767841935,
+    0.0015564190689474344,
+    0.0016568590654060245,
+    0.001759383361786604,
+    0.0018560630269348621,
+    0.0019494305597618222,
+    0.0020402399823069572,
+    0.0021327752619981766,
+    0.0022294996306300163,
+    0.0023337944876402617,
+    0.002448367653414607,
+    0.0025735776871442795,
+    0.002706409664824605,
+    0.0028554105665534735,
+    0.0030101328156888485,
+    0.0031515350565314293,
+    0.003274614457041025,
+    0.003394553204998374,
+    0.0035294988192617893,
+    0.0037034540437161922,
+    0.003928169142454863,
+    0.004209186881780624,
+    0.00453305896371603,
+    0.004893728066235781,
+    0.005279104690998793,
+    0.005680117756128311,
+    0.006100269500166178,
+    0.006558794062584639,
+    0.007038607262074947,
+    0.007581793237477541,
+    0.008254011161625385,
+    0.009067774750292301,
+    0.009967525489628315,
+    0.010887744836509228,
+    0.011793825775384903,
+    0.012705800123512745,
+    0.013641354627907276,
+    0.01462731696665287,
+    0.015689153224229813,
+    0.01698250323534012,
+    0.018173692747950554,
+    0.019493281841278076,
+    0.020850103348493576,
+    0.02221672423183918,
+    0.023869886994361877,
+    0.025770971551537514,
+    0.027815137058496475,
+    0.030162181705236435,
+    0.032904598861932755,
+    0.03585303947329521,
+    0.03856359422206879,
+    0.043718576431274414,
+    0.04801404848694801,
+    0.05390949174761772,
+    0.059306055307388306,
+    0.06696523725986481,
+    0.07342448085546494,
+    0.08226697146892548,
+    0.09058334678411484,
+    0.10027153044939041,
+    0.1125815138220787,
+    0.1260663866996765,
+    0.14075613021850586,
+    0.15666155517101288,
+    0.17377042770385742,
+    0.19204416871070862,
+    0.2114153355360031,
+    0.23178620636463165,
+    0.2530289590358734,
+    0.2749875485897064,
+    0.2974812388420105,
+    0.32031020522117615,
+    0.3432621955871582,
+    0.3897783202250369
+   ]
+  }
+ },
+ "max_reliable_years": 20.0,
+ "validation": [
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: Harrell's C-index",
+   "value": 0.781,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: predicted 1-year survival",
+   "value": 0.986,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.98,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: predicted 3-year survival",
+   "value": 0.955,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.948,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: predicted 5-year survival",
+   "value": 0.921,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 3818,
+   "metric": "All with COPD or asthma: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.914,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: Harrell's C-index",
+   "value": 0.692,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: predicted 1-year survival",
+   "value": 0.975,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.958,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: predicted 3-year survival",
+   "value": 0.922,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.896,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: predicted 5-year survival",
+   "value": 0.865,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 1536,
+   "metric": "COPD: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.836,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: Harrell's C-index",
+   "value": 0.753,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: predicted 1-year survival",
+   "value": 0.993,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.996,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: predicted 3-year survival",
+   "value": 0.977,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.983,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: predicted 5-year survival",
+   "value": 0.959,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "NHANES 2007-2018 linked to the National Death Index (U.S.)",
+   "period": "Interviewed 2007-2018, deaths through 31 Dec 2019",
+   "n": 2282,
+   "metric": "Asthma without COPD: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.965,
+   "notes": "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer); ages 18-79, unweighted.",
+   "source": "nhanes_lmf_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 947,
+   "metric": "COPD aged 40-49: predicted 5-year mortality",
+   "value": 0.029,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 947,
+   "metric": "COPD aged 40-49: observed 5-year mortality",
+   "value": 0.031,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 2063,
+   "metric": "COPD aged 50-59: predicted 5-year mortality",
+   "value": 0.062,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 2063,
+   "metric": "COPD aged 50-59: observed 5-year mortality",
+   "value": 0.078,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 3885,
+   "metric": "COPD aged 60-69: predicted 5-year mortality",
+   "value": 0.131,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 3885,
+   "metric": "COPD aged 60-69: observed 5-year mortality",
+   "value": 0.141,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 4676,
+   "metric": "COPD aged 70-79: predicted 5-year mortality",
+   "value": 0.276,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 4676,
+   "metric": "COPD aged 70-79: observed 5-year mortality",
+   "value": 0.304,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 2571,
+   "metric": "COPD aged 80-89: predicted 5-year mortality",
+   "value": 0.628,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "Korean National Health Insurance COPD sample (Park et al. 2019)",
+   "period": "COPD diagnosed 2003-2013",
+   "n": 2571,
+   "metric": "COPD aged 80-89: observed 5-year mortality",
+   "value": 0.551,
+   "notes": "Published cohort: base layer (no lung function), COPD only, at the age band's representative age with the cohort's sex mix.",
+   "source": "park_2019"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 1: predicted life expectancy at 65 relative to no COPD",
+   "value": 0.911,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 1: observed life expectancy at 65 relative to no COPD",
+   "value": 0.93,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 2: predicted life expectancy at 65 relative to no COPD",
+   "value": 0.793,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 2: observed life expectancy at 65 relative to no COPD",
+   "value": 0.763,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 3: predicted life expectancy at 65 relative to no COPD",
+   "value": 0.547,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 3: observed life expectancy at 65 relative to no COPD",
+   "value": 0.609,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 4: predicted life expectancy at 65 relative to no COPD",
+   "value": 0.444,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  },
+  {
+   "dataset": "NHLBI Pooled Cohorts, U.S. (Bhatt et al. JAMA Intern Med 2026)",
+   "period": "Enrolled 1983-2011, followed to 2020",
+   "n": 45886,
+   "metric": "COPD GOLD 4: observed life expectancy at 65 relative to no COPD",
+   "value": 0.498,
+   "notes": "Published cohort: ADO layer at age 65 with a mid-grade FEV1 % predicted per GOLD stage (breathlessness averaged), as a ratio to the same model's population life expectancy; observed: published life expectancy at 65 by GOLD stage divided by that without COPD (the cohort is healthier than the U.S. population, so ratios are compared). n is the whole cohort; stage sizes are not given in the abstract.",
+   "source": "bhatt_2026"
+  }
+ ],
+ "sources": [
+  {
+   "id": "puhan_2012",
+   "citation": "Puhan MA, Hansel NN, Sobradillo P, et al. Large-scale international validation of the ADO index in subjects with COPD: an individual subject data analysis of 10 cohorts. BMJ Open 2012;2:e002152. Updated ADO points (Table 3), 3-year mortality per score 0-14 (Table 4), cohort characteristics (Table 1; 13,914 people with COPD).",
+   "url": "https://doi.org/10.1136/bmjopen-2012-002152",
+   "licence": "CC BY-NC 2.0 (open access)"
+  },
+  {
+   "id": "zhao_2025",
+   "citation": "Zhao G, Wang L, Lei S, Li Y, Li J, Feng Z. All-cause and cause-specific mortality in chronic obstructive pulmonary disease: a systematic review and meta-analysis. Int J Chron Obstruct Pulmon Dis 2025;20:4173-4190. All-cause mortality HR 1.80 (1.40-2.30) vs no COPD.",
+   "url": "https://doi.org/10.2147/COPD.S563250",
+   "licence": "CC BY-NC 4.0"
+  },
+  {
+   "id": "zhang_2022",
+   "citation": "Zhang B, Li ZF, An ZY, et al. Association between asthma and all-cause mortality and cardiovascular disease morbidity and mortality: a meta-analysis of cohort studies. Front Cardiovasc Med 2022;9:861798. All-cause mortality RR 1.38 (1.07-1.77) vs no asthma.",
+   "url": "https://doi.org/10.3389/fcvm.2022.861798",
+   "licence": "CC BY 4.0"
+  },
+  {
+   "id": "quint_2016",
+   "citation": "Quint JK, Millett ER, Joshi M, et al. Changes in the incidence, prevalence and mortality of bronchiectasis in the UK from 2004 to 2013: a population-based cohort study. Eur Respir J 2016;47:186-193. Age-adjusted comparative mortality figure vs the general population: women 2.26, men 2.14 (2.2 used).",
+   "url": "https://doi.org/10.1183/13993003.01033-2015",
+   "licence": null
+  },
+  {
+   "id": "nchs_us_2024",
+   "citation": "Arias E, Xu JQ, Kochanek K. United States life tables, 2024. National Vital Statistics Reports vol 75 no 5. National Center for Health Statistics.",
+   "url": "https://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/NVSR/75-05/",
+   "licence": "U.S. Government work (public domain)"
+  },
+  {
+   "id": "nhanes_lmf_2019",
+   "citation": "National Center for Health Statistics. NHANES 2007-2018 (demographics, medical conditions questionnaire) linked to the National Death Index, public-use linked mortality files with follow-up through 31 December 2019.",
+   "url": "https://www.cdc.gov/nchs/linked-data/mortality-files/index.html",
+   "licence": "U.S. Government work (public domain); used for testing only"
+  },
+  {
+   "id": "park_2019",
+   "citation": "Park SC, Kim DW, Park EC, et al. Mortality of patients with chronic obstructive pulmonary disease: a nationwide population-based cohort study. Korean J Intern Med 2019;34:1272-1278.",
+   "url": "https://doi.org/10.3904/kjim.2017.428",
+   "licence": "CC BY-NC 4.0 (open access)"
+  },
+  {
+   "id": "bhatt_2026",
+   "citation": "Bhatt SP, Sun Y, Wang Y, et al. Life expectancy in chronic obstructive pulmonary disease. JAMA Intern Med 2026;186(7):852-860. NHLBI Pooled Cohorts, n = 45,886, enrolled 1983-2011, followed to 2020.",
+   "url": "https://doi.org/10.1001/jamainternmed.2026.0207",
+   "licence": null
+  }
+ ]
+}

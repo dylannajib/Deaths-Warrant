@@ -229,5 +229,46 @@
     "5": 0.5888759748791932
    }
   }
+ },
+ {
+  "observed": {
+   "age": 75,
+   "sex": "female",
+   "flag": true
+  },
+  "expected": {
+   "layer": {
+    "id": "points_3y",
+    "label": "Points at 3 years"
+   },
+   "median_years": 2.999999999999993,
+   "range_low_years": 1.245112497836537,
+   "range_high_years": 5.999999999999993,
+   "survival_at": {
+    "1": 0.7937005259840997,
+    "3": 0.5,
+    "5": 0.3149802624737183
+   }
+  }
+ },
+ {
+  "observed": {
+   "age": 30,
+   "flag": true
+  },
+  "expected": {
+   "layer": {
+    "id": "points_3y",
+    "label": "Points at 3 years"
+   },
+   "median_years": 9.243975845355724,
+   "range_low_years": 3.737909426489505,
+   "range_high_years": 19.37550713210684,
+   "survival_at": {
+    "1": 0.925,
+    "3": 0.7931874999999999,
+    "5": 0.68213546875
+   }
+  }
  }
 ]

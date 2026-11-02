@@ -45,6 +45,10 @@ src/
   risk score. Heart failure without one uses UK survival by age at diagnosis. Other
   cardiovascular conditions use population mortality × published hazard ratios. See
   `src/models/cardiovascular/sources.md`.
+  *Chronic lower respiratory disease*. COPD with a recorded FEV1 % predicted uses the updated
+  ADO index. Otherwise population mortality × published hazard ratios for COPD,
+  bronchiectasis and asthma. On 3,818 real NHANES patients, Harrell's C-index is 0.78. See
+  `src/models/respiratory/sources.md`.
 * **Two implementations, one answer.** Python is the reference; the browser runs a
   TypeScript port. CI replays every `golden.json` against the TypeScript evaluator.
 * **Accuracy** is tested only against real, published patient data, never data we invent.
