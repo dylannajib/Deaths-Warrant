@@ -29,10 +29,10 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parents[1] / "backend")]  # model.py, deaths_warrant
-from model import CONDITIONS, ROMAN, build  # noqa: E402
+from model import CONDITIONS, ROMAN, TAYLOR_MALE, build  # noqa: E402
 
 from deaths_warrant.evaluate import evaluate  # noqa: E402
-from deaths_warrant.validation import calibration_at, harrell_c  # noqa: E402
+from deaths_warrant.validation import calibration_at, harrell_c, result_row, sex_mix, survival_at  # noqa: E402
 
 UCI = HERE.parents[2] / "data" / "uci_hf" / "heart_failure_clinical_records_dataset.csv"
 FAR_NHL = HERE.parents[2] / "data" / "far_nhl" / "pone.0214363.s001.csv"
@@ -48,7 +48,6 @@ TAYLOR = [  # (age band, representative age, n, observed 1-year, observed 5-year
     ("85-94", 90, 13453, 0.632, 0.223),
     ("95+", 97, 1123, 0.439, 0.060),
 ]
-TAYLOR_MALE = 0.522
 # Peng et al. Stroke 2022: first acute stroke, Australia and New Zealand 2008-2017.
 PENG = {
     "n": 313_162,
@@ -66,31 +65,6 @@ BRAY = {
 }
 # Brazilian MAGGIC validation (Arq Bras Cardiol 2026): HF outpatients enrolled 2008-2014.
 BRAZIL = {"n": 866, "observed_3y_mortality": 0.334, "maggic_predicted_3y_mortality": 0.209}
-
-
-def _row(dataset: str, period: str, n: int, metric: str, value: float, notes: str, source: str):
-    return {
-        "dataset": dataset,
-        "period": period,
-        "n": n,
-        "metric": metric,
-        "value": round(value, 3),
-        "notes": notes,
-        "source": source,
-    }
-
-
-def _survival(result: dict[str, Any], t: float) -> float:
-    """S(t) from the evaluator's 0.25-year curve (exact at the curve's grid points)."""
-    step = result["curve"][1][0]
-    return result["curve"][round(t / step)][1]
-
-
-def _sex_mix(spec, observed: dict[str, Any], male: float, t: float) -> float:
-    return sum(
-        w * _survival(evaluate(spec, {**observed, "sex": sex}), t)
-        for sex, w in (("male", male), ("female", 1 - male))
-    )
 
 
 def uci(spec) -> list[dict[str, Any]]:
@@ -123,7 +97,7 @@ def uci(spec) -> list[dict[str, Any]]:
             }
             result = evaluate(spec, observed)
             medians.append(result["median_years"] if result["median_years"] is not None else 60.0)
-            half_year.append(_survival(result, 0.5))
+            half_year.append(survival_at(result, 0.5))
         notes = (
             "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine,"
             " smoking and diabetes; other inputs averaged."
@@ -136,14 +110,34 @@ def uci(spec) -> list[dict[str, Any]]:
         )
         predicted, observed_km = calibration_at(0.5, times, events, half_year)
         out += [
-            _row(dataset, period, len(rows), f"Heart failure, {layer}: Harrell's C-index",
-                 harrell_c(times, events, medians), notes, "uci_hf_2015"),
-            _row(dataset, period, len(rows), f"Heart failure, {layer}: predicted 6-month survival",
-                 predicted, notes, "uci_hf_2015"),
-            _row(dataset, period, len(rows),
-                 f"Heart failure, {layer}: observed 6-month survival (Kaplan-Meier)",
-                 observed_km, notes, "uci_hf_2015"),
-        ]  # fmt: skip
+            result_row(
+                dataset,
+                period,
+                len(rows),
+                f"Heart failure, {layer}: Harrell's C-index",
+                harrell_c(times, events, medians),
+                notes,
+                "uci_hf_2015",
+            ),
+            result_row(
+                dataset,
+                period,
+                len(rows),
+                f"Heart failure, {layer}: predicted 6-month survival",
+                predicted,
+                notes,
+                "uci_hf_2015",
+            ),
+            result_row(
+                dataset,
+                period,
+                len(rows),
+                f"Heart failure, {layer}: observed 6-month survival (Kaplan-Meier)",
+                observed_km,
+                notes,
+                "uci_hf_2015",
+            ),
+        ]
     return out
 
 
@@ -190,13 +184,13 @@ def far_nhl(spec) -> list[dict[str, Any]]:
             if r["years_since_diagnosis_of_heart_failure"].strip():  # 5 blank: averaged
                 observed["hf_years"] = num(r, "years_since_diagnosis_of_heart_failure")
             if not with_nyha:
-                two_year.append(_survival(evaluate(spec, observed), 2))
+                two_year.append(survival_at(evaluate(spec, observed), 2))
                 continue
             # Half classes (e.g. 2.5) are averaged over the two neighbouring classes.
             nyha = num(r, "NYHA")
             classes = {ROMAN[math.floor(nyha) - 1], ROMAN[math.ceil(nyha) - 1]}
             two_year.append(
-                sum(_survival(evaluate(spec, {**observed, "nyha": c}), 2) for c in classes)
+                sum(survival_at(evaluate(spec, {**observed, "nyha": c}), 2) for c in classes)
                 / len(classes)
             )
         layer = "all MAGGIC inputs" if with_nyha else "NYHA class not recorded"
@@ -211,14 +205,34 @@ def far_nhl(spec) -> list[dict[str, Any]]:
             " its date is not given, so only 2-year survival can be compared."
         )
         out += [
-            _row(dataset, period, len(rows), f"Heart failure, {layer}: C-index (2-year outcome)",
-                 _auc(two_year, events), notes, "far_nhl_2019"),
-            _row(dataset, period, len(rows), f"Heart failure, {layer}: predicted 2-year survival",
-                 sum(two_year) / len(rows), notes, "far_nhl_2019"),
-            _row(dataset, period, len(rows),
-                 f"Heart failure, {layer}: observed 2-year survival without transplant or LVAD",
-                 1 - sum(events) / len(rows), notes, "far_nhl_2019"),
-        ]  # fmt: skip
+            result_row(
+                dataset,
+                period,
+                len(rows),
+                f"Heart failure, {layer}: C-index (2-year outcome)",
+                _auc(two_year, events),
+                notes,
+                "far_nhl_2019",
+            ),
+            result_row(
+                dataset,
+                period,
+                len(rows),
+                f"Heart failure, {layer}: predicted 2-year survival",
+                sum(two_year) / len(rows),
+                notes,
+                "far_nhl_2019",
+            ),
+            result_row(
+                dataset,
+                period,
+                len(rows),
+                f"Heart failure, {layer}: observed 2-year survival without transplant or LVAD",
+                1 - sum(events) / len(rows),
+                notes,
+                "far_nhl_2019",
+            ),
+        ]
     return out
 
 
@@ -234,9 +248,9 @@ def taylor(spec) -> list[dict[str, Any]]:
     for band, age, n, s1, s5 in TAYLOR:
         observed = {**NO_CONDITIONS, "heart_failure": True, "age": age, "hf_years": 0.0}
         for t, obs in ((1, s1), (5, s5)):
-            pred = _sex_mix(spec, observed, TAYLOR_MALE, t)
+            pred = sex_mix(spec, observed, TAYLOR_MALE, t)
             out.append(
-                _row(
+                result_row(
                     dataset,
                     period,
                     n,
@@ -247,7 +261,7 @@ def taylor(spec) -> list[dict[str, Any]]:
                 )
             )
             out.append(
-                _row(
+                result_row(
                     dataset,
                     period,
                     n,
@@ -266,7 +280,7 @@ def _stroke_survival(spec, ages: list[tuple[float, float]], male: float, t: floa
     return sum(
         w
         / total
-        * _sex_mix(spec, {**NO_CONDITIONS, "stroke": True, "stroke_years": 0.0, "age": a}, male, t)
+        * sex_mix(spec, {**NO_CONDITIONS, "stroke": True, "stroke_years": 0.0, "age": a}, male, t)
         for a, w in ages
     )
 
@@ -286,7 +300,7 @@ def peng(spec) -> list[dict[str, Any]]:
     for t_key, obs in PENG["observed"].items():
         pred = _stroke_survival(spec, ages, PENG["male"], float(t_key))
         out.append(
-            _row(
+            result_row(
                 dataset,
                 period,
                 PENG["n"],
@@ -296,8 +310,17 @@ def peng(spec) -> list[dict[str, Any]]:
                 "peng_2022",
             )
         )
-        out.append(_row(dataset, period, PENG["n"], f"Stroke: observed {t_key}-year survival",
-                        obs, notes, "peng_2022"))  # fmt: skip
+        out.append(
+            result_row(
+                dataset,
+                period,
+                PENG["n"],
+                f"Stroke: observed {t_key}-year survival",
+                obs,
+                notes,
+                "peng_2022",
+            )
+        )
     return out
 
 
@@ -316,11 +339,25 @@ def bray(spec) -> list[dict[str, Any]]:
     ]
     pred = _stroke_survival(spec, ages, BRAY["male"], 1.0)
     return [
-        _row(dataset, period, BRAY["n"], "Stroke: predicted 1-year survival", pred, notes,
-             "bray_2018"),
-        _row(dataset, period, BRAY["n"], "Stroke: observed 1-year survival", BRAY["observed_1y"],
-             notes, "bray_2018"),
-    ]  # fmt: skip
+        result_row(
+            dataset,
+            period,
+            BRAY["n"],
+            "Stroke: predicted 1-year survival",
+            pred,
+            notes,
+            "bray_2018",
+        ),
+        result_row(
+            dataset,
+            period,
+            BRAY["n"],
+            "Stroke: observed 1-year survival",
+            BRAY["observed_1y"],
+            notes,
+            "bray_2018",
+        ),
+    ]
 
 
 def brazil() -> list[dict[str, Any]]:
@@ -331,7 +368,7 @@ def brazil() -> list[dict[str, Any]]:
         " layer reproduces at 1 and 3 years: MAGGIC underpredicted 3-year mortality here."
     )
     return [
-        _row(
+        result_row(
             dataset,
             period,
             BRAZIL["n"],
@@ -340,7 +377,7 @@ def brazil() -> list[dict[str, Any]]:
             notes,
             "vargas_2026",
         ),
-        _row(
+        result_row(
             dataset,
             period,
             BRAZIL["n"],

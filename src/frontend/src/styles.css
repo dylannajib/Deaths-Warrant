@@ -105,6 +105,11 @@ a { color: inherit; }
 }
 .run button:hover:not(:disabled) { text-decoration: underline; }
 .run button:disabled { color: var(--muted); cursor: not-allowed; }
+.clear {
+  display: block; margin: 1.5rem auto 0; font: inherit; color: var(--muted);
+  background: none; border: 0; text-decoration: underline; cursor: pointer;
+}
+.clear:hover { color: var(--ink); }
 
 .error { margin: 2rem auto 0; max-width: 34rem; color: var(--warn); text-align: center; }
 

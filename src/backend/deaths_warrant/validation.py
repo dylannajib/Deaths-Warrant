@@ -8,6 +8,10 @@ from __future__ import annotations
 
 from collections.abc import Sequence
 from itertools import groupby
+from typing import Any
+
+from .evaluate import evaluate
+from .spec import ModelSpec
 
 
 def kaplan_meier(times: Sequence[float], events: Sequence[bool]) -> list[tuple[float, float]]:
@@ -86,3 +90,32 @@ def calibration_at(
     """(mean predicted S(t), observed Kaplan–Meier S(t)) for the cohort."""
     observed = km_at(kaplan_meier(times, events), t)
     return sum(predicted_survival) / len(predicted_survival), observed
+
+
+def result_row(
+    dataset: str, period: str, n: int, metric: str, value: float, notes: str, source: str
+) -> dict[str, Any]:
+    """One aggregate result as written to a model's validation file."""
+    return {
+        "dataset": dataset,
+        "period": period,
+        "n": n,
+        "metric": metric,
+        "value": round(value, 3),
+        "notes": notes,
+        "source": source,
+    }
+
+
+def survival_at(result: dict[str, Any], t: float) -> float:
+    """S(t) from an evaluation result's curve (exact at the curve's grid points)."""
+    step = result["curve"][1][0]
+    return result["curve"][round(t / step)][1]
+
+
+def sex_mix(spec: ModelSpec, observed: dict[str, Any], male: float, t: float) -> float:
+    """Survival at t for a cohort with the given male share, otherwise the same inputs."""
+    return sum(
+        w * survival_at(evaluate(spec, {**observed, "sex": sex}), t)
+        for sex, w in (("male", male), ("female", 1 - male))
+    )

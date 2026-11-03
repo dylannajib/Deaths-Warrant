@@ -13,15 +13,13 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { extractInputs, recordMatchesGroup } from "../engine/extract";
 import { runPrognosis } from "../engine/prognosis";
-import type { ModelSpec } from "../engine/spec";
 import { latestDate, parseUpload } from "../parsing/upload";
+import { REAL_SPECS } from "../testing/specs";
 
 const DATA = join(__dirname, "../../../../data/mimic_fhir_demo");
 const BUNDLES = join(DATA, "bundles");
 const available = existsSync(BUNDLES);
-const specs = Object.values(
-  import.meta.glob<ModelSpec>(["../../../models/*/spec.json", "!../../../models/_*/spec.json"], { eager: true, import: "default" }),
-);
+const specs = REAL_SPECS;
 const ICD = {
   cancer: /^(C\d|1[4-9]\d|20[0-8])/, // malignant neoplasms (ICD-10 C, ICD-9 140-208)
   cardiovascular: /^(I(0[5-9]|1[13]|2\d|[3-5]\d|6\d|7[0-4])|39[3-8]|40[24]|4[1-3]\d|44[0-4])/,

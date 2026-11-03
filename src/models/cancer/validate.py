@@ -65,7 +65,7 @@ def _rows(name: str) -> Iterator[dict[str, str]]:
         yield from csv.DictReader((line for line in f if not line.startswith("#")), delimiter="\t")
 
 
-def _site(morphology: int, topography: str) -> str:
+def site_of(morphology: int, topography: str) -> str:
     """SEER site recode from ICD-O-3: histology-defined groups first, then topography."""
     if 9590 <= morphology <= 9729:
         return "hodgkin" if 9650 <= morphology <= 9667 else "nhl"
@@ -121,7 +121,7 @@ def cohort() -> list[dict[str, Any]]:
                 "observed": {
                     "age": age,
                     "sex": p["GENDER"].lower(),
-                    "site": _site(int(m.group(1)), m.group(3)),
+                    "site": site_of(int(m.group(1)), m.group(3)),
                     "stage": _stage(dx[0]["SUMMARY"]),
                     "since": since,
                 },
@@ -141,7 +141,7 @@ def _scenario(patient: dict[str, Any], with_metastasis: bool) -> dict[str, Any]:
 _SPEC = None
 
 
-def _predict(observed: dict[str, Any]) -> dict[str, Any]:
+def predict(observed: dict[str, Any]) -> dict[str, Any]:
     global _SPEC
     if _SPEC is None:
         _SPEC = build()
@@ -244,7 +244,7 @@ def main() -> None:
     summary = {}
     with Pool() as pool:
         for label, with_met in (("registry", False), ("registry + metastatic sample", True)):
-            preds = pool.map(_predict, [_scenario(p, with_met) for p in patients], chunksize=200)
+            preds = pool.map(predict, [_scenario(p, with_met) for p in patients], chunksize=200)
             pairs = list(zip(patients, preds, strict=True))
             notes = (
                 "Predicted at first sequencing from age, sex, registry site and stage at"

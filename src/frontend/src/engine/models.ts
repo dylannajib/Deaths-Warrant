@@ -17,8 +17,6 @@ const summaries = {
   ...(import.meta.env.DEV ? import.meta.glob<ModelSummary>("../../../models/_fixture/summary.json", { eager: true, import: "default" }) : {}),
 };
 
-export const SUMMARY_PATHS = new Map(Object.entries(summaries).map(([path, s]) => [s, path]));
-
 export const MODELS: ModelSummary[] = Object.values(summaries)
   .filter((s) => s.schema_version === SCHEMA_VERSION)
   .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));

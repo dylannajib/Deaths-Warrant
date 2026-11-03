@@ -1,6 +1,6 @@
 /** The page: links, title, coverage, upload, disease group, run, result, disclaimer. */
 
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import founderPfp from "../assets/founder-pfp.png";
 import githubLogo from "../assets/github-logo.png";
 import { MODELS } from "./engine/models";
@@ -21,19 +21,40 @@ export function App() {
   const [report, setReport] = useState<PrognosisReport | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  const [analysed, setAnalysed] = useState<string | null>(null);
   const picker = useRef<HTMLDetailsElement>(null);
+  const upload = useRef<HTMLInputElement>(null);
   const model = MODELS.find((m) => m.id === modelId);
+
+  // The page drops its reference to the file once a run finishes, and the result (which
+  // shows details from the record) when the user clears it or leaves the page.
+  const releaseFile = () => {
+    setFile(null);
+    if (upload.current) upload.current.value = "";
+  };
+  const clearAll = () => {
+    releaseFile();
+    setReport(null);
+    setError(null);
+    setAnalysed(null);
+  };
+  useEffect(() => {
+    window.addEventListener("pagehide", clearAll);
+    return () => window.removeEventListener("pagehide", clearAll);
+  }, []);
 
   const run = async () => {
     if (!file || !modelId) return;
     setBusy(true);
     setError(null);
     setReport(null);
+    setAnalysed(file.name);
     try {
       setReport(await runInWorker(file, modelId));
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e));
     } finally {
+      releaseFile();
       setBusy(false);
     }
   };
@@ -75,6 +96,7 @@ export function App() {
               <strong>Upload:</strong> FHIR.json, FHIR.xml or C‑CDA.xml
             </span>
             <input
+              ref={upload}
               className="visually-hidden"
               type="file"
               accept=".json,.xml,application/json,application/xml,text/xml"
@@ -82,14 +104,19 @@ export function App() {
                 setFile(e.target.files?.[0] ?? null);
                 setReport(null);
                 setError(null);
+                setAnalysed(null);
               }}
             />
             <span className="hint">
-              {file ? `Selected: ${file.name} (${sizeLabel(file.size)})` : "Request your patient data as one of these formats from your hospital"}
+              {file
+                ? `Selected: ${file.name} (${sizeLabel(file.size)})`
+                : analysed
+                  ? `Analysed ${analysed}; the file has been released. Choose it again to re-run.`
+                  : "Request your patient data as one of these formats from your hospital"}
             </span>
           </label>
           {file && file.size > SOFT_LIMIT_BYTES && (
-            <p className="hint warn">This file is over 50 MB, so it may take a while to analyse.</p>
+            <p className="hint warn">This file is over {SOFT_LIMIT_BYTES / 1024 / 1024} MB, so it may take a while to analyse.</p>
           )}
 
           <details className="picker" ref={picker}>
@@ -133,7 +160,14 @@ export function App() {
               {error}
             </p>
           )}
-          {report && <ResultView report={report} />}
+          {report && (
+            <>
+              <ResultView report={report} />
+              <button type="button" className="clear" onClick={clearAll}>
+                Clear result
+              </button>
+            </>
+          )}
         </div>
       </main>
 

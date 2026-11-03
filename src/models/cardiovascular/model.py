@@ -23,59 +23,66 @@ MAGGIC inputs missing from the record are averaged over the MAGGIC cohort's own 
 
 from __future__ import annotations
 
-import json
 import math
 from pathlib import Path
 from typing import Any
 
+from deaths_warrant.authoring import (
+    Condition,
+    bands,
+    codes,
+    load_json,
+    snomed_sets,
+    validation_results,
+)
 from deaths_warrant.evaluate import population_cum_hazard
 from deaths_warrant.registry import load_life_table
 from deaths_warrant.spec import ModelSpec
 
 HERE = Path(__file__).parent
-SNOMED: dict[str, list[str]] = json.loads((HERE / "snomed_sets.json").read_text("utf-8"))["sets"]
+SNOMED = snomed_sets(HERE)
 VALIDATION_FILE = HERE / "validation.json"
 
 # ---------------------------------------------------------------- diagnoses
 # key -> (label, ICD-10 prefixes, ICD-9 prefixes, all-cause mortality HR, source id). Heart
 # failure has no HR: it always uses a heart-failure layer (MAGGIC or Taylor 2019 survival).
-CONDITIONS: dict[str, tuple[str, list[str], list[str], float | None, str]] = {
-    "heart_failure": (
+CONDITIONS: dict[str, Condition] = {
+    "heart_failure": Condition(
         "Heart failure",
         ["I50", "I110", "I130", "I132"],
         ["428", "40201", "40211", "40291", "40401", "40403", "40411", "40413", "40491", "40493"],
         None,
         "taylor_2019",
     ),
-    "coronary": (
+    "coronary": Condition(
         "Coronary heart disease or prior myocardial infarction",
         ["I20", "I21", "I22", "I23", "I24", "I25"],
         ["410", "411", "412", "413", "414"],
         2.0,
         "erfc_2015",
     ),
-    "stroke": (
+    "stroke": Condition(
         "Stroke",
         ["I60", "I61", "I62", "I63", "I64", "I69"],
         ["430", "431", "432", "433", "434", "436", "438"],
         2.1,
         "erfc_2015",
     ),
-    "atrial_fibrillation": (
+    "atrial_fibrillation": Condition(
         "Atrial fibrillation or flutter",
         ["I48"],
         ["42731", "42732"],
         1.46,
         "odutayo_2016",
     ),
-    "peripheral_artery": (
+    "peripheral_artery": Condition(
         "Peripheral artery disease",
         ["I702", "I739"],
         ["4402", "4439"],
         1.68,
         "matsushita_2022",
     ),
-    "cardiomyopathy": ("Cardiomyopathy", ["I42", "I43"], ["425"], 1.48, "jacobsen_2023"),
+    "cardiomyopathy": Condition("Cardiomyopathy", ["I42", "I43"], ["425"], 1.48, "jacobsen_2023"),
 }
 DIABETES = (
     {"icd10": ["E10", "E11", "E12", "E13", "E14"], "icd9": ["250"], "snomed": SNOMED["diabetes"]},
@@ -106,8 +113,7 @@ GROUP_ICD9 = [
 
 
 def _codes(key: str) -> dict[str, list[str]]:
-    _, icd10, icd9, _, _ = CONDITIONS[key]
-    return {"icd10": icd10, "icd9": icd9, "snomed": SNOMED[key]}
+    return codes(CONDITIONS[key], SNOMED[key])
 
 
 # ---------------------------------------------------------------- MAGGIC (Pocock et al. 2013)
@@ -129,16 +135,12 @@ MAGGIC_DEATH = [
 # fmt: on
 
 
-def _bands(cuts: list[tuple[float | None, float]]) -> list[dict[str, Any]]:
-    return [{"lt": lt, "value": v} for lt, v in cuts]
-
-
 # Figure 2 integer points. Bands are "x < lt"; MAGGIC's "20-24" etc. are integer ranges.
 MAGGIC_TERMS: list[dict[str, Any]] = [
     {
         "kind": "bands",
         "input": "ef",
-        "bands": _bands([(20, 7), (25, 6), (30, 5), (35, 3), (40, 2), (None, 0)]),
+        "bands": bands([(20, 7), (25, 6), (30, 5), (35, 3), (40, 2), (None, 0)]),
     },
     {
         "kind": "grid",
@@ -147,19 +149,15 @@ MAGGIC_TERMS: list[dict[str, Any]] = [
         "rows": [
             {
                 "lt": 30,
-                "bands": _bands([(56, 0), (60, 1), (65, 2), (70, 4), (75, 6), (80, 8), (None, 10)]),
+                "bands": bands([(56, 0), (60, 1), (65, 2), (70, 4), (75, 6), (80, 8), (None, 10)]),
             },
             {
                 "lt": 40,
-                "bands": _bands(
-                    [(56, 0), (60, 2), (65, 4), (70, 6), (75, 8), (80, 10), (None, 13)]
-                ),
+                "bands": bands([(56, 0), (60, 2), (65, 4), (70, 6), (75, 8), (80, 10), (None, 13)]),
             },
             {
                 "lt": None,
-                "bands": _bands(
-                    [(56, 0), (60, 3), (65, 5), (70, 7), (75, 9), (80, 12), (None, 15)]
-                ),
+                "bands": bands([(56, 0), (60, 3), (65, 5), (70, 7), (75, 9), (80, 12), (None, 15)]),
             },
         ],
     },
@@ -170,21 +168,21 @@ MAGGIC_TERMS: list[dict[str, Any]] = [
         "rows": [
             {
                 "lt": 30,
-                "bands": _bands([(110, 5), (120, 4), (130, 3), (140, 2), (150, 1), (None, 0)]),
+                "bands": bands([(110, 5), (120, 4), (130, 3), (140, 2), (150, 1), (None, 0)]),
             },
-            {"lt": 40, "bands": _bands([(110, 3), (120, 2), (140, 1), (None, 0)])},
-            {"lt": None, "bands": _bands([(110, 2), (130, 1), (None, 0)])},
+            {"lt": 40, "bands": bands([(110, 3), (120, 2), (140, 1), (None, 0)])},
+            {"lt": None, "bands": bands([(110, 2), (130, 1), (None, 0)])},
         ],
     },
     {
         "kind": "bands",
         "input": "bmi",
-        "bands": _bands([(15, 6), (20, 5), (25, 3), (30, 2), (None, 0)]),
+        "bands": bands([(15, 6), (20, 5), (25, 3), (30, 2), (None, 0)]),
     },
     {
         "kind": "bands",
         "input": "creatinine",
-        "bands": _bands(
+        "bands": bands(
             [(90, 0), (110, 1), (130, 2), (150, 3), (170, 4), (210, 5), (250, 6), (None, 8)]
         ),
     },
@@ -193,7 +191,7 @@ MAGGIC_TERMS: list[dict[str, Any]] = [
     {"kind": "category", "input": "smoker", "values": {"current": 1, "not_current": 0}},
     {"kind": "category", "input": "diabetes", "values": {"true": 3, "false": 0}},
     {"kind": "category", "input": "copd", "values": {"true": 2, "false": 0}},
-    {"kind": "bands", "input": "hf_years", "bands": _bands([(1.5, 0), (None, 2)])},
+    {"kind": "bands", "input": "hf_years", "bands": bands([(1.5, 0), (None, 2)])},
     {"kind": "category", "input": "beta_blocker", "values": {"true": 0, "false": 3}},
     {"kind": "category", "input": "acei_arb", "values": {"true": 0, "false": 1}},
 ]
@@ -406,7 +404,7 @@ def _inputs() -> list[dict[str, Any]]:
             "missing": MAGGIC_MISSING["sex"],
             "source": "maggic_2013",
         },
-        *(_boolean(key, CONDITIONS[key][0], present(_codes(key))) for key in CONDITIONS),
+        *(_boolean(key, c.label, present(_codes(key))) for key, c in CONDITIONS.items()),
         _boolean("diabetes", "Diabetes", present(DIABETES[0])),
         _boolean("copd", "COPD", present(COPD)),
         _number(
@@ -533,8 +531,8 @@ def _inputs() -> list[dict[str, Any]]:
 def _base_terms() -> list[dict[str, Any]]:
     terms = [
         {"kind": "category", "input": key, "values": {"true": round(math.log(hr), 6), "false": 0.0}}
-        for key, (_, _, _, hr, _) in CONDITIONS.items()
-        if hr is not None
+        for key, c in CONDITIONS.items()
+        if (hr := c.hr) is not None
     ]
     diabetes_ln_hr = round(math.log(DIABETES[1]), 6)
     terms.append(
@@ -635,14 +633,8 @@ def stroke_curves() -> list[dict[str, Any]]:
     return curves
 
 
-def _validation() -> list[dict[str, Any]]:
-    if not VALIDATION_FILE.exists():
-        return []
-    return json.loads(VALIDATION_FILE.read_text("utf-8"))["results"]
-
-
 # Citations live in sources.json ("model": coefficient sources, "validation": test data).
-SOURCES: dict[str, list[dict[str, Any]]] = json.loads((HERE / "sources.json").read_text("utf-8"))
+SOURCES: dict[str, list[dict[str, Any]]] = load_json(HERE, "sources.json")
 
 
 def build() -> ModelSpec:
@@ -784,7 +776,7 @@ def build() -> ModelSpec:
             },
         ],
         "life_tables": {"us_2024": load_life_table("us_2024").model_dump()},
-        "validation": _validation(),
+        "validation": validation_results(VALIDATION_FILE),
         "sources": [*SOURCES["model"], *SOURCES["validation"]],
     }
     return ModelSpec.model_validate(spec)

@@ -54,6 +54,12 @@ class SexRule(_Strict):
     rule: Literal["sex"] = "sex"
 
 
+def _require_code[R: (ObservationNumberRule, ObservationCodedRule)](rule: R) -> R:
+    if not rule.loinc and not rule.snomed:
+        raise ValueError("an observation rule needs LOINC or SNOMED codes")
+    return rule
+
+
 class ObservationNumberRule(_Strict):
     """Latest numeric observation with one of the LOINC codes, converted to the canonical unit.
 
@@ -69,9 +75,7 @@ class ObservationNumberRule(_Strict):
 
     @model_validator(mode="after")
     def _has_code(self) -> ObservationNumberRule:
-        if not self.loinc and not self.snomed:
-            raise ValueError("an observation rule needs LOINC or SNOMED codes")
-        return self
+        return _require_code(self)
 
 
 class ObservationCodedRule(_Strict):
@@ -89,9 +93,7 @@ class ObservationCodedRule(_Strict):
 
     @model_validator(mode="after")
     def _has_code(self) -> ObservationCodedRule:
-        if not self.loinc and not self.snomed:
-            raise ValueError("an observation rule needs LOINC or SNOMED codes")
-        return self
+        return _require_code(self)
 
 
 class Category(_Strict):
@@ -209,14 +211,29 @@ class NumberInput(_InputBase):
     min: float
     max: float
 
+    def accepts(self, v: Value) -> bool:
+        """A plausible value: a finite number within [min, max]."""
+        return (
+            isinstance(v, int | float)
+            and not isinstance(v, bool)
+            and math.isfinite(v)
+            and self.min <= v <= self.max
+        )
+
 
 class EnumInput(_InputBase):
     type: Literal["enum"] = "enum"
     values: list[str] = Field(min_length=2)
 
+    def accepts(self, v: Value) -> bool:
+        return v in self.values
+
 
 class BooleanInput(_InputBase):
     type: Literal["boolean"] = "boolean"
+
+    def accepts(self, v: Value) -> bool:
+        return isinstance(v, bool)
 
 
 Input = Annotated[NumberInput | EnumInput | BooleanInput, Field(discriminator="type")]
@@ -426,11 +443,13 @@ Survival = Annotated[
 ]
 
 
+# Survival forms built on population mortality: each has life_table, age_input and sex_input.
+PopulationForm = LifeTablePH | RelativeSurvival | ScoreWeibull | ScoreLifeTable
+
+
 def life_table_of(survival: Survival) -> str | None:
     """The life table a survival form reads (with its age and sex inputs), if any."""
-    if isinstance(survival, LifeTablePH | RelativeSurvival | ScoreWeibull | ScoreLifeTable):
-        return survival.life_table
-    return None
+    return survival.life_table if isinstance(survival, PopulationForm) else None
 
 
 class LifeTable(_Strict):
@@ -465,7 +484,7 @@ class Layer(_Strict):
 class Source(_Strict):
     id: str
     citation: str
-    url: str
+    url: str = Field(pattern=r"^https://[^\s]+$")  # rendered as a link in the app
     licence: str | None = None
 
 
@@ -553,7 +572,7 @@ def layer_inputs(layer: Layer) -> list[str]:
     names: list[str] = []
     survival = layer.survival
     if life_table_of(survival) is not None:
-        assert isinstance(survival, LifeTablePH | RelativeSurvival | ScoreWeibull | ScoreLifeTable)
+        assert isinstance(survival, PopulationForm)
         names += [survival.age_input, survival.sex_input]
     if isinstance(survival, RelativeSurvival):
         names += [survival.since_input, *survival.keys]
@@ -606,10 +625,5 @@ def _check_values(i: NumberInput | EnumInput | BooleanInput) -> None:
 
 
 def _check_value(i: NumberInput | EnumInput | BooleanInput, v: Value, where: str) -> None:
-    ok = (
-        (isinstance(i, NumberInput) and isinstance(v, int | float) and not isinstance(v, bool))
-        or (isinstance(i, EnumInput) and v in i.values)
-        or (isinstance(i, BooleanInput) and isinstance(v, bool))
-    )
-    if not ok:
-        raise ValueError(f"input {i.id!r}: {where} value {v!r} has the wrong type")
+    if not i.accepts(v):
+        raise ValueError(f"input {i.id!r}: {where} value {v!r} is not a valid value")

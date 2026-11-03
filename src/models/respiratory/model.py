@@ -14,38 +14,44 @@ coefficient here is fitted to patient-level data. See ``sources.md`` and ``sourc
 
 from __future__ import annotations
 
-import json
 import math
 from pathlib import Path
 from typing import Any
 
+from deaths_warrant.authoring import (
+    Condition,
+    bands,
+    codes,
+    load_json,
+    snomed_sets,
+    validation_results,
+)
 from deaths_warrant.registry import load_life_table
 from deaths_warrant.spec import ModelSpec
 
 HERE = Path(__file__).parent
-SNOMED: dict[str, list[str]] = json.loads((HERE / "snomed_sets.json").read_text("utf-8"))["sets"]
-SOURCES: dict[str, list[dict[str, Any]]] = json.loads((HERE / "sources.json").read_text("utf-8"))
+SNOMED = snomed_sets(HERE)
+SOURCES: dict[str, list[dict[str, Any]]] = load_json(HERE, "sources.json")
 VALIDATION_FILE = HERE / "validation.json"
 
 # key -> (label, ICD-10 prefixes, ICD-9 prefixes, all-cause mortality HR, source id).
-CONDITIONS: dict[str, tuple[str, list[str], list[str], float, str]] = {
-    "copd": (
+CONDITIONS: dict[str, Condition] = {
+    "copd": Condition(
         "COPD (including emphysema and chronic bronchitis)",
         ["J41", "J42", "J43", "J44"],
         ["491", "492", "496"],
         1.80,
         "zhao_2025",
     ),
-    "bronchiectasis": ("Bronchiectasis", ["J47"], ["494"], 2.2, "quint_2016"),
-    "asthma": ("Asthma", ["J45", "J46"], ["493"], 1.38, "zhang_2022"),
+    "bronchiectasis": Condition("Bronchiectasis", ["J47"], ["494"], 2.2, "quint_2016"),
+    "asthma": Condition("Asthma", ["J45", "J46"], ["493"], 1.38, "zhang_2022"),
 }
 GROUP_ICD10 = [f"J{n}" for n in range(40, 48)]
 GROUP_ICD9 = [str(n) for n in range(490, 497)]
 
 
 def _codes(key: str) -> dict[str, list[str]]:
-    _, icd10, icd9, _, _ = CONDITIONS[key]
-    return {"icd10": icd10, "icd9": icd9, "snomed": SNOMED[key]}
+    return codes(CONDITIONS[key], SNOMED[key])
 
 
 # ---------------------------------------------------------------- updated ADO index
@@ -69,24 +75,20 @@ ADO_3Y_MORTALITY = [
 ]
 
 
-def _bands(cuts: list[tuple[float | None, float]]) -> list[dict[str, Any]]:
-    return [{"lt": lt, "value": v} for lt, v in cuts]
-
-
 ADO_TERMS = [
     # FEV1 % predicted: <=35 -> 4, 36-50 -> 3, 51-64 -> 2, 65-80 -> 1, >=81 -> 0
     {
         "kind": "bands",
         "input": "fev1_pct",
-        "bands": _bands([(36, 4), (51, 3), (65, 2), (81, 1), (None, 0)]),
+        "bands": bands([(36, 4), (51, 3), (65, 2), (81, 1), (None, 0)]),
     },
     # mMRC dyspnoea: 0 -> 0, 1-2 -> 1, 3 -> 2, 4 -> 3
-    {"kind": "bands", "input": "mmrc", "bands": _bands([(1, 0), (3, 1), (4, 2), (None, 3)])},
+    {"kind": "bands", "input": "mmrc", "bands": bands([(1, 0), (3, 1), (4, 2), (None, 3)])},
     # Age: 40-49 -> 0, 50-59 -> 2, 60-69 -> 4, 70-79 -> 5, >=80 -> 7 (under 40 scored as 40-49)
     {
         "kind": "bands",
         "input": "age",
-        "bands": _bands([(50, 0), (60, 2), (70, 4), (80, 5), (None, 7)]),
+        "bands": bands([(50, 0), (60, 2), (70, 4), (80, 5), (None, 7)]),
     },
 ]
 
@@ -127,12 +129,6 @@ def _mmrc_rule() -> dict[str, Any]:
             {"rule": "condition_category", "categories": grades},
         ],
     }
-
-
-def _validation() -> list[dict[str, Any]]:
-    if not VALIDATION_FILE.exists():
-        return []
-    return json.loads(VALIDATION_FILE.read_text("utf-8"))["results"]
 
 
 def build() -> ModelSpec:
@@ -176,7 +172,7 @@ def build() -> ModelSpec:
             },
             *(
                 {"id": key, "label": label, "type": "boolean", "extract": present(_codes(key))}
-                for key, (label, *_) in CONDITIONS.items()
+                for key, label in ((k, c.label) for k, c in CONDITIONS.items())
             ),
             {
                 "id": "fev1_pct",
@@ -243,14 +239,14 @@ def build() -> ModelSpec:
                             "input": key,
                             "values": {"true": round(math.log(hr), 6), "false": 0.0},
                         }
-                        for key, (_, _, _, hr, _) in CONDITIONS.items()
+                        for key, hr in ((k, c.hr) for k, c in CONDITIONS.items())
                     ],
                 },
-                "sources": sorted({src for *_, src in CONDITIONS.values()} | {"nchs_us_2024"}),
+                "sources": sorted({c.source for c in CONDITIONS.values()} | {"nchs_us_2024"}),
             },
         ],
         "life_tables": {"us_2024": load_life_table("us_2024").model_dump()},
-        "validation": _validation(),
+        "validation": validation_results(VALIDATION_FILE),
         "sources": [*SOURCES["model"], *SOURCES["validation"]],
     }
     return ModelSpec.model_validate(spec)

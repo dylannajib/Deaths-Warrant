@@ -69,7 +69,11 @@ This test checks robustness on real records; it is not an accuracy test. Accurac
 
 ## Accuracy on real, published patient data
 
-No model was fitted to any of these datasets. Every test cohort has outcomes from 2010 onwards.
+No model was fitted to any of these datasets.
+* Patient-level test data is restricted to outcomes from 2010 onwards.
+* Published cohort results are used when their follow-up runs past 2010. Some began earlier:
+  stroke 2008–2017, Brazil 2008–2014, Korean COPD 2003–2013, US COPD cohorts 1983–2020.
+* Every result is labelled with its period.
 
 There are two measures:
 * **Ranking (C-index):** the share of patient pairs that the model put in the right order.
@@ -85,7 +89,7 @@ There are two measures:
 | Heart failure | Brazilian MAGGIC validation (published, 2008–2014) | – | 3-year mortality: 20.9% vs 33.4% |
 | Stroke | Australia and New Zealand, 313,162 first strokes (published, 2008–2017) | – | 1/5/10 years: 74.9/51.6/32.9% vs 73.0/52.8/36.4% |
 | Stroke | England SSNAP, first-ever strokes (published, 2013–2016) | – | 1 year: 72.3% vs 73.6% |
-| Respiratory | NHANES 2007–2018 linked to death records, 3,818 patients (deaths to 2019) | 78% | 1/3/5 years: 98.6/95.5/92.1% vs 98.0/94.8/91.4% |
+| Respiratory | NHANES 2011–2018 linked to death records, 2,602 patients (deaths to 2019) | 78% | 1/3/5 years: 98.6/95.5/92.1% vs 98.1/95.2/91.7% |
 | Respiratory | Published US cohorts (followed to 2020) | – | Life expectancy at 65 relative to no COPD, by GOLD stage 1–4: 91/79/55/44% vs 93/76/61/50% |
 
 **The test window (2010 onwards):**
@@ -127,6 +131,9 @@ All of these run in CI (`hostile.test.ts`, `xml.test.ts`, `upload.test.ts`).
 * **Display:** text from the file is always shown as text, never as HTML.
 * **Production build:** checked in headless Chromium under the strict Content Security Policy.
   It sends nothing anywhere else (`connect-src 'self'`).
+* **Worker policy:** the worker is a separate script, which takes its policy from its own HTTP
+  response headers, not from the page's meta tag. `vite preview` and the generated
+  `dist/_headers` both send the full policy; the worker's response was checked to carry it.
 
 ## Bugs found by final testing (all fixed and covered by tests)
 

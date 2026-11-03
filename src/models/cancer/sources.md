@@ -64,7 +64,7 @@ No coefficient is fitted to patient-level data.
 
 ## Validation
 
-Two independent real datasets are used, with outcomes from 2010 onwards. Neither was used to
+Two independent real patient-level datasets are used, with outcomes from 2010 onwards. Neither was used to
 build the model.
 
 ### MSK-CHORD (`validate.py`, results in `validation.json`)

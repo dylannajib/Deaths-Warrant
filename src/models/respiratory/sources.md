@@ -40,14 +40,15 @@ Full citations, URLs and licences are in `sources.json`. SNOMED CT sets come fro
 
 ## Validation (`validate.py`, results in `validation.json`)
 
-* **NHANES 2007–2018 linked to the National Death Index, deaths through 2019** (U.S.,
-  public-use; patient level; tests the base layer).
-  * COPD or asthma, n = 3,818:
+* **NHANES 2011–2018 linked to the National Death Index, deaths through 2019** (U.S.,
+  public-use; patient level; tests the base layer). The 2007–2010 cycles are excluded so that
+  every outcome falls in the 2010+ test window.
+  * COPD or asthma, n = 2,602:
     * Harrell's C-index is 0.78.
-    * Predicted 1/3/5-year survival is 0.986/0.955/0.921, against observed 0.980/0.948/0.914.
-  * COPD, n = 1,536: C-index 0.69. Predicted 5-year survival is 0.865, against observed 0.836.
-  * Asthma only, n = 2,282: C-index 0.75. Predicted 5-year survival is 0.959, against observed
-    0.965.
+    * Predicted 1/3/5-year survival is 0.986/0.955/0.921, against observed 0.981/0.952/0.917.
+  * COPD, n = 1,040: C-index 0.69. Predicted 5-year survival is 0.865, against observed 0.846.
+  * Asthma only, n = 1,562: C-index 0.75. Predicted 5-year survival is 0.959, against observed
+    0.962.
 * **Korean COPD cohort** (Park 2019, n = 14,127; base layer). Predicted 5-year mortality by age
   band, against observed:
 

@@ -15,17 +15,17 @@ No coefficient here is fitted to patient-level data.
 
 from __future__ import annotations
 
-import json
 import math
 from pathlib import Path
 from typing import Any
 
+from deaths_warrant.authoring import load_json, snomed_sets, validation_results
 from deaths_warrant.registry import load_life_table
 from deaths_warrant.spec import ModelSpec
 
 HERE = Path(__file__).parent
-SEER: dict[str, Any] = json.loads((HERE / "seer_relative_survival.json").read_text("utf-8"))
-SNOMED: dict[str, list[str]] = json.loads((HERE / "snomed_sets.json").read_text("utf-8"))["sets"]
+SEER: dict[str, Any] = load_json(HERE, "seer_relative_survival.json")
+SNOMED = snomed_sets(HERE)
 VALIDATION_FILES = [HERE / "validation.json", HERE / "validation_tcga.json"]
 
 # Site key -> (label, ICD-10 prefixes, ICD-9 prefixes). Order is the matching priority when a
@@ -221,15 +221,6 @@ def _curves(site_keys: list[str], stages: list[str] | None) -> list[dict[str, An
     return curves
 
 
-def _validation() -> list[dict[str, Any]]:
-    return [
-        r
-        for path in VALIDATION_FILES
-        if path.exists()
-        for r in json.loads(path.read_text("utf-8"))["results"]
-    ]
-
-
 def _layer(
     layer_id: str,
     label: str,
@@ -378,7 +369,7 @@ def build() -> ModelSpec:
             ),
         ],
         "life_tables": {"us_2024": load_life_table("us_2024").model_dump()},
-        "validation": _validation(),
+        "validation": validation_results(*VALIDATION_FILES),
         "sources": [
             {
                 "id": "seer_explorer",

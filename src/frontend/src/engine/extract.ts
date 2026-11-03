@@ -110,8 +110,8 @@ function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value |
     case "years_since_condition":
       return yearsSince(matchingConditions(record, rule.codes), asOf);
     case "years_since_category": {
-      const cat = rule.categories.find((c) => matchingConditions(record, c.codes).length);
-      return cat ? yearsSince(matchingConditions(record, cat.codes), asOf) : [null, "No matching diagnosis"];
+      const matches = rule.categories.map((c) => matchingConditions(record, c.codes)).find((m) => m.length);
+      return matches ? yearsSince(matches, asOf) : [null, "No matching diagnosis"];
     }
     case "medication_present": {
       // A record with no medication list says nothing about treatment: unknown, not "not taken".

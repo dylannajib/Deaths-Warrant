@@ -1,9 +1,10 @@
 """Test the chronic lower respiratory disease model on real patients (testing only).
 
-1. Patient level: NHANES 2007-2018 (U.S. national survey) linked to the National Death Index
-   through 31 December 2019; public-use files, no registration. Download into the git-ignored
-   ``data/nhanes/``:
-   * DEMO_E..J.XPT and MCQ_E..J.XPT from https://wwwn.cdc.gov/nchs/nhanes/ (cycles 2007-2018);
+1. Patient level: NHANES 2011-2018 (U.S. national survey) linked to the National Death Index
+   through 31 December 2019; public-use files, no registration. Only cycles interviewed from
+   2011 are used, so every outcome falls in the 2010+ test window. Download into the
+   git-ignored ``data/nhanes/``:
+   * DEMO_G..J.XPT and MCQ_G..J.XPT from https://wwwn.cdc.gov/nchs/nhanes/ (cycles 2011-2018);
    * NHANES_<cycle>_MORT_2019_PUBLIC.dat from
      https://ftp.cdc.gov/pub/Health_Statistics/NCHS/datalinkage/linked_mortality/.
    COPD (emphysema, current chronic bronchitis or COPD) and current asthma are self-reported
@@ -32,13 +33,18 @@ from model import CONDITIONS, build  # noqa: E402
 from deaths_warrant.evaluate import evaluate, population_cum_hazard, survival_function  # noqa: E402
 from deaths_warrant.registry import load_life_table  # noqa: E402
 from deaths_warrant.sources.xpt import read_xpt  # noqa: E402
-from deaths_warrant.validation import calibration_at, harrell_c, kaplan_meier, km_median  # noqa: E402
+from deaths_warrant.validation import (  # noqa: E402
+    calibration_at,
+    harrell_c,
+    kaplan_meier,
+    km_median,
+    result_row,
+    sex_mix,
+)
 
 DATA = HERE.parents[2] / "data" / "nhanes"
 OUT = HERE / "validation.json"
-CYCLES = {
-    "E": "2007_2008",
-    "F": "2009_2010",
+CYCLES = {  # 2007-2010 cycles excluded: their follow-up starts before the 2010+ window
     "G": "2011_2012",
     "H": "2013_2014",
     "I": "2015_2016",
@@ -61,18 +67,6 @@ PARK = [  # (band, representative age, share of cohort, observed 5-year mortalit
 BHATT_N, BHATT_FEMALE = 45_886, 0.563
 BHATT = {"none": 21.5, "GOLD 1": 20.0, "GOLD 2": 16.4, "GOLD 3": 13.1, "GOLD 4": 10.7}
 GOLD_FEV1 = {"GOLD 1": 90.0, "GOLD 2": 65.0, "GOLD 3": 40.0, "GOLD 4": 25.0}  # mid-grade FEV1 %
-
-
-def _row(dataset: str, period: str, n: int, metric: str, value: float, notes: str, source: str):
-    return {
-        "dataset": dataset,
-        "period": period,
-        "n": n,
-        "metric": metric,
-        "value": round(value, 3),
-        "notes": notes,
-        "source": source,
-    }
 
 
 def nhanes_cohort() -> list[dict[str, Any]]:
@@ -112,8 +106,8 @@ def nhanes_cohort() -> list[dict[str, Any]]:
 def nhanes(spec) -> list[dict[str, Any]]:
     people = nhanes_cohort()
     preds = [evaluate(spec, p["observed"]) for p in people]
-    dataset = "NHANES 2007-2018 linked to the National Death Index (U.S.)"
-    period = "Interviewed 2007-2018, deaths through 31 Dec 2019"
+    dataset = "NHANES 2011-2018 linked to the National Death Index (U.S.)"
+    period = "Interviewed 2011-2018, deaths through 31 Dec 2019"
     notes = (
         "Patient-level, predicted at interview from age, sex and self-reported doctor-diagnosed"
         " COPD (emphysema, current chronic bronchitis or COPD) or current asthma (base layer);"
@@ -134,7 +128,7 @@ def nhanes(spec) -> list[dict[str, Any]]:
         n = len(pairs)
         medians = [r["median_years"] if r["median_years"] is not None else 60.0 for _, r in pairs]
         out.append(
-            _row(
+            result_row(
                 dataset,
                 period,
                 n,
@@ -149,7 +143,7 @@ def nhanes(spec) -> list[dict[str, Any]]:
                 t, times, events, [r["survival_at"][str(t)] for _, r in pairs]
             )
             out.append(
-                _row(
+                result_row(
                     dataset,
                     period,
                     n,
@@ -160,7 +154,7 @@ def nhanes(spec) -> list[dict[str, Any]]:
                 )
             )
             out.append(
-                _row(
+                result_row(
                     dataset,
                     period,
                     n,
@@ -173,7 +167,7 @@ def nhanes(spec) -> list[dict[str, Any]]:
         km = km_median(kaplan_meier(times, events))
         if km is not None:
             out.append(
-                _row(
+                result_row(
                     dataset,
                     period,
                     n,
@@ -186,13 +180,6 @@ def nhanes(spec) -> list[dict[str, Any]]:
     return out
 
 
-def _sex_mix(spec, observed: dict[str, Any], male: float, t: float) -> float:
-    return sum(
-        w * evaluate(spec, {**observed, "sex": sex})["survival_at"][str(t)]
-        for sex, w in (("male", male), ("female", 1 - male))
-    )
-
-
 def park(spec) -> list[dict[str, Any]]:
     dataset = "Korean National Health Insurance COPD sample (Park et al. 2019)"
     period = "COPD diagnosed 2003-2013"
@@ -203,9 +190,9 @@ def park(spec) -> list[dict[str, Any]]:
     out = []
     for band, age, share, mortality in PARK:
         n = round(PARK_N * share)
-        pred = 1 - _sex_mix(spec, {**NONE, "copd": True, "age": age}, PARK_MALE, 5)
+        pred = 1 - sex_mix(spec, {**NONE, "copd": True, "age": age}, PARK_MALE, 5)
         out.append(
-            _row(
+            result_row(
                 dataset,
                 period,
                 n,
@@ -216,7 +203,7 @@ def park(spec) -> list[dict[str, Any]]:
             )
         )
         out.append(
-            _row(
+            result_row(
                 dataset,
                 period,
                 n,
@@ -261,7 +248,7 @@ def bhatt(spec) -> list[dict[str, Any]]:
             obs = {**NONE, "copd": True, "age": 65, "sex": sex, "fev1_pct": fev1}
             e += w * _life_expectancy(survival_function(spec, obs))
         out.append(
-            _row(
+            result_row(
                 dataset,
                 period,
                 BHATT_N,
@@ -272,7 +259,7 @@ def bhatt(spec) -> list[dict[str, Any]]:
             )
         )
         out.append(
-            _row(
+            result_row(
                 dataset,
                 period,
                 BHATT_N,

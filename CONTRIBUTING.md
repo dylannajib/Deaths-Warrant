@@ -57,8 +57,9 @@ def golden_inputs() -> list[dict]:
   life tables, SEER*Explorer and SNOMED CT hierarchies (`snomed_roots.json` →
   `snomed_sets.json`, because the browser matches SNOMED codes exactly). `sources/xpt.py`
   reads NHANES SAS transport files for validation.
-* **Validation**: test only on real data with outcomes from 2010 onwards, and label each
-  result with its period. Put a `validate.py` in your folder that reads real, published patient data
+* **Validation**: test on real patient-level data with outcomes from 2010 onwards, or on
+  published cohort results whose follow-up runs past 2010, and label each result with its
+  period. Put a `validate.py` in your folder that reads real, published patient data
   from `data/` and writes `validation.json`. `build()` loads that file into the spec. Report
   only aggregate results (`n >= 20`), never commit patient-level data, and never train on
   data you then validate on. `src/models/cancer/validate.py` (patient level) and

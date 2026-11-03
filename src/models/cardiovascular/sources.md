@@ -89,7 +89,9 @@ from `snomed_roots.json` by `python -m deaths_warrant.sources.snomed cardiovascu
 
 ## Validation (`validate.py`, results in `validation.json`)
 
-Every test cohort has outcomes from 2010 onwards, and each result is labelled with its period.
+Patient-level tests have outcomes from 2010 onwards. Published cohort results are used when
+their follow-up runs past 2010, though some began earlier (stroke 2008–2017, Brazil
+2008–2014). Each result is labelled with its period.
 Open patient-level cardiovascular data is scarce, because most of it requires credentialed
 access. No cohort below was used to build the layer it tests.
 

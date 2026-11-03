@@ -16,14 +16,11 @@ from typing import Any
 from .spec import (
     BandsTerm,
     CategoryTerm,
-    EnumInput,
     GridTerm,
-    Input,
     LifeTable,
     LifeTablePH,
     LinearTerm,
     ModelSpec,
-    NumberInput,
     RelativeSurvival,
     RelativeSurvivalCurve,
     ScoreLifeTable,
@@ -62,7 +59,7 @@ def resolve_inputs(spec: ModelSpec, observed: Observed) -> _Resolved:
         v = observed.get(i.id)
         if v is None:
             status[i.id] = "missing"
-        elif _plausible(i, v):
+        elif i.accepts(v):
             values[i.id] = v
             status[i.id] = "observed"
         else:
@@ -70,19 +67,6 @@ def resolve_inputs(spec: ModelSpec, observed: Observed) -> _Resolved:
         if i.id not in values and i.missing is None:
             raise EvaluationError(f"{i.label} is required but was not found in the record")
     return _Resolved(values, status)
-
-
-def _plausible(i: Input, v: Value) -> bool:
-    if isinstance(i, NumberInput):
-        return (
-            isinstance(v, int | float)
-            and not isinstance(v, bool)
-            and math.isfinite(v)
-            and i.min <= v <= i.max
-        )
-    if isinstance(i, EnumInput):
-        return v in i.values
-    return isinstance(v, bool)
 
 
 def _band(bands: list, x: float):

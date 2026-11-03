@@ -29,7 +29,8 @@ def test_fixture_is_valid():
         ({"layers__4__requires": ["score"]}, "last layer"),
         ({"layers__1__requires": ["nope"]}, "unknown input"),
         ({"layers__4__survival__life_table": "nope"}, "unknown life table"),
-        ({"inputs__1__missing": [{"value": "other", "weight": 1}]}, "wrong type"),
+        ({"inputs__1__missing": [{"value": "other", "weight": 1}]}, "not a valid value"),
+        ({"inputs__2__missing": [{"value": 11.0, "weight": 1}]}, "not a valid value"),  # > max
         (
             {
                 "layers__1__survival__terms": [
@@ -43,6 +44,7 @@ def test_fixture_is_valid():
             "needs a number",
         ),
         ({"group_codes": {"icd10": ["i50.1"]}}, "upper-case"),
+        ({"sources": [{"id": "x", "citation": "x", "url": "javascript:alert(1)"}]}, "should match"),
         (
             {"life_tables": {"flat": {"source": "x", "female": [1.0, 0.5], "male": [0.1, 0.1]}}},
             r"\[0, 1\)",

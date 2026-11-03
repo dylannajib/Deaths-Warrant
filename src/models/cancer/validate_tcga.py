@@ -34,7 +34,7 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parents[1] / "backend")]  # validate.py, deaths_warrant
-from validate import _predict, _site, metrics, years_lived  # noqa: E402
+from validate import metrics, predict, site_of, years_lived  # noqa: E402
 
 DATA = HERE.parents[2] / "data" / "tcga_gdc"
 OUT = HERE / "validation_tcga.json"
@@ -121,7 +121,7 @@ def cohort(studies: dict[str, dict[str, dict[str, str]]]) -> list[dict[str, Any]
                     "observed": {
                         "age": age,
                         "sex": p["SEX"].lower(),
-                        "site": _site(int(morphology.group(1)), topography.group(1)),
+                        "site": site_of(int(morphology.group(1)), topography.group(1)),
                         "stage": _stage(p),
                         "since": 0.0,
                     },
@@ -133,7 +133,7 @@ def cohort(studies: dict[str, dict[str, dict[str, str]]]) -> list[dict[str, Any]
 def main() -> None:
     patients = cohort(download())
     with Pool() as pool:
-        preds = pool.map(_predict, [p["observed"] for p in patients], chunksize=100)
+        preds = pool.map(predict, [p["observed"] for p in patients], chunksize=100)
     pairs = list(zip(patients, preds, strict=True))
     notes = (
         "Predicted at diagnosis from age, sex, site and a summary stage derived from"

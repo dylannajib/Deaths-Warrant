@@ -3,7 +3,7 @@
 import { yearsBetween } from "../parsing/dates";
 import type { SourceFormat } from "../parsing/record";
 import { latestDate, parseUpload } from "../parsing/upload";
-import { evaluate, type EvaluationResult } from "./evaluate";
+import { evaluate, isScoreForm, type EvaluationResult } from "./evaluate";
 import { extractInputs, recordMatchesGroup } from "./extract";
 import type { ModelSpec, Source, ValidationResult } from "./spec";
 
@@ -36,14 +36,13 @@ export interface PrognosisReport {
 
 function reportModel(spec: ModelSpec, result: EvaluationResult): ReportModel {
   const layer = spec.layers.find((l) => l.id === result.layer.id)!;
-  const points = layer.survival.type === "score_weibull" || layer.survival.type === "score_life_table";
   return {
     id: spec.id,
     name: spec.name,
     version: spec.version,
     description: spec.description,
     max_reliable_years: spec.max_reliable_years,
-    layer: { label: layer.label, description: layer.description, sources: layer.sources, kind: points ? "points" : "hazard" },
+    layer: { label: layer.label, description: layer.description, sources: layer.sources, kind: isScoreForm(layer.survival) ? "points" : "hazard" },
     inputs: Object.fromEntries(
       spec.inputs.map((i) => [i.id, { label: i.label, unit: i.type === "number" ? i.unit : null, source: i.source }]),
     ),

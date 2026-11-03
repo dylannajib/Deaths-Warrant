@@ -12,7 +12,10 @@ left, with the full reasoning behind it.
 Your file **never leaves your device**. Parsing and prognosis run entirely in your browser,
 in a Web Worker that is discarded after each run. There is no server-side code, no database,
 no analytics and no third-party scripts. The production Content Security Policy sets
-`connect-src 'self'`, so the browser itself refuses to send data to any other site. Because
+`connect-src 'self'`, so the browser itself refuses to send data to any other site. It is
+defined once in `src/frontend/vite.config.ts` and delivered both as HTTP headers (the build
+writes `dist/_headers`; these also cover the worker) and as a meta tag. After a run the page
+releases the file; "Clear result", or leaving the page, removes the result too. Because
 the code is open source, you can check this claim yourself (and watch the Network tab).
 
 ## How it works
@@ -48,7 +51,7 @@ src/
   `src/models/cardiovascular/sources.md`.
   *Chronic lower respiratory disease*. COPD with a recorded FEV1 % predicted uses the updated
   ADO index. Otherwise population mortality × published hazard ratios for COPD,
-  bronchiectasis and asthma. On 3,818 real NHANES patients, Harrell's C-index is 0.78. See
+  bronchiectasis and asthma. On 2,602 real NHANES patients (interviewed 2011–2018), Harrell's C-index is 0.78. See
   `src/models/respiratory/sources.md`.
 * **Two implementations, one answer.** Python is the reference; the browser runs a
   TypeScript port. CI replays every `golden.json` against the TypeScript evaluator.
@@ -95,7 +98,8 @@ frontend changes are needed.
 | typescript | dev | type checking (project requirement) |
 | vite, @vitejs/plugin-react | dev | build and dev server; the official React plugin is the only plugin |
 | vitest | dev | tests, including golden parity |
-| @types/react, @types/react-dom, @types/node | dev | type definitions |
+| @types/react, @types/react-dom | dev | type definitions |
+| @types/node | dev | type definitions for the tests only (they read files with `node:fs`) |
 | pydantic | pipeline | validates every model spec (project requirement) |
 | pytest, ruff | pipeline dev | tests and lint |
 

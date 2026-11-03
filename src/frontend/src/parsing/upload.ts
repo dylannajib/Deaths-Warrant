@@ -60,12 +60,7 @@ export function parseUpload(text: string, asOf: string): PatientRecord {
 
 /** Convert every raw date to ISO, choosing a convention for ambiguous dd/mm vs mm/dd dates. */
 export function resolveDates(record: PatientRecord, asOf: string): PatientRecord {
-  const raws = [
-    record.birthDate,
-    ...record.conditions.flatMap((c) => [c.onset, c.admitted]),
-    ...record.observations.map((o) => o.date),
-    ...record.medications.map((m) => m.date),
-  ].filter((d): d is string => !!d);
+  const raws = [record.birthDate, ...entryDates(record)].filter((d): d is string => !!d);
 
   let convention: Convention = "dmy";
   if (raws.some(isAmbiguousFormat)) {
@@ -107,12 +102,17 @@ function withDate<T extends object, K extends keyof T & string>(item: T, key: K,
   return copy;
 }
 
-/** Newest dated entry in the record (used to warn when the record is stale). */
-export function latestDate(record: PatientRecord): string | undefined {
-  const dates = [
+/** Every date on a record entry (diagnoses, hospital stays, observations, medications). */
+function entryDates(record: PatientRecord): (string | undefined)[] {
+  return [
     ...record.conditions.flatMap((c) => [c.onset, c.admitted]),
     ...record.observations.map((o) => o.date),
     ...record.medications.map((m) => m.date),
-  ].filter((d): d is string => !!d);
+  ];
+}
+
+/** Newest dated entry in the record (used to warn when the record is stale). */
+export function latestDate(record: PatientRecord): string | undefined {
+  const dates = entryDates(record).filter((d): d is string => !!d);
   return dates.length ? dates.reduce((a, b) => (a > b ? a : b)) : undefined;
 }

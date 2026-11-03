@@ -14,6 +14,7 @@ from __future__ import annotations
 import gzip
 import hashlib
 import json
+import re
 from pathlib import Path
 
 from . import REPO, fetch
@@ -62,6 +63,8 @@ def main() -> None:
     bundles = OUT / "bundles"
     bundles.mkdir(parents=True, exist_ok=True)
     for pid, patient in patients.items():
+        if not re.fullmatch(r"[A-Za-z0-9-]+", pid):  # the id becomes a file name
+            raise ValueError(f"unexpected patient id {pid!r}")
         resources = by_patient.get(pid, [])
         med_ids = {
             r.get("medicationReference", {}).get("reference", "").removeprefix("Medication/")

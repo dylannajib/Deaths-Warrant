@@ -10,13 +10,11 @@ import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { EvaluationError } from "../engine/evaluate";
 import { runPrognosis } from "../engine/prognosis";
-import type { ModelSpec } from "../engine/spec";
 import { parseUpload, UploadError } from "./upload";
+import { REAL_SPECS } from "../testing/specs";
 
 const asOf = "2026-11-03";
-const specs = Object.values(
-  import.meta.glob<ModelSpec>(["../../../models/*/spec.json", "!../../../models/_*/spec.json"], { eager: true, import: "default" }),
-);
+const specs = REAL_SPECS;
 const fixtures = ["ccda-ccd-1.xml", "ccda-ccd-2.xml", "ccda-discharge-summary.xml", "fhir-r4-patient-example.xml",
   "fhir-r4-patient-example.json", "fhir-r4-document-example-dischargesummary.xml", "fhir-r4-document-example-dischargesummary.json"]
   .map((name) => readFileSync(join(__dirname, "fixtures", name), "utf-8")); // prettier-ignore

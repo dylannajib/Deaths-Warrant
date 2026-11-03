@@ -118,8 +118,15 @@ export function selectCurve(survival: Extract<Survival, { type: "relative_surviv
   return curve;
 }
 
+type ScoreSurvival = Extract<Survival, { type: "score_weibull" | "score_life_table" }>;
+
+/** Survival forms driven by an integer risk score (shown to the user as points). */
+export function isScoreForm(survival: Survival): survival is ScoreSurvival {
+  return survival.type === "score_weibull" || survival.type === "score_life_table";
+}
+
 /** Integer risk score: the rounded term sum, clamped to the published table. */
-export function scoreOf(survival: Extract<Survival, { type: "score_weibull" | "score_life_table" }>, values: Record<string, Value>): number {
+export function scoreOf(survival: ScoreSurvival, values: Record<string, Value>): number {
   let total = 0;
   for (const term of survival.terms) total += termValue(term, values);
   return Math.min(Math.max(pyRound(total), 0), survival.survival.length - 1);
