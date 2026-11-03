@@ -32,5 +32,5 @@ export default defineConfig({
   worker: { format: "es" },
   server: { fs: { allow: [".."] } }, // model specs live in ../models
   // fsModuleCache would keep stale import.meta.glob results when a new model folder appears.
-  test: { include: ["src/**/*.test.ts"], fsModuleCache: false },
+  test: { include: ["src/**/*.test.{ts,tsx}"], fsModuleCache: false },
 });

@@ -69,12 +69,12 @@ form; `src/models/cancer/` is a complete real model.
 
 ```bash
 cd src/backend
-../../.venv/bin/python -m deaths_warrant.export   # writes spec.json + golden.json
+../../.venv/bin/python -m deaths_warrant.export   # writes spec.json, golden.json, summary.json
 ../../.venv/bin/python -m pytest
 cd ../frontend && npm test                        # replays golden.json in TypeScript
 ```
 
-Commit `model.py`, `spec.json`, `golden.json`, `sources.md` and any source-data JSON,
+Commit `model.py`, `spec.json`, `golden.json`, `summary.json`, `sources.md` and any source-data JSON,
 `validate.py` and `validation.json`. CI fails if the exported files
 are stale or if the TypeScript evaluator disagrees with Python. The model appears in the site's
 disease-group picker automatically.

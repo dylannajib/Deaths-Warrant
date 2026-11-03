@@ -1,0 +1,7 @@
+{
+ "schema_version": 1,
+ "id": "cancer",
+ "name": "Cancer",
+ "order": 10,
+ "description": "Population mortality for your age and sex combined with U.S. SEER cancer survival for your cancer site, stage and age at diagnosis, allowing for the time you have already survived since diagnosis."
+}

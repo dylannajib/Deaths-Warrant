@@ -1,0 +1,162 @@
+/* Cormorant Garamond (SIL OFL 1.1, public/fonts/OFL.txt), self-hosted: no third-party requests. */
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: normal;
+  font-weight: 300 700;
+  font-display: swap;
+  src: url("/fonts/cormorant-garamond-latin.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Cormorant Garamond";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/cormorant-garamond-italic-latin.woff2") format("woff2");
+}
+
+:root {
+  color-scheme: light dark;
+  --bg: #ffffff;
+  --ink: #111111;
+  --ink-2: #3d3d3d;
+  --muted: #6b6b6b;
+  --rule: #e2e2e2;
+  --soft: #f5f4f1;
+  --warn: #8a3b12;
+  --focus: #1a56db;
+  --serif: "Cormorant Garamond", "EB Garamond", Garamond, Georgia, serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #121212;
+    --ink: #f2f0ea;
+    --ink-2: #cfccc4;
+    --muted: #9a978f;
+    --rule: #2e2d2a;
+    --soft: #1c1b19;
+    --warn: #f0a37a;
+    --focus: #8fb0ff;
+  }
+}
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--serif);
+  font-size: 1.25rem;
+  line-height: 1.45;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
+.visually-hidden {
+  position: absolute; width: 1px; height: 1px; overflow: hidden;
+  clip: rect(0 0 0 0); clip-path: inset(50%); white-space: nowrap;
+}
+.hint { display: block; color: var(--ink-2); font-size: 1.05rem; }
+.muted { color: var(--muted); }
+
+/* Project links, top left */
+.links { display: flex; flex-wrap: wrap; gap: 0.5rem 2.25rem; padding: 1.25rem 1.75rem 0; }
+.links a { display: inline-flex; align-items: center; gap: 0.6rem; font-weight: 600; font-size: 1.15rem; text-decoration: none; }
+.links a:hover { text-decoration: underline; }
+.links img { width: 1.25rem; height: 1.25rem; object-fit: contain; }
+.links img.round { border-radius: 50%; object-fit: cover; }
+.links img.mark { filter: invert(1); } /* the GitHub mark asset is white */
+@media (prefers-color-scheme: dark) { .links img.mark { filter: none; } }
+
+.page { max-width: 46rem; margin: 0 auto; padding: 0 1rem; }
+
+.hero { text-align: center; margin-top: 2.5rem; }
+.hero h1 {
+  margin: 0;
+  font-size: clamp(3.25rem, 11vw, 7rem);
+  font-weight: 500;
+  line-height: 1;
+  letter-spacing: -0.01em;
+}
+.tagline { margin: 0.6rem 0 0; font-style: italic; font-size: 1.6rem; }
+.lede { margin: 0.75rem 0 0; font-size: 1.9rem; }
+
+.coverage { text-align: center; margin-top: 3.25rem; }
+.coverage h2 { margin: 0; font-size: 1.35rem; font-weight: 700; }
+.coverage p { margin: 0.35rem 0 0; font-size: 1.4rem; }
+
+.form { max-width: 34rem; margin: 3rem auto 0; display: grid; gap: 2rem; }
+.field { font-size: 1.45rem; }
+.upload { cursor: pointer; }
+.upload:focus-within .field { outline: 2px solid var(--focus); outline-offset: 3px; }
+.upload:hover .field strong, .picker summary:hover strong { text-decoration: underline; }
+.warn { color: var(--warn); }
+
+.picker summary { list-style: none; cursor: pointer; }
+.picker summary::-webkit-details-marker { display: none; }
+.picker[open] summary > span[aria-hidden] { display: inline-block; transform: rotate(90deg); }
+.picker fieldset { border: 0; margin: 0.75rem 0 0; padding: 0 0 0 1.25rem; display: grid; gap: 0.9rem; }
+.option { display: grid; grid-template-columns: auto 1fr; gap: 0.75rem; align-items: start; cursor: pointer; }
+.option input { margin-top: 0.45rem; accent-color: var(--ink); }
+
+.run { text-align: center; margin-top: 2.75rem; }
+.run button {
+  font: inherit; font-size: 1.85rem; font-weight: 700;
+  color: var(--ink); background: none; border: 0; padding: 0.25rem 0.75rem; cursor: pointer;
+}
+.run button:hover:not(:disabled) { text-decoration: underline; }
+.run button:disabled { color: var(--muted); cursor: not-allowed; }
+
+.error { margin: 2rem auto 0; max-width: 34rem; color: var(--warn); text-align: center; }
+
+/* Result */
+.result { margin: 3rem auto 0; max-width: 40rem; }
+.headline { text-align: center; font-size: 2.2rem; margin: 0; }
+.headline strong { font-weight: 700; }
+.basis { text-align: center; color: var(--ink-2); margin: 0.25rem 0 0; }
+.warnings { margin: 1.5rem 0 0; padding: 0.75rem 1rem 0.75rem 2rem; background: var(--soft); color: var(--warn); border-radius: 4px; }
+.drop { margin-top: 1.5rem; border-top: 1px solid var(--rule); padding-top: 0.75rem; }
+.drop > summary { cursor: pointer; font-weight: 700; font-size: 1.45rem; list-style: none; }
+.drop > summary::-webkit-details-marker { display: none; }
+.drop > summary::before { content: "> "; display: inline-block; margin-right: 0.3rem; transition: transform 0.15s; }
+.drop[open] > summary::before { transform: rotate(90deg); }
+.drop-body { margin-top: 0.75rem; }
+.reasoning h3 { font-size: 1.3rem; margin: 1.5rem 0 0.4rem; }
+.reasoning ul { padding-left: 1.25rem; }
+.dataset { margin: 0.6rem 0; }
+.dataset > summary { cursor: pointer; }
+.sources li { margin-bottom: 0.5rem; }
+.tag { font-size: 0.9rem; font-weight: 700; border: 1px solid var(--ink-2); border-radius: 3px; padding: 0 0.3rem; }
+
+.table { width: 100%; border-collapse: collapse; font-size: 1.05rem; margin: 0.5rem 0; }
+.table caption { text-align: left; font-weight: 700; padding-bottom: 0.25rem; }
+.table th, .table td { text-align: left; vertical-align: top; padding: 0.35rem 0.5rem 0.35rem 0; border-bottom: 1px solid var(--rule); }
+.table thead th { font-weight: 700; }
+.table tbody th { font-weight: 600; }
+.drop-body { overflow-wrap: anywhere; }
+
+/* Survival chart: one series in ink; recessive grid; hover crosshair */
+.chart { width: 100%; height: auto; display: block; margin: 1rem 0; touch-action: pan-y; }
+.chart .grid { stroke: var(--rule); stroke-width: 1; }
+.chart .tick { fill: var(--muted); font-size: 15px; font-family: var(--serif); }
+.chart .line { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
+.chart .area { fill: var(--ink); opacity: 0.06; }
+.chart .median line { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 4 4; }
+.chart .median text { fill: var(--ink-2); font-size: 15px; font-family: var(--serif); font-style: italic; }
+.chart .crosshair line { stroke: var(--muted); stroke-width: 1; }
+.chart .crosshair circle { fill: var(--ink); stroke: var(--bg); stroke-width: 2; }
+.chart .crosshair text { fill: var(--ink); font-size: 16px; font-weight: 700; font-family: var(--serif); paint-order: stroke; stroke: var(--bg); stroke-width: 4px; }
+
+.disclaimer { text-align: center; margin: 4.5rem auto 2rem; padding: 0 1rem; max-width: 46rem; font-size: 1.05rem; color: var(--ink-2); }
+.disclaimer p { margin: 0.2rem 0; }
+
+@media (max-width: 480px) {
+  body { font-size: 1.15rem; }
+  .links { padding: 1rem 1rem 0; gap: 0.5rem 1.25rem; }
+  .tagline { font-size: 1.35rem; }
+  .lede { font-size: 1.55rem; }
+  .field { font-size: 1.3rem; }
+  .table { font-size: 0.98rem; }
+  .chart .tick, .chart .median text { font-size: 24px; }
+  .chart .crosshair text { font-size: 26px; }
+}
+@media (prefers-reduced-motion: reduce) { .drop > summary::before { transition: none; } }

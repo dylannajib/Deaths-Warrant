@@ -4,7 +4,7 @@
  * The client terminates this worker after one run, releasing the file from memory.
  */
 
-import { findModel } from "../engine/models";
+import { loadModel } from "../engine/loader";
 import { runPrognosis } from "../engine/prognosis";
 import type { WorkerRequest, WorkerResponse } from "./protocol";
 
@@ -12,7 +12,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
   let response: WorkerResponse;
   try {
     const { file, modelId, asOf } = event.data;
-    const spec = findModel(modelId);
+    const spec = await loadModel(modelId);
     if (!spec) throw new Error("Unknown disease group");
     response = { ok: true, report: runPrognosis(await file.text(), spec, asOf) };
   } catch (e) {

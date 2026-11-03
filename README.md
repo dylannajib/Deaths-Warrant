@@ -23,6 +23,7 @@ src/
     model.py             model definition, built only from published, citable sources
     spec.json            exported coefficients (generated)
     golden.json          reference test cases (generated)
+    summary.json         name and description for the page (generated)
     sources.md           method, citations, licences, validation summary
     validate.py          accuracy test on real patient data (data kept in git-ignored data/)
     validation.json      aggregate validation results (generated)
@@ -72,6 +73,8 @@ cd src/frontend && npm ci && npm test && npm run dev
 ```
 
 `npm run dev` serves the localhost site; dev mode also lists the unit-test fixture model.
+The page loads only each model's `summary.json`; the worker loads the chosen model's full
+`spec.json` on demand, so adding models does not slow the page down.
 
 ## Adding a disease group
 
@@ -83,6 +86,7 @@ frontend changes are needed.
 | Package | Where | Why |
 |---|---|---|
 | react, react-dom | site | UI framework (project requirement) |
+| Cormorant Garamond | site | typeface, self-hosted woff2 (SIL OFL 1.1, `public/fonts/OFL.txt`) |
 | typescript | dev | type checking (project requirement) |
 | vite, @vitejs/plugin-react | dev | build and dev server; the official React plugin is the only plugin |
 | vitest | dev | tests, including golden parity |

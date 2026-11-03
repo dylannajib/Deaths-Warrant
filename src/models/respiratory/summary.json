@@ -1,0 +1,7 @@
+{
+ "schema_version": 1,
+ "id": "respiratory",
+ "name": "Chronic lower respiratory disease",
+ "order": 30,
+ "description": "COPD with a recorded lung function test uses the updated ADO index (age, breathlessness, airflow obstruction); otherwise U.S. population mortality is multiplied by a published hazard ratio for each recorded condition."
+}

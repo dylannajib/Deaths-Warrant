@@ -1,23 +1,24 @@
 /**
- * Every model under src/models/<id>/spec.json, bundled at build time (no network fetch).
- * Adding a model folder is enough for it to appear; folders starting with "_" are excluded,
- * except that dev mode includes the unit-test fixture so the harness page can exercise it.
+ * Every model under src/models/<id>/, bundled at build time (no network fetch to another
+ * site). Adding a model folder is enough for it to appear; folders starting with "_" are
+ * excluded, except that dev mode includes the unit-test fixture.
+ *
+ * The page imports only each model's summary.json (name and description, a few hundred
+ * bytes). The full spec.json, with its coefficient tables and code lists, is loaded by the
+ * worker alone, through loader.ts, for the model the user picked.
  */
 
 import { SCHEMA_VERSION, type ModelSpec } from "./spec";
 
-const real = import.meta.glob<ModelSpec>(["../../../models/*/spec.json", "!../../../models/_*/spec.json"], {
-  eager: true,
-  import: "default",
-});
-const fixture = import.meta.env.DEV
-  ? import.meta.glob<ModelSpec>("../../../models/_fixture/spec.json", { eager: true, import: "default" })
-  : {};
+export type ModelSummary = Pick<ModelSpec, "schema_version" | "id" | "name" | "order" | "description">;
 
-export const MODELS: ModelSpec[] = Object.values({ ...real, ...fixture })
+const summaries = {
+  ...import.meta.glob<ModelSummary>(["../../../models/*/summary.json", "!../../../models/_*/summary.json"], { eager: true, import: "default" }),
+  ...(import.meta.env.DEV ? import.meta.glob<ModelSummary>("../../../models/_fixture/summary.json", { eager: true, import: "default" }) : {}),
+};
+
+export const SUMMARY_PATHS = new Map(Object.entries(summaries).map(([path, s]) => [s, path]));
+
+export const MODELS: ModelSummary[] = Object.values(summaries)
   .filter((s) => s.schema_version === SCHEMA_VERSION)
   .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name));
-
-export function findModel(id: string): ModelSpec | undefined {
-  return MODELS.find((m) => m.id === id);
-}

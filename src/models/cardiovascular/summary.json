@@ -1,0 +1,7 @@
+{
+ "schema_version": 1,
+ "id": "cardiovascular",
+ "name": "Cardiovascular disease",
+ "order": 20,
+ "description": "Heart failure with a recorded ejection fraction uses the MAGGIC risk score; other cardiovascular disease uses U.S. population mortality multiplied by published hazard ratios for each recorded condition."
+}

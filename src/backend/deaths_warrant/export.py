@@ -1,4 +1,4 @@
-"""Export every model's ``spec.json`` and ``golden.json``.
+"""Export every model's ``spec.json``, ``golden.json`` and ``summary.json``.
 
 python -m deaths_warrant.export          # (re)write the files
 python -m deaths_warrant.export --check  # CI: fail if committed files are stale
@@ -17,6 +17,7 @@ from .registry import ModelFolder, discover
 from .spec import ModelSpec
 
 GOLDEN_KEYS = ("layer", "median_years", "range_low_years", "range_high_years", "survival_at")
+SUMMARY_KEYS = {"schema_version", "id", "name", "order", "description"}
 
 
 def render(folder: ModelFolder) -> dict[str, str]:
@@ -34,6 +35,8 @@ def render(folder: ModelFolder) -> dict[str, str]:
     return {
         "spec.json": _dump(spec.model_dump(mode="json")),
         "golden.json": _dump(golden),
+        # What the page needs before a model is chosen; the full spec loads only in the worker.
+        "summary.json": _dump(spec.model_dump(mode="json", include=SUMMARY_KEYS)),
     }
 
 

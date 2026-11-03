@@ -54,6 +54,9 @@ def test_discover_skips_shared_and_renders(tmp_path):
         "base",
     ]
     assert json.loads(files["spec.json"])["id"] == "fixture"
+    summary = json.loads(files["summary.json"])
+    assert summary["id"] == "fixture"
+    assert set(summary) == {"schema_version", "id", "name", "order", "description"}
 
 
 def test_golden_inputs_must_cover_every_layer(tmp_path):
