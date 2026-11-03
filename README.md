@@ -76,6 +76,11 @@ cd src/frontend && npm ci && npm test && npm run dev
 The page loads only each model's `summary.json`; the worker loads the chosen model's full
 `spec.json` on demand, so adding models does not slow the page down.
 
+## Testing
+
+See [TESTING.md](TESTING.md): how to run every suite, the accuracy results on real patient
+data, the end-to-end and security tests, and what final testing found.
+
 ## Adding a disease group
 
 See [CONTRIBUTING.md](CONTRIBUTING.md). A new model is a new folder under `src/models/`; no

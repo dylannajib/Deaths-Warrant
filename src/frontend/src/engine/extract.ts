@@ -62,14 +62,14 @@ function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value |
     case "sex":
       return record.sex ? [record.sex, "From the patient's recorded sex"] : [null, "Sex not recorded as female or male"];
     case "observation_number": {
-      const o = latestObservation(record, rule, asOf, rule.max_age_days, (x) => x.value !== undefined && (x.unit ?? "").toLowerCase() in rule.units);
+      const o = latestObservation(record, rule, asOf, rule.max_age_days, (x) => x.value !== undefined && Object.hasOwn(rule.units, (x.unit ?? "").toLowerCase()));
       if (!o) return [null, "No usable measurement in the record"];
       const value = o.value! * rule.units[(o.unit ?? "").toLowerCase()]!;
       return [value, `Latest measurement: ${o.value} ${o.unit ?? ""}`.trim() + (o.date ? ` on ${o.date}` : "")];
     }
     case "observation_coded": {
       const key = (o: Observation) =>
-        [...(o.valueCodes ?? []).map((c) => `${c.system}:${c.code}`), ...(o.valueText ? [`text:${o.valueText.trim().toLowerCase()}`] : [])].find((k) => k in rule.values);
+        [...(o.valueCodes ?? []).map((c) => `${c.system}:${c.code}`), ...(o.valueText ? [`text:${o.valueText.trim().toLowerCase()}`] : [])].find((k) => Object.hasOwn(rule.values, k));
       const o = latestObservation(record, rule, asOf, rule.max_age_days, (x) => key(x) !== undefined);
       if (!o) return [null, "Not recorded"];
       return [rule.values[key(o)!]!, `Recorded as ${o.valueCodes?.[0] ? describe(o.valueCodes[0]) : o.valueText}` + (o.date ? ` on ${o.date}` : "")];

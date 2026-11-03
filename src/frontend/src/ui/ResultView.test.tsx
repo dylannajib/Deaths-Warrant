@@ -57,4 +57,13 @@ describe("ResultView", () => {
     expect(html).toContain("<strong>10+</strong>");
     expect(html).toContain("The model&#x27;s computed median is 11.6 years");
   });
+
+  it("shows text from the uploaded file as text, never as HTML", () => {
+    const evil = `<img src=x onerror="alert(1)"><script>alert(2)</script>`;
+    const r = report({ age: 60, score: 4, flag: false });
+    const html = renderToStaticMarkup(<ResultView report={{ ...r, provenance: { ...r.provenance, score: evil }, notes: [evil] }} />);
+    expect(html).not.toContain("<img src=x");
+    expect(html).not.toContain("<script>");
+    expect(html).toContain("&lt;script&gt;");
+  });
 });

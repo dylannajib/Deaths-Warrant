@@ -35,7 +35,7 @@ export function decodeEntities(raw: string): string {
   if (!raw.includes("&")) return raw;
   return raw.replace(/&([^;&\s<]{0,10})(;?)/g, (whole, ref: string, semi: string) => {
     if (!semi) throw new XmlError("Bare '&' in text");
-    if (ref in PREDEFINED) return PREDEFINED[ref]!;
+    if (Object.hasOwn(PREDEFINED, ref)) return PREDEFINED[ref]!;
     const code = /^#x[0-9a-f]+$/i.test(ref)
       ? parseInt(ref.slice(2), 16)
       : /^#\d+$/.test(ref)
@@ -114,7 +114,7 @@ export function parseXml(source: string): XmlElement {
       pos++;
       const name = NAME.exec(source.slice(pos, pos + 256))?.[0] ?? fail("Bad tag name");
       pos += name.length;
-      const attrs: Record<string, string> = {};
+      const attrs: Record<string, string> = Object.create(null);
       let selfClosing = false;
       for (;;) {
         while (/\s/.test(source[pos] ?? "")) pos++;
@@ -132,7 +132,7 @@ export function parseXml(source: string): XmlElement {
         pos++;
         const value = skipPast(quote, "attribute value");
         if (value.includes("<")) fail("'<' in attribute value");
-        if (attr in attrs) fail(`Duplicate attribute ${attr}`);
+        if (Object.hasOwn(attrs, attr)) fail(`Duplicate attribute ${attr}`);
         attrs[attr] = decodeEntities(value);
       }
 

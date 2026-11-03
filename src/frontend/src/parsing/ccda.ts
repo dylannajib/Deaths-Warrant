@@ -2,7 +2,8 @@
  * C-CDA R2.x ClinicalDocument → PatientRecord.
  * Problems come from Problem Observations (templateId ...22.4.4) wherever they appear;
  * results and vital signs from any other observation coded in LOINC; medications from
- * substanceAdministration entries. Negated entries (negationInd="true") are skipped.
+ * substanceAdministration entries other than Immunization Activities (vaccines are not
+ * treatment). Negated entries (negationInd="true") are skipped.
  * Dates are left raw here and resolved afterwards (see upload.ts).
  */
 
@@ -10,6 +11,7 @@ import { makeCode, type Code, type Observation, type PatientRecord } from "./rec
 import { attr, child, children, descendants, type XmlElement } from "./xml";
 
 const PROBLEM_OBSERVATION = "2.16.840.1.113883.10.20.22.4.4";
+const IMMUNIZATION_ACTIVITY = "2.16.840.1.113883.10.20.22.4.52";
 
 export class CcdaError extends Error {}
 
@@ -95,7 +97,7 @@ export function readCcda(root: XmlElement): PatientRecord {
   }
 
   for (const sa of descendants(body, "substanceAdministration")) {
-    if (negated(sa)) continue;
+    if (negated(sa) || templateIds(sa).includes(IMMUNIZATION_ACTIVITY)) continue;
     const material = descendants(sa, "manufacturedMaterial")[0];
     const codeEl = material && child(material, "code");
     const codes = codesOf(codeEl);

@@ -23,6 +23,6 @@ def fetch(url: str, name: str, *, refresh: bool = False) -> Path:
     if refresh or not path.exists():
         path.parent.mkdir(parents=True, exist_ok=True)
         request = urllib.request.Request(url, headers={"User-Agent": USER_AGENT})  # noqa: S310 - https enforced above
-        with urllib.request.urlopen(request, timeout=60) as response:  # noqa: S310 - https only
+        with urllib.request.urlopen(request, timeout=300) as response:  # noqa: S310 - https only
             path.write_bytes(response.read())
     return path

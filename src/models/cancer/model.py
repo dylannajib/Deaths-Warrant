@@ -73,12 +73,14 @@ SITES: dict[str, tuple[str, list[str], list[str]]] = {
 }
 OTHER = "other"  # any other invasive cancer: SEER "all sites combined"
 # Invasive primaries outside SITES. Excludes non-melanoma skin cancer (ICD-10 C44, ICD-9 173),
-# which SEER does not register, and secondary neoplasms (C77-C79; 196-198).
-OTHER_ICD10 = [f"C{n:02d}" for n in range(98) if n not in (44, 77, 78, 79)]
+# which SEER does not register, and secondary neoplasms (C77-C79, C7B; 196-198, 209.7).
+# ICD-10-CM adds alphanumeric categories: C4A Merkel cell carcinoma, C7A malignant
+# neuroendocrine tumours (found missing by the MIMIC-IV end-to-end tests).
+OTHER_ICD10 = [f"C{n:02d}" for n in range(98) if n not in (44, 77, 78, 79)] + ["C4A", "C7A"]
 OTHER_ICD9 = [str(n) for n in range(140, 210) if n not in (173, 196, 197, 198)]
 METASTASIS_DISTANT = {
-    "icd10": ["C78", "C79"],
-    "icd9": ["197", "198"],
+    "icd10": ["C78", "C79", "C7B"],  # C7B: secondary neuroendocrine tumours
+    "icd9": ["197", "198", "2097"],
     "snomed": SNOMED["metastasis_distant"],
 }
 METASTASIS_NODAL = {"icd10": ["C77"], "icd9": ["196"], "snomed": SNOMED["metastasis_lymph_node"]}
@@ -271,12 +273,14 @@ def build() -> ModelSpec:
             "icd10": sorted(
                 {p for _, icd10, _ in SITES.values() for p in icd10}
                 | set(OTHER_ICD10)
-                | {"C77", "C78", "C79"}
+                | set(METASTASIS_DISTANT["icd10"])
+                | set(METASTASIS_NODAL["icd10"])
             ),
             "icd9": sorted(
                 {p for _, _, icd9 in SITES.values() for p in icd9}
                 | set(OTHER_ICD9)
-                | {"196", "197", "198"}
+                | set(METASTASIS_DISTANT["icd9"])
+                | set(METASTASIS_NODAL["icd9"])
             ),
             "snomed": sorted(
                 {

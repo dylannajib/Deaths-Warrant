@@ -80,6 +80,20 @@ describe("FHIR JSON", () => {
     expect(latestDate(record)).toBe("2025-02-01");
   });
 
+  it("dates an undated encounter diagnosis from its visit", () => {
+    const visit = {
+      resourceType: "Bundle",
+      entry: [
+        { resource: { resourceType: "Patient", id: "p1", birthDate: "1950-03-04" } },
+        { fullUrl: "Encounter/e1", resource: { resourceType: "Encounter", id: "e1", period: { start: "2024-07-02T10:00:00Z" } } },
+        { resource: { resourceType: "Condition", code: { coding: [{ system: "http://hl7.org/fhir/sid/icd-9-cm", code: "428.0" }] }, encounter: { reference: "Encounter/e1" } } },
+      ],
+    };
+    const r = parseUpload(JSON.stringify(visit), asOf);
+    expect(r.conditions[0]?.onset).toBe("2024-07-02");
+    expect(r.notes.join(" ")).toMatch(/start of the hospital visit/);
+  });
+
   it("rejects multiple patients", () => {
     const two = { ...fhirBundle, entry: [...fhirBundle.entry, { resource: { resourceType: "Patient", id: "p2" } }] };
     expect(() => parseUpload(JSON.stringify(two), asOf)).toThrow(/more than one patient/);

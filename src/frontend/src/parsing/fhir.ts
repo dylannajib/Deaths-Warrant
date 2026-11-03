@@ -33,7 +33,8 @@ export function fhirXmlToJson(root: XmlElement): Obj {
   const convert = (el: XmlElement): Json => {
     const value = attr(el, "value");
     if (value !== undefined) return value; // primitive (any extensions on it are dropped)
-    const out: Obj = {};
+    // No prototype: element names such as "__proto__" or "constructor" are just keys.
+    const out: Obj = Object.create(null);
     for (const c of el.children) {
       if (c.local === "div") continue; // XHTML narrative: never needed, never rendered
       let v: Json;
@@ -43,7 +44,7 @@ export function fhirXmlToJson(root: XmlElement): Obj {
       } else {
         v = convert(c);
       }
-      ((out[c.local] ??= []) as Json[]).push(v);
+      ((Object.hasOwn(out, c.local) ? out[c.local] : (out[c.local] = [])) as Json[]).push(v);
     }
     return out;
   };
@@ -116,6 +117,7 @@ export function readFhir(doc: Json, format: "fhir-json" | "fhir-xml"): PatientRe
     record.deceased = true;
   }
 
+  let datedByVisit = false;
   for (const r of resources) {
     switch (str(r.resourceType)) {
       case "Condition": {
@@ -124,7 +126,11 @@ export function readFhir(doc: Json, format: "fhir-json" | "fhir-xml"): PatientRe
         const text = textOf(first(r.code));
         if (text) c.text = text;
         const onset = firstDate(r.onsetDateTime, get(r, "onsetPeriod", "start"), r.recordedDate);
-        if (onset) c.onset = onset;
+        // Encounter diagnoses (e.g. MIMIC-IV) carry no date of their own: use the visit's start.
+        const visit = byRef.get(str(get(r, "encounter", "reference")) ?? "");
+        const visitStart = onset ? undefined : firstDate(get(visit, "period", "start"));
+        if (onset ?? visitStart) c.onset = (onset ?? visitStart)!;
+        if (visitStart) datedByVisit = true;
         if (c.codes.length || c.text) record.conditions.push(c);
         break;
       }
@@ -152,6 +158,7 @@ export function readFhir(doc: Json, format: "fhir-json" | "fhir-xml"): PatientRe
       }
     }
   }
+  if (datedByVisit) record.notes.push("Some diagnoses had no date of their own, so the start of the hospital visit they were recorded in was used.");
   return record;
 }
 
