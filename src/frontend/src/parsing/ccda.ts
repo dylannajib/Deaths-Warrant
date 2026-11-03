@@ -3,7 +3,9 @@
  * Problems come from Problem Observations (templateId ...22.4.4) wherever they appear;
  * results and vital signs from any other observation coded in LOINC; medications from
  * substanceAdministration entries other than Immunization Activities (vaccines are not
- * treatment). Negated entries (negationInd="true") are skipped.
+ * treatment). Negated entries (negationInd="true") are skipped. A problem recorded during a
+ * hospital stay (inside an inpatient Encounter Activity, or a discharge summary's hospital
+ * admission/discharge diagnosis) also carries the stay's start date.
  * Dates are left raw here and resolved afterwards (see upload.ts).
  */
 
@@ -12,6 +14,14 @@ import { attr, child, children, descendants, type XmlElement } from "./xml";
 
 const PROBLEM_OBSERVATION = "2.16.840.1.113883.10.20.22.4.4";
 const IMMUNIZATION_ACTIVITY = "2.16.840.1.113883.10.20.22.4.52";
+const ENCOUNTER_ACTIVITY = "2.16.840.1.113883.10.20.22.4.49";
+const HOSPITAL_DIAGNOSIS = ["2.16.840.1.113883.10.20.22.4.33", "2.16.840.1.113883.10.20.22.4.34"]; // discharge, admission
+const ACT_CODE = "2.16.840.1.113883.5.4";
+const CPT = "2.16.840.1.113883.6.12";
+const SNOMED = "2.16.840.1.113883.6.96";
+const INPATIENT_ACT_CODES = ["IMP", "ACUTE", "NONAC", "SS"];
+const INPATIENT_CPT = /^992(2[1-6]|3[1-9])$/; // hospital inpatient and observation care
+const INPATIENT_SNOMED = ["32485007", "8715000", "183452005"]; // hospital admission (any, elective, emergency)
 
 export class CcdaError extends Error {}
 
@@ -32,6 +42,33 @@ function dateOf(el: XmlElement): string | undefined {
   const eff = child(el, "effectiveTime");
   if (!eff) return undefined;
   return attr(eff, "value") ?? attr(child(eff, "low") ?? eff, "value") ?? undefined;
+}
+
+function isInpatient(code: XmlElement | undefined): boolean {
+  return !!code && [code, ...children(code, "translation")].some((c) => {
+    const system = attr(c, "codeSystem");
+    const value = attr(c, "code") ?? "";
+    return (system === ACT_CODE && INPATIENT_ACT_CODES.includes(value)) || (system === CPT && INPATIENT_CPT.test(value)) ||
+      (system === SNOMED && INPATIENT_SNOMED.includes(value));
+  });
+}
+
+/** Problem observation → start of the hospital stay it was recorded in. */
+function hospitalStays(root: XmlElement, body: XmlElement): Map<XmlElement, string> {
+  const out = new Map<XmlElement, string>();
+  const mark = (holder: XmlElement, start: string | undefined) => {
+    if (start) for (const obs of descendants(holder, "observation")) out.set(obs, start);
+  };
+  for (const enc of descendants(body, "encounter")) {
+    if (templateIds(enc).includes(ENCOUNTER_ACTIVITY) && isInpatient(child(enc, "code"))) mark(enc, dateOf(enc));
+  }
+  const componentOf = child(root, "componentOf");
+  const stay = componentOf && child(componentOf, "encompassingEncounter");
+  const stayStart = stay && dateOf(stay);
+  for (const act of descendants(body, "act")) {
+    if (templateIds(act).some((t) => t !== undefined && HOSPITAL_DIAGNOSIS.includes(t))) mark(act, stayStart);
+  }
+  return out;
 }
 
 const negated = (el: XmlElement) => attr(el, "negationInd") === "true";
@@ -57,6 +94,7 @@ export function readCcda(root: XmlElement): PatientRecord {
   if (country) record.country = country;
 
   const body = child(root, "component") ?? root;
+  const stays = hospitalStays(root, body);
   for (const obs of descendants(body, "observation")) {
     if (negated(obs)) continue;
     const date = dateOf(obs);
@@ -68,6 +106,8 @@ export function readCcda(root: XmlElement): PatientRecord {
       const condition: PatientRecord["conditions"][number] = { codes };
       if (text) condition.text = text;
       if (date) condition.onset = date;
+      const admitted = stays.get(obs);
+      if (admitted) condition.admitted = admitted;
       record.conditions.push(condition);
       continue;
     }

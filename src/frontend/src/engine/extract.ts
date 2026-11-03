@@ -82,6 +82,16 @@ function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value |
       return [null, "No matching diagnosis code in the record"];
     }
     case "condition_present": {
+      const days = rule.admitted_within_days ?? null;
+      if (days !== null) {
+        const stays = matchingConditions(record, rule.codes)
+          .filter((m) => m.cond.admitted && m.cond.admitted <= asOf && yearsBetween(m.cond.admitted, asOf) * 365.25 <= days)
+          .sort((a, b) => (b.cond.admitted! > a.cond.admitted! ? 1 : -1));
+        const m = stays[0];
+        return m
+          ? [true, `Hospital stay from ${m.cond.admitted} with diagnosis ${describe(m.hit)}`]
+          : [false, `No hospital stay with this diagnosis in the last ${days} days (assumed none)`];
+      }
       const m = matchingConditions(record, rule.codes)[0];
       return m ? [true, `Diagnosis ${describe(m.hit)}`] : [false, "Not recorded (assumed absent)"];
     }

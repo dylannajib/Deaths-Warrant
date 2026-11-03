@@ -26,7 +26,7 @@ from deaths_warrant.spec import ModelSpec
 HERE = Path(__file__).parent
 SEER: dict[str, Any] = json.loads((HERE / "seer_relative_survival.json").read_text("utf-8"))
 SNOMED: dict[str, list[str]] = json.loads((HERE / "snomed_sets.json").read_text("utf-8"))["sets"]
-VALIDATION_FILE = HERE / "validation.json"
+VALIDATION_FILES = [HERE / "validation.json", HERE / "validation_tcga.json"]
 
 # Site key -> (label, ICD-10 prefixes, ICD-9 prefixes). Order is the matching priority when a
 # record has several cancers: histology-defined groups first (a lymphoma of the lung is a
@@ -222,9 +222,12 @@ def _curves(site_keys: list[str], stages: list[str] | None) -> list[dict[str, An
 
 
 def _validation() -> list[dict[str, Any]]:
-    if not VALIDATION_FILE.exists():
-        return []
-    return json.loads(VALIDATION_FILE.read_text("utf-8"))["results"]
+    return [
+        r
+        for path in VALIDATION_FILES
+        if path.exists()
+        for r in json.loads(path.read_text("utf-8"))["results"]
+    ]
 
 
 def _layer(
@@ -404,6 +407,16 @@ def build() -> ModelSpec:
                 ),
                 "url": "https://www.cbioportal.org/study/summary?id=msk_chord_2024",
                 "licence": "CC BY-NC-ND 4.0 (used for testing only; data not redistributed)",
+            },
+            {
+                "id": "tcga_gdc",
+                "citation": (
+                    "The Cancer Genome Atlas (TCGA) Research Network. Clinical data harmonised by"
+                    " the NCI Genomic Data Commons (Grossman RL, et al. N Engl J Med"
+                    " 2016;375:1109-1112), via cBioPortal (studies *_tcga_gdc)."
+                ),
+                "url": "https://www.cbioportal.org/datasets",
+                "licence": "NCI GDC open-access tier (used for testing only; not redistributed)",
             },
         ],
     }

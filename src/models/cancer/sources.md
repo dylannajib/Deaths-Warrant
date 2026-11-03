@@ -62,9 +62,14 @@ above 100% are capped at 100%, and the curves are forced to be non-increasing.
 
 No coefficient is fitted to patient-level data.
 
-## Validation (`validate.py`, results in `validation.json`)
+## Validation
 
-Validation uses MSK-CHORD: 24,067 real patients at Memorial Sloan Kettering, sequenced from
+Two independent real datasets are used, with outcomes from 2010 onwards. Neither was used to
+build the model.
+
+### MSK-CHORD (`validate.py`, results in `validation.json`)
+
+The first is MSK-CHORD: 24,067 real patients at Memorial Sloan Kettering, sequenced from
 2014 onwards, with outcomes up to the 9 September 2023 data snapshot. Each patient is
 predicted as of their first tumour sequencing, using only age, sex, registry site and stage at
 diagnosis, and years since diagnosis. The headline results, from the scenario where a
@@ -79,8 +84,31 @@ metastatic first sample counts as distant disease:
   years lived 51% of the time (ideally 50%). The median absolute error was 1.1 years. This
   check is biased towards short survivors.
 
+### TCGA, diagnosed 2010–2013 (`validate_tcga.py`, results in `validation_tcga.json`)
+
+The Cancer Genome Atlas clinical data, harmonised by the NCI Genomic Data Commons and
+downloaded from the public cBioPortal API. This covers 4,709 patients from 33 tumour studies,
+diagnosed 2010–2013 with no prior cancer; 929 died during follow-up. Each patient is predicted
+at diagnosis from age, sex, ICD-O-3 site and a summary stage derived from pathological TNM:
+* M1 or stage IV counts as distant;
+* N1–N3, or N0 with stage III, counts as regional;
+* N0 with stage I–II counts as localized.
+
+This only approximates SEER summary stage.
+
+* **Discrimination:** Harrell's C-index is 0.74.
+* **Calibration:** predicted 1/3/5-year survival is 0.83/0.69/0.62, against observed
+  0.89/0.70/0.61. Follow-up is short (median about 2 years), so the 5-year figure rests on
+  few patients.
+* **Bias:** as in MSK-CHORD, the first year is too pessimistic, most of all for distant
+  disease (predicted 0.57 against observed 0.77). TCGA patients had their tumour resected
+  for sequencing, so they were fitter than the average patient in the SEER tables.
+* A C-index is reported only for groups with at least 20 deaths.
+
 Known limitations:
 
+* Both test datasets select patients well enough for surgery or sequencing. That likely
+  explains part of the first-year pessimism, so the model was not adjusted to fit them.
 * MSK patients are treated at a tertiary cancer centre and are selected for tumour
   sequencing, which is mostly done in advanced disease.
 * The stage at diagnosis does not capture later progression unless the record holds a

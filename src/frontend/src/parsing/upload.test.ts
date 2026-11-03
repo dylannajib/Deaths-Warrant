@@ -94,6 +94,29 @@ describe("FHIR JSON", () => {
     expect(r.notes.join(" ")).toMatch(/start of the hospital visit/);
   });
 
+  it("marks diagnoses recorded during a hospital stay with the admission date", () => {
+    const hf = { coding: [{ system: "http://hl7.org/fhir/sid/icd-10-cm", code: "I50.9" }] };
+    const stays = {
+      resourceType: "Bundle",
+      entry: [
+        { resource: { resourceType: "Patient", id: "p1", birthDate: "1950-03-04" } },
+        { resource: { resourceType: "Encounter", id: "inp", class: { system: "http://terminology.hl7.org/CodeSystem/v3-ActCode", code: "IMP" }, period: { start: "2026-08-01" } } },
+        // MIMIC style: emergency class, but an admission lasting past its first day
+        { resource: { resourceType: "Encounter", id: "emer", class: { code: "EMER" }, hospitalization: {}, period: { start: "2026-05-01T10:00", end: "2026-05-04T12:00" } } },
+        { resource: { resourceType: "Encounter", id: "ed", class: { code: "EMER" }, period: { start: "2026-09-01T10:00", end: "2026-09-01T16:00" } } },
+        // R5 diagnosis list on the encounter pointing at the condition
+        { resource: { resourceType: "Encounter", id: "r5", class: [{ coding: [{ code: "ACUTE" }] }], period: { start: "2026-10-01" }, diagnosis: [{ condition: [{ reference: { reference: "Condition/c4" } }] }] } },
+        { resource: { resourceType: "Condition", id: "c1", code: hf, encounter: { reference: "Encounter/inp" } } },
+        { resource: { resourceType: "Condition", id: "c2", code: hf, encounter: { reference: "Encounter/emer" } } },
+        { resource: { resourceType: "Condition", id: "c3", code: hf, encounter: { reference: "Encounter/ed" } } },
+        { resource: { resourceType: "Condition", id: "c4", code: hf, onsetDateTime: "2019-01-01" } },
+      ],
+    };
+    const r = parseUpload(JSON.stringify(stays), asOf);
+    expect(r.conditions.map((c) => c.admitted)).toEqual(["2026-08-01", "2026-05-01", undefined, "2026-10-01"]);
+    expect(r.conditions[3]?.onset).toBe("2019-01-01");
+  });
+
   it("rejects multiple patients", () => {
     const two = { ...fhirBundle, entry: [...fhirBundle.entry, { resource: { resourceType: "Patient", id: "p2" } }] };
     expect(() => parseUpload(JSON.stringify(two), asOf)).toThrow(/more than one patient/);
@@ -175,6 +198,32 @@ describe("C-CDA", () => {
     ]);
     expect(record.observations).toEqual([{ codes: [{ system: "loinc", code: "2160-0" }], value: 1.4, unit: "mg/dL", date: "2025-01-05" }]);
     expect(record.medications).toEqual([{ codes: [{ system: "rxnorm", code: "197361" }], text: "Amlodipine 5 mg", date: "2024-01-01" }]);
+  });
+
+  const problem = (code: string) => `<entryRelationship><observation><templateId root="2.16.840.1.113883.10.20.22.4.4"/>
+    <value xsi:type="CD" code="${code}" codeSystem="2.16.840.1.113883.6.90"/></observation></entryRelationship>`;
+  const encounter = (code: string, system: string, date: string, dx: string) => `<entry><encounter>
+    <templateId root="2.16.840.1.113883.10.20.22.4.49"/><code code="${code}" codeSystem="${system}"/>
+    <effectiveTime><low value="${date}"/></effectiveTime>${problem(dx)}</encounter></entry>`;
+
+  it("marks problems recorded in an inpatient encounter or a discharge diagnosis", () => {
+    const doc = `<ClinicalDocument xmlns="urn:hl7-org:v3" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+      <recordTarget><patientRole><patient><birthTime value="19520115"/></patient></patientRole></recordTarget>
+      <componentOf><encompassingEncounter><effectiveTime><low value="20260901"/><high value="20260905"/></effectiveTime></encompassingEncounter></componentOf>
+      <component><structuredBody><component><section>
+        ${encounter("99222", "2.16.840.1.113883.6.12", "20260601", "I50.9")}
+        ${encounter("99213", "2.16.840.1.113883.6.12", "20260701", "I50.1")}
+        ${encounter("IMP", "2.16.840.1.113883.5.4", "20260801", "I50.2")}
+        <entry><act><templateId root="2.16.840.1.113883.10.20.22.4.33"/>${problem("I50.3")}</act></entry>
+      </section></component></structuredBody></component>
+    </ClinicalDocument>`;
+    const r = parseUpload(doc, asOf);
+    expect(r.conditions.map((c) => [c.codes[0]?.code, c.admitted])).toEqual([
+      ["I509", "2026-06-01"],
+      ["I501", undefined], // office visit
+      ["I502", "2026-08-01"],
+      ["I503", "2026-09-01"], // discharge diagnosis: the document's hospital stay
+    ]);
   });
 });
 

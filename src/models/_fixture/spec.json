@@ -90,7 +90,8 @@
      ],
      "icd9": [],
      "snomed": []
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": [
     {

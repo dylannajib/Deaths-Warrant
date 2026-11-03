@@ -14,6 +14,8 @@ export interface Condition {
   text?: string;
   /** ISO date (YYYY-MM-DD) once dates are resolved. */
   onset?: string;
+  /** Start of the hospital (inpatient) stay this diagnosis was recorded in, if any. */
+  admitted?: string;
 }
 
 export interface Observation {

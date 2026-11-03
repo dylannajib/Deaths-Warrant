@@ -4,9 +4,11 @@
 
 | Layer | Applies when | Method |
 |---|---|---|
+| `maggic_admitted` | Heart failure, a recorded ejection fraction, and a hospital stay for heart failure in the last 180 days | As `maggic`, but an unrecorded NYHA class is taken as IV (Michaels 2020) |
 | `maggic` | Heart failure and a recorded ejection fraction | MAGGIC integer risk score → published 1- and 3-year mortality |
 | `heart_failure` | Heart failure, no ejection fraction | UK survival after diagnosis by age at diagnosis (Taylor 2019), applied as relative survival |
-| `base` | Any other cardiovascular disease, or none recorded | U.S. population mortality × published hazard ratio per condition |
+| `stroke` | A dated stroke | U.S. Medicare survival after acute ischaemic stroke by age (Tong 2021), early deaths shaped by Takashima 2020, applied as relative survival |
+| `base` | Any other cardiovascular disease, or none recorded (including an undated stroke) | U.S. population mortality × published hazard ratio per condition |
 
 **MAGGIC** (Pocock et al., Eur Heart J 2013) scores 13 routine measurements:
 
@@ -28,11 +30,45 @@ distribution (Table 1):
 If the record lists no medications at all, beta-blocker and ACE-I/ARB use are treated as
 unknown, not as "not taken".
 
+**After a recent heart-failure hospital stay:** a record shows one when a heart-failure
+diagnosis is linked to an inpatient stay that began in the last 180 days:
+* in FHIR, an Encounter of class IMP, ACUTE, NONAC or SS, or an admission lasting past its first
+  day;
+* in C-CDA, an inpatient Encounter Activity, or a discharge summary's hospital diagnosis.
+
+MAGGIC's NYHA mix comes mostly from outpatients in class I–II, which does not suit someone
+just discharged. Michaels et al. (J Card Fail 2020) validated MAGGIC at hospital discharge by
+scoring every patient as NYHA class IV, and even then observed slightly more deaths than
+predicted. This layer does the same whenever the record has no NYHA class.
+
+The published MAGGIC table itself is not recalibrated. External validations from 2010 onwards
+disagree on the direction of its error:
+* modern outpatients are over-predicted: ESC-HF-LT 2011–2013, and FAR NHL below;
+* patients after discharge, and the Brazilian cohort, are under-predicted.
+
+No single correction is supported.
+
 **Heart failure without an ejection fraction:** Taylor et al. (BMJ 2019, Table 3) give the
 survival at 1, 5, 10 and 15 years after diagnosis for each 10-year age band. These are
 converted into relative survival against the U.S. life table, using the cohort's sex mix. The
 excess hazard is interpolated between the published years. Survival is conditional on the
 years since diagnosis, as in the cancer model.
+
+**Stroke:** a stroke diagnosis with a date uses survival after an acute stroke, conditional on
+the years since it.
+* Tong et al. (Prev Chronic Dis 2021) give crude 5-year survival by age for 1,019,267 U.S.
+  Medicare patients aged 66 or over admitted with an acute ischaemic stroke in 2008–2012:
+  64.2% at 66–74, 45.6% at 75–84 and 18.9% at 85 or over.
+* These are converted to relative survival against the U.S. life table, using the cohort's
+  44.3% male share.
+* The 5-year excess hazard is split as in the population-based Shiga stroke register
+  (Takashima et al. J Stroke 2020, first-ever strokes in 2011): 42% in the first 28 days
+  (13.6% died), the rest evenly over years 1–5, and that rate continues afterwards.
+* The 66–74 curve is also used for younger patients, who were not in the Medicare cohort.
+* Other recorded conditions are not multiplied in, because the cohort already had the usual
+  comorbidities of stroke patients.
+* An undated stroke cannot be placed in time, so it falls back to the base layer's hazard
+  ratio for a history of stroke.
 
 **Other cardiovascular disease:** each recorded condition multiplies population mortality by
 its published all-cause hazard ratio. The conditions combine multiplicatively, which is what
@@ -53,29 +89,41 @@ from `snomed_roots.json` by `python -m deaths_warrant.sources.snomed cardiovascu
 
 ## Validation (`validate.py`, results in `validation.json`)
 
-There is no open patient-level cardiovascular data with outcomes from 2020 onwards; every such
-dataset requires credentialed access. The evidence is:
+Every test cohort has outcomes from 2010 onwards, and each result is labelled with its period.
+Open patient-level cardiovascular data is scarce, because most of it requires credentialed
+access. No cohort below was used to build the layer it tests.
 
-* **UCI heart failure clinical records** (299 real patients, Pakistan 2015, CC BY 4.0; patient
-  level).
-  * The MAGGIC layer ranks risk well: Harrell's C-index is 0.72.
-  * It badly overestimates 6-month survival: 0.93 predicted against 0.65 observed. Every
-    patient in this cohort was NYHA class III–IV with systolic dysfunction, but a record
-    without NYHA class is averaged over MAGGIC's mostly class I–II cohort.
-* **Brazilian outpatients** (n = 866, enrolled 2008–2014; a published external validation of
-  the MAGGIC score). MAGGIC predicted 20.9% 3-year mortality against 33.4% observed. This
-  model's MAGGIC layer reproduces the MAGGIC table at 1 and 3 years, so this applies directly.
-* **First acute stroke, Australia and New Zealand** (n = 313,162, 2008–2017, published).
-  * Predicted 1/5/10-year survival is 0.90/0.64/0.44, against observed 0.73/0.53/0.36.
-  * The stroke HR describes people living with a *history* of stroke, so deaths soon after an
-    acute stroke are not captured. Estimates are only meaningful for people who have survived
-    the acute phase.
-* **Taylor 2019** by age band: a reproduction check. The heart-failure layer is built from
-  these figures, so it matches them exactly. This is not independent evidence.
+* **FAR NHL registry, Czech Republic** (1,088 outpatients with ejection fraction < 50%,
+  enrolled 2014–2015, followed to 2017; CC BY 4.0; patient level). This is the only open
+  dataset with every MAGGIC input, NYHA class included.
+  * With all inputs, 74% of patient pairs are ranked correctly (C-index 0.74).
+  * Predicted 2-year survival is 79.7% against 85.1% observed: MAGGIC is somewhat
+    pessimistic for modern outpatients.
+  * Without NYHA class, the C-index is 0.70 and predicted 2-year survival is 78.6%.
+  * The registry's outcome combines death, heart transplant and LVAD, and its date is not
+    given.
+* **UCI heart failure clinical records** (299 hospitalised patients, Pakistan 2015, CC BY 4.0;
+  patient level). The C-index is 0.72.
+  * 6-month survival is overestimated: 92.8% predicted against 65.4% observed.
+  * Taking the recent hospital stay into account (NYHA IV) gives 89.6%. Patients in this
+    cohort died far more often than in any MAGGIC validation.
+* **Brazilian outpatients** (n = 866, enrolled 2008–2014; a published external validation).
+  MAGGIC predicted 20.9% 3-year mortality against 33.4% observed. This model's MAGGIC layer
+  reproduces the published MAGGIC table, so the result applies directly.
+* **First acute stroke, Australia and New Zealand** (Peng et al. Stroke 2022; n = 313,162,
+  2008–2017, published). The stroke layer predicts 1/5/10-year survival of 74.9/51.6/32.9%
+  against 73.0/52.8/36.4% observed. The previous constant hazard ratio predicted
+  90/64/44%.
+* **First-ever stroke, England** (Bray et al. Lancet Public Health 2018; SSNAP, 2013–2016,
+  published). Predicted 1-year survival is 72.3% against 73.6% observed.
+* **Taylor 2019** by age band is a reproduction check. The heart-failure layer is built from
+  these figures, so it matches them exactly; this is not independent evidence.
 
 Known limitations:
 
 * MAGGIC was derived from 1980–2006 studies, before current treatments such as ARNI and SGLT2
-  inhibitors. External cohorts disagree on whether it now over- or underestimates risk.
+  inhibitors. Its error differs by setting (see above).
+* The stroke layer rests on ischaemic strokes in people aged 66 or over. Haemorrhagic strokes
+  had similar 5-year survival in the Shiga register (55% against 59%).
 * Constant hazard ratios ignore the fact that excess risk shrinks with age.
 * U.S. population mortality is used for every patient.

@@ -4,7 +4,7 @@
  "name": "Cardiovascular disease",
  "version": "1.0.0",
  "order": 20,
- "description": "Heart failure with a recorded ejection fraction uses the MAGGIC risk score; other cardiovascular disease uses U.S. population mortality multiplied by published hazard ratios for each recorded condition.",
+ "description": "Heart failure uses the MAGGIC risk score when the ejection fraction is recorded, otherwise survival by age at diagnosis; a dated stroke uses survival after stroke by age; other cardiovascular disease uses U.S. population mortality multiplied by published hazard ratios for each recorded condition.",
  "group_codes": {
   "icd10": [
    "I05",
@@ -1228,7 +1228,8 @@
       "15964701000119109",
       "16838951000119100"
      ]
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": null,
    "source": null,
@@ -1498,7 +1499,8 @@
       "726499301000119105",
       "776219771000119107"
      ]
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": null,
    "source": null,
@@ -1692,7 +1694,8 @@
       "939885431000119109",
       "957319791000119104"
      ]
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": null,
    "source": null,
@@ -1731,7 +1734,8 @@
       "467643831000119105",
       "489609371000119104"
      ]
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": null,
    "source": null,
@@ -1966,7 +1970,8 @@
       "16899261000119106",
       "18000001000004101"
      ]
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": null,
    "source": null,
@@ -2168,7 +2173,8 @@
       "16228931000119102",
       "165468981000119105"
      ]
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": null,
    "source": null,
@@ -2316,7 +2322,8 @@
       "10754881000119104",
       "530558861000132104"
      ]
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": null,
    "source": null,
@@ -2383,7 +2390,8 @@
       "106001000119101",
       "10692761000119107"
      ]
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": null,
    "source": null,
@@ -2694,6 +2702,281 @@
    ]
   },
   {
+   "id": "hf_admission",
+   "label": "Hospital stay for heart failure in the last 180 days",
+   "extract": {
+    "rule": "condition_present",
+    "codes": {
+     "icd10": [
+      "I50",
+      "I110",
+      "I130",
+      "I132"
+     ],
+     "icd9": [
+      "428",
+      "40201",
+      "40211",
+      "40291",
+      "40401",
+      "40403",
+      "40411",
+      "40413",
+      "40491",
+      "40493"
+     ],
+     "snomed": [
+      "364006",
+      "5053004",
+      "5148006",
+      "5375005",
+      "10091002",
+      "10335000",
+      "10633002",
+      "13839000",
+      "16253001",
+      "24841007",
+      "25544003",
+      "33644002",
+      "42343007",
+      "43736008",
+      "44088000",
+      "44313006",
+      "45650007",
+      "46113002",
+      "48447003",
+      "49584005",
+      "55565007",
+      "56675007",
+      "60856006",
+      "62377009",
+      "66989003",
+      "71892000",
+      "74960003",
+      "78862003",
+      "79955004",
+      "80479009",
+      "82523003",
+      "83105008",
+      "83291003",
+      "84114007",
+      "85232009",
+      "88805009",
+      "89819002",
+      "92506005",
+      "111283005",
+      "194767001",
+      "194779001",
+      "194781004",
+      "195111005",
+      "195112003",
+      "195114002",
+      "206586007",
+      "233924009",
+      "276514007",
+      "314206003",
+      "359617009",
+      "367363000",
+      "410431009",
+      "417996009",
+      "418304008",
+      "424404003",
+      "426263006",
+      "426611007",
+      "441481004",
+      "441530006",
+      "443253003",
+      "443254009",
+      "443343001",
+      "443344007",
+      "445236007",
+      "446221000",
+      "462172006",
+      "462174007",
+      "462175008",
+      "471880001",
+      "609507007",
+      "698296002",
+      "698594003",
+      "703272007",
+      "703273002",
+      "703274008",
+      "703275009",
+      "703276005",
+      "704242009",
+      "717840005",
+      "722095005",
+      "722919003",
+      "724550005",
+      "788950000",
+      "871617000",
+      "898208007",
+      "1204200007",
+      "1204203009",
+      "1204204003",
+      "1204206001",
+      "1204460007",
+      "1204462004",
+      "1204468000",
+      "1208843003",
+      "1208846006",
+      "1208848007",
+      "1208850004",
+      "1264003007",
+      "1296659009",
+      "15781000119107",
+      "23341000119109",
+      "67431000119105",
+      "67441000119101",
+      "72481000119103",
+      "96311000119109",
+      "101281000119107",
+      "113901000052102",
+      "120851000119104",
+      "120861000119102",
+      "120871000119108",
+      "120881000119106",
+      "120891000119109",
+      "120901000119108",
+      "153931000119109",
+      "153941000119100",
+      "153951000119103",
+      "15629541000119106",
+      "15629591000119103",
+      "15629641000119107",
+      "15629741000119102",
+      "15964661000119102",
+      "15964701000119109",
+      "16838951000119100"
+     ]
+    },
+    "admitted_within_days": 180
+   },
+   "missing": [
+    {
+     "value": false,
+     "weight": 1.0
+    }
+   ],
+   "source": null,
+   "type": "boolean"
+  },
+  {
+   "id": "nyha_admitted",
+   "label": "NYHA class (after a heart-failure hospital stay)",
+   "extract": {
+    "rule": "first_of",
+    "rules": [
+     {
+      "rule": "observation_coded",
+      "loinc": [
+       "88020-3",
+       "88021-1"
+      ],
+      "snomed": [],
+      "values": {
+       "snomed:420300004": "I",
+       "text:i": "I",
+       "text:class i": "I",
+       "text:nyha i": "I",
+       "text:nyha class i": "I",
+       "text:1": "I",
+       "text:class 1": "I",
+       "text:nyha 1": "I",
+       "text:nyha class 1": "I",
+       "snomed:421704003": "II",
+       "text:ii": "II",
+       "text:class ii": "II",
+       "text:nyha ii": "II",
+       "text:nyha class ii": "II",
+       "text:2": "II",
+       "text:class 2": "II",
+       "text:nyha 2": "II",
+       "text:nyha class 2": "II",
+       "snomed:420913000": "III",
+       "text:iii": "III",
+       "text:class iii": "III",
+       "text:nyha iii": "III",
+       "text:nyha class iii": "III",
+       "text:3": "III",
+       "text:class 3": "III",
+       "text:nyha 3": "III",
+       "text:nyha class 3": "III",
+       "snomed:422293003": "IV",
+       "text:iv": "IV",
+       "text:class iv": "IV",
+       "text:nyha iv": "IV",
+       "text:nyha class iv": "IV",
+       "text:4": "IV",
+       "text:class 4": "IV",
+       "text:nyha 4": "IV",
+       "text:nyha class 4": "IV"
+      },
+      "max_age_days": 365
+     },
+     {
+      "rule": "condition_category",
+      "categories": [
+       {
+        "value": "I",
+        "codes": {
+         "icd10": [],
+         "icd9": [],
+         "snomed": [
+          "420300004"
+         ]
+        }
+       },
+       {
+        "value": "II",
+        "codes": {
+         "icd10": [],
+         "icd9": [],
+         "snomed": [
+          "421704003"
+         ]
+        }
+       },
+       {
+        "value": "III",
+        "codes": {
+         "icd10": [],
+         "icd9": [],
+         "snomed": [
+          "420913000"
+         ]
+        }
+       },
+       {
+        "value": "IV",
+        "codes": {
+         "icd10": [],
+         "icd9": [],
+         "snomed": [
+          "422293003"
+         ]
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "missing": [
+    {
+     "value": "IV",
+     "weight": 1.0
+    }
+   ],
+   "source": "michaels_2020",
+   "type": "enum",
+   "values": [
+    "I",
+    "II",
+    "III",
+    "IV"
+   ]
+  },
+  {
    "id": "smoker",
    "label": "Current smoker",
    "extract": {
@@ -2925,6 +3208,203 @@
    "max": 100.0
   },
   {
+   "id": "stroke_years",
+   "label": "Years since the stroke",
+   "extract": {
+    "rule": "years_since_condition",
+    "codes": {
+     "icd10": [
+      "I60",
+      "I61",
+      "I62",
+      "I63",
+      "I64",
+      "I69"
+     ],
+     "icd9": [
+      "430",
+      "431",
+      "432",
+      "433",
+      "434",
+      "436",
+      "438"
+     ],
+     "snomed": [
+      "10349009",
+      "14070001",
+      "24654003",
+      "25133001",
+      "25772007",
+      "39925003",
+      "56267009",
+      "57981008",
+      "70936005",
+      "78569004",
+      "87555007",
+      "111297002",
+      "116288000",
+      "195209007",
+      "195210002",
+      "195211003",
+      "195212005",
+      "195213000",
+      "195216008",
+      "195217004",
+      "230690007",
+      "230691006",
+      "230713003",
+      "230714009",
+      "230715005",
+      "275434003",
+      "275526006",
+      "276220007",
+      "276221006",
+      "281240008",
+      "308067002",
+      "371040005",
+      "371041009",
+      "371121002",
+      "373606000",
+      "384993003",
+      "413758000",
+      "422504002",
+      "429235008",
+      "429993008",
+      "440140008",
+      "444657001",
+      "699429007",
+      "716051003",
+      "722929005",
+      "724424009",
+      "724425005",
+      "724426006",
+      "724429004",
+      "724993002",
+      "724994008",
+      "725132001",
+      "788880006",
+      "788881005",
+      "788882003",
+      "788883008",
+      "788884002",
+      "1142056004",
+      "1197363004",
+      "1231168008",
+      "1269237007",
+      "1269248000",
+      "1344635001",
+      "5571000124103",
+      "9901000119100",
+      "97531000119106",
+      "99051000119101",
+      "99451000119105",
+      "106021000119105",
+      "118951000119103",
+      "118961000119101",
+      "118971000119107",
+      "140701000119108",
+      "140711000119106",
+      "140911000119109",
+      "140921000119102",
+      "141281000119101",
+      "141811000119106",
+      "141821000119104",
+      "141831000119101",
+      "292661000119105",
+      "292671000119104",
+      "292681000119101",
+      "292691000119103",
+      "293671000119109",
+      "329361000119107",
+      "329371000119101",
+      "329421000119107",
+      "329431000119105",
+      "329451000119104",
+      "329461000119102",
+      "329641000119104",
+      "329651000119102",
+      "329671000119106",
+      "330791000119108",
+      "690051000119100",
+      "12067951000119107",
+      "12204031000119101",
+      "16000351000119109",
+      "16000391000119104",
+      "16000431000119109",
+      "16000511000119103",
+      "16002031000119102",
+      "16002111000119106",
+      "16023911000119108",
+      "16023951000119109",
+      "16023991000119104",
+      "16024031000119100",
+      "16024071000119102",
+      "16024111000119109",
+      "16024151000119105",
+      "16024271000119107",
+      "16026951000119102",
+      "16026991000119107",
+      "16371781000119100",
+      "16644541000119106",
+      "16644681000119102",
+      "16644981000119109",
+      "16661931000119102",
+      "16661971000119104",
+      "16891111000119104",
+      "16896851000119101",
+      "16896891000119106",
+      "38595071000119104",
+      "58173271000119101",
+      "86553761000119103",
+      "107557061000119108",
+      "117776611000119102",
+      "152148641000119104",
+      "168747591000119109",
+      "182960891000119101",
+      "188174841000119103",
+      "195772021000119105",
+      "239965291000119107",
+      "251770561000119107",
+      "297778421000119102",
+      "346674811000119104",
+      "384430101000119103",
+      "488408691000119104",
+      "496369931000119104",
+      "511452481000119102",
+      "517253051000119105",
+      "563789641000119101",
+      "578968971000119100",
+      "595899961000119100",
+      "652287331000119104",
+      "655081461000119101",
+      "720261501000119107",
+      "721711931000119105",
+      "732330391000119107",
+      "759950981000119101",
+      "769023031000119104",
+      "806161651000119106",
+      "828066161000119106",
+      "849488701000119104",
+      "849579281000119106",
+      "851365731000119106",
+      "859422751000119101",
+      "881694631000119107",
+      "898941951000119108",
+      "915141931000119109",
+      "939885431000119109",
+      "957319791000119104"
+     ]
+    }
+   },
+   "missing": [],
+   "source": null,
+   "type": "number",
+   "unit": "years",
+   "min": 0.0,
+   "max": 100.0
+  },
+  {
    "id": "beta_blocker",
    "label": "Taking a beta-blocker",
    "extract": {
@@ -3005,6 +3485,591 @@
   }
  ],
  "layers": [
+  {
+   "id": "maggic_admitted",
+   "label": "Heart failure after a recent hospital stay: MAGGIC risk score",
+   "description": "As the MAGGIC layer below, for someone with a hospital stay for heart failure in the last 180 days. If the record gives no NYHA class it is taken as IV (the most severe), as a published validation of MAGGIC at hospital discharge did; even so, that study observed slightly more deaths than MAGGIC predicted.",
+   "requires": [
+    "ef"
+   ],
+   "when": {
+    "heart_failure": [
+     true
+    ],
+    "hf_admission": [
+     true
+    ]
+   },
+   "survival": {
+    "type": "score_weibull",
+    "times": [
+     1.0,
+     3.0
+    ],
+    "survival": [
+     [
+      0.985,
+      0.961
+     ],
+     [
+      0.984,
+      0.957
+     ],
+     [
+      0.982,
+      0.952
+     ],
+     [
+      0.98,
+      0.948
+     ],
+     [
+      0.978,
+      0.942
+     ],
+     [
+      0.976,
+      0.937
+     ],
+     [
+      0.973,
+      0.93
+     ],
+     [
+      0.971,
+      0.923
+     ],
+     [
+      0.968,
+      0.916
+     ],
+     [
+      0.964,
+      0.908
+     ],
+     [
+      0.961,
+      0.898
+     ],
+     [
+      0.957,
+      0.889
+     ],
+     [
+      0.952,
+      0.878
+     ],
+     [
+      0.948,
+      0.866
+     ],
+     [
+      0.942,
+      0.854
+     ],
+     [
+      0.937,
+      0.84
+     ],
+     [
+      0.93,
+      0.825
+     ],
+     [
+      0.923,
+      0.809
+     ],
+     [
+      0.916,
+      0.791
+     ],
+     [
+      0.907,
+      0.773
+     ],
+     [
+      0.898,
+      0.753
+     ],
+     [
+      0.889,
+      0.731
+     ],
+     [
+      0.878,
+      0.708
+     ],
+     [
+      0.866,
+      0.684
+     ],
+     [
+      0.853,
+      0.658
+     ],
+     [
+      0.84,
+      0.631
+     ],
+     [
+      0.825,
+      0.603
+     ],
+     [
+      0.809,
+      0.573
+     ],
+     [
+      0.791,
+      0.542
+     ],
+     [
+      0.773,
+      0.51
+     ],
+     [
+      0.752,
+      0.477
+     ],
+     [
+      0.731,
+      0.444
+     ],
+     [
+      0.708,
+      0.41
+     ],
+     [
+      0.684,
+      0.375
+     ],
+     [
+      0.658,
+      0.342
+     ],
+     [
+      0.631,
+      0.308
+     ],
+     [
+      0.602,
+      0.275
+     ],
+     [
+      0.573,
+      0.244
+     ],
+     [
+      0.542,
+      0.213
+     ],
+     [
+      0.51,
+      0.185
+     ],
+     [
+      0.477,
+      0.158
+     ],
+     [
+      0.443,
+      0.134
+     ],
+     [
+      0.409,
+      0.111
+     ],
+     [
+      0.375,
+      0.092
+     ],
+     [
+      0.341,
+      0.074
+     ],
+     [
+      0.308,
+      0.059
+     ],
+     [
+      0.275,
+      0.047
+     ],
+     [
+      0.243,
+      0.036
+     ],
+     [
+      0.213,
+      0.027
+     ],
+     [
+      0.184,
+      0.02
+     ],
+     [
+      0.158,
+      0.015
+     ]
+    ],
+    "terms": [
+     {
+      "kind": "bands",
+      "input": "ef",
+      "bands": [
+       {
+        "lt": 20.0,
+        "value": 7.0
+       },
+       {
+        "lt": 25.0,
+        "value": 6.0
+       },
+       {
+        "lt": 30.0,
+        "value": 5.0
+       },
+       {
+        "lt": 35.0,
+        "value": 3.0
+       },
+       {
+        "lt": 40.0,
+        "value": 2.0
+       },
+       {
+        "lt": null,
+        "value": 0.0
+       }
+      ]
+     },
+     {
+      "kind": "grid",
+      "input": "ef",
+      "by": "age",
+      "rows": [
+       {
+        "lt": 30.0,
+        "bands": [
+         {
+          "lt": 56.0,
+          "value": 0.0
+         },
+         {
+          "lt": 60.0,
+          "value": 1.0
+         },
+         {
+          "lt": 65.0,
+          "value": 2.0
+         },
+         {
+          "lt": 70.0,
+          "value": 4.0
+         },
+         {
+          "lt": 75.0,
+          "value": 6.0
+         },
+         {
+          "lt": 80.0,
+          "value": 8.0
+         },
+         {
+          "lt": null,
+          "value": 10.0
+         }
+        ]
+       },
+       {
+        "lt": 40.0,
+        "bands": [
+         {
+          "lt": 56.0,
+          "value": 0.0
+         },
+         {
+          "lt": 60.0,
+          "value": 2.0
+         },
+         {
+          "lt": 65.0,
+          "value": 4.0
+         },
+         {
+          "lt": 70.0,
+          "value": 6.0
+         },
+         {
+          "lt": 75.0,
+          "value": 8.0
+         },
+         {
+          "lt": 80.0,
+          "value": 10.0
+         },
+         {
+          "lt": null,
+          "value": 13.0
+         }
+        ]
+       },
+       {
+        "lt": null,
+        "bands": [
+         {
+          "lt": 56.0,
+          "value": 0.0
+         },
+         {
+          "lt": 60.0,
+          "value": 3.0
+         },
+         {
+          "lt": 65.0,
+          "value": 5.0
+         },
+         {
+          "lt": 70.0,
+          "value": 7.0
+         },
+         {
+          "lt": 75.0,
+          "value": 9.0
+         },
+         {
+          "lt": 80.0,
+          "value": 12.0
+         },
+         {
+          "lt": null,
+          "value": 15.0
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "grid",
+      "input": "ef",
+      "by": "sbp",
+      "rows": [
+       {
+        "lt": 30.0,
+        "bands": [
+         {
+          "lt": 110.0,
+          "value": 5.0
+         },
+         {
+          "lt": 120.0,
+          "value": 4.0
+         },
+         {
+          "lt": 130.0,
+          "value": 3.0
+         },
+         {
+          "lt": 140.0,
+          "value": 2.0
+         },
+         {
+          "lt": 150.0,
+          "value": 1.0
+         },
+         {
+          "lt": null,
+          "value": 0.0
+         }
+        ]
+       },
+       {
+        "lt": 40.0,
+        "bands": [
+         {
+          "lt": 110.0,
+          "value": 3.0
+         },
+         {
+          "lt": 120.0,
+          "value": 2.0
+         },
+         {
+          "lt": 140.0,
+          "value": 1.0
+         },
+         {
+          "lt": null,
+          "value": 0.0
+         }
+        ]
+       },
+       {
+        "lt": null,
+        "bands": [
+         {
+          "lt": 110.0,
+          "value": 2.0
+         },
+         {
+          "lt": 130.0,
+          "value": 1.0
+         },
+         {
+          "lt": null,
+          "value": 0.0
+         }
+        ]
+       }
+      ]
+     },
+     {
+      "kind": "bands",
+      "input": "bmi",
+      "bands": [
+       {
+        "lt": 15.0,
+        "value": 6.0
+       },
+       {
+        "lt": 20.0,
+        "value": 5.0
+       },
+       {
+        "lt": 25.0,
+        "value": 3.0
+       },
+       {
+        "lt": 30.0,
+        "value": 2.0
+       },
+       {
+        "lt": null,
+        "value": 0.0
+       }
+      ]
+     },
+     {
+      "kind": "bands",
+      "input": "creatinine",
+      "bands": [
+       {
+        "lt": 90.0,
+        "value": 0.0
+       },
+       {
+        "lt": 110.0,
+        "value": 1.0
+       },
+       {
+        "lt": 130.0,
+        "value": 2.0
+       },
+       {
+        "lt": 150.0,
+        "value": 3.0
+       },
+       {
+        "lt": 170.0,
+        "value": 4.0
+       },
+       {
+        "lt": 210.0,
+        "value": 5.0
+       },
+       {
+        "lt": 250.0,
+        "value": 6.0
+       },
+       {
+        "lt": null,
+        "value": 8.0
+       }
+      ]
+     },
+     {
+      "kind": "category",
+      "input": "nyha_admitted",
+      "values": {
+       "I": 0.0,
+       "II": 2.0,
+       "III": 6.0,
+       "IV": 8.0
+      }
+     },
+     {
+      "kind": "category",
+      "input": "sex",
+      "values": {
+       "female": 0.0,
+       "male": 1.0
+      }
+     },
+     {
+      "kind": "category",
+      "input": "smoker",
+      "values": {
+       "current": 1.0,
+       "not_current": 0.0
+      }
+     },
+     {
+      "kind": "category",
+      "input": "diabetes",
+      "values": {
+       "true": 3.0,
+       "false": 0.0
+      }
+     },
+     {
+      "kind": "category",
+      "input": "copd",
+      "values": {
+       "true": 2.0,
+       "false": 0.0
+      }
+     },
+     {
+      "kind": "bands",
+      "input": "hf_years",
+      "bands": [
+       {
+        "lt": 1.5,
+        "value": 0.0
+       },
+       {
+        "lt": null,
+        "value": 2.0
+       }
+      ]
+     },
+     {
+      "kind": "category",
+      "input": "beta_blocker",
+      "values": {
+       "true": 0.0,
+       "false": 3.0
+      }
+     },
+     {
+      "kind": "category",
+      "input": "acei_arb",
+      "values": {
+       "true": 0.0,
+       "false": 1.0
+      }
+     }
+    ],
+    "life_table": "us_2024",
+    "age_input": "age",
+    "sex_input": "sex"
+   },
+   "sources": [
+    "maggic_2013",
+    "michaels_2020",
+    "nchs_us_2024"
+   ]
+  },
   {
    "id": "maggic",
    "label": "Heart failure: MAGGIC risk score",
@@ -3735,6 +4800,71 @@
    ]
   },
   {
+   "id": "stroke",
+   "label": "Stroke: survival by age at the stroke (U.S. Medicare)",
+   "description": "Survival after an acute ischaemic stroke by age group, from 1,019,267 U.S. Medicare patients aged 66 or over admitted 2008-2012 (5-year survival), relative to population survival and allowing for the years since your stroke. The share of deaths in the first 28 days comes from a population-based Japanese stroke register (2011). The Medicare curve for ages 66-74 is also used for younger patients, who were not in the cohort; after 5 years the excess mortality of years 1-5 continues. Other recorded conditions are not added: the cohort already had the usual mix.",
+   "requires": [
+    "stroke_years"
+   ],
+   "when": {
+    "stroke": [
+     true
+    ]
+   },
+   "survival": {
+    "type": "relative_survival",
+    "life_table": "us_2024",
+    "age_input": "age",
+    "sex_input": "sex",
+    "since_input": "stroke_years",
+    "keys": [],
+    "curves": [
+     {
+      "match": {},
+      "age_lt": 75.0,
+      "relative": [
+       0.836103,
+       0.803854,
+       0.772849,
+       0.743039,
+       0.71438
+      ],
+      "note": ""
+     },
+     {
+      "match": {},
+      "age_lt": 85.0,
+      "relative": [
+       0.771895,
+       0.729205,
+       0.688877,
+       0.650779,
+       0.614788
+      ],
+      "note": ""
+     },
+     {
+      "match": {},
+      "age_lt": null,
+      "relative": [
+       0.64927,
+       0.590484,
+       0.537019,
+       0.488396,
+       0.444175
+      ],
+      "note": ""
+     }
+    ],
+    "terms": []
+   },
+   "sources": [
+    "tong_2021",
+    "takashima_2020",
+    "nchs_us_2024"
+   ]
+  },
+  {
    "id": "base",
    "label": "Other cardiovascular disease x population mortality",
    "description": "U.S. population mortality for your age and sex, multiplied by the published all-cause mortality hazard ratio of each recorded condition (coronary disease, stroke, atrial fibrillation, peripheral artery disease, cardiomyopathy, diabetes). Several conditions multiply, as found by the Emerging Risk Factors Collaboration; because each ratio was measured separately, this may overstate risk when several are present.",
@@ -3797,7 +4927,6 @@
     ]
    },
    "sources": [
-    "taylor_2019",
     "erfc_2015",
     "odutayo_2016",
     "matsushita_2022",
@@ -4025,7 +5154,7 @@
    "n": 299,
    "metric": "Heart failure, MAGGIC layer: Harrell's C-index",
    "value": 0.723,
-   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes (MAGGIC layer; other inputs averaged). Pre-2020: the only open patient-level heart-failure survival data found.",
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record does not show the hospital stay.",
    "source": "uci_hf_2015"
   },
   {
@@ -4034,7 +5163,7 @@
    "n": 299,
    "metric": "Heart failure, MAGGIC layer: predicted 6-month survival",
    "value": 0.928,
-   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes (MAGGIC layer; other inputs averaged). Pre-2020: the only open patient-level heart-failure survival data found.",
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record does not show the hospital stay.",
    "source": "uci_hf_2015"
   },
   {
@@ -4043,8 +5172,89 @@
    "n": 299,
    "metric": "Heart failure, MAGGIC layer: observed 6-month survival (Kaplan-Meier)",
    "value": 0.654,
-   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes (MAGGIC layer; other inputs averaged). Pre-2020: the only open patient-level heart-failure survival data found.",
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record does not show the hospital stay.",
    "source": "uci_hf_2015"
+  },
+  {
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "period": "April-December 2015 (follow-up up to 285 days)",
+   "n": 299,
+   "metric": "Heart failure, MAGGIC after a recent admission: Harrell's C-index",
+   "value": 0.722,
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record shows the heart-failure hospital stay, so an unrecorded NYHA class is taken as IV.",
+   "source": "uci_hf_2015"
+  },
+  {
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "period": "April-December 2015 (follow-up up to 285 days)",
+   "n": 299,
+   "metric": "Heart failure, MAGGIC after a recent admission: predicted 6-month survival",
+   "value": 0.896,
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record shows the heart-failure hospital stay, so an unrecorded NYHA class is taken as IV.",
+   "source": "uci_hf_2015"
+  },
+  {
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "period": "April-December 2015 (follow-up up to 285 days)",
+   "n": 299,
+   "metric": "Heart failure, MAGGIC after a recent admission: observed 6-month survival (Kaplan-Meier)",
+   "value": 0.654,
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record shows the heart-failure hospital stay, so an unrecorded NYHA class is taken as IV.",
+   "source": "uci_hf_2015"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, all MAGGIC inputs: C-index (2-year outcome)",
+   "value": 0.739,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). Every MAGGIC input taken from the registry. The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, all MAGGIC inputs: predicted 2-year survival",
+   "value": 0.797,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). Every MAGGIC input taken from the registry. The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, all MAGGIC inputs: observed 2-year survival without transplant or LVAD",
+   "value": 0.851,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). Every MAGGIC input taken from the registry. The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, NYHA class not recorded: C-index (2-year outcome)",
+   "value": 0.698,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). As if the record lacked NYHA class (averaged over the MAGGIC cohort). The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, NYHA class not recorded: predicted 2-year survival",
+   "value": 0.786,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). As if the record lacked NYHA class (averaged over the MAGGIC cohort). The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, NYHA class not recorded: observed 2-year survival without transplant or LVAD",
+   "value": 0.851,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). As if the record lacked NYHA class (averaged over the MAGGIC cohort). The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
   },
   {
    "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
@@ -4267,8 +5477,8 @@
    "period": "First stroke 2008-2017",
    "n": 313162,
    "metric": "Stroke: predicted 1-year survival",
-   "value": 0.903,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "value": 0.749,
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
   },
   {
@@ -4277,7 +5487,7 @@
    "n": 313162,
    "metric": "Stroke: observed 1-year survival",
    "value": 0.73,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
   },
   {
@@ -4285,8 +5495,8 @@
    "period": "First stroke 2008-2017",
    "n": 313162,
    "metric": "Stroke: predicted 5-year survival",
-   "value": 0.644,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "value": 0.516,
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
   },
   {
@@ -4295,7 +5505,7 @@
    "n": 313162,
    "metric": "Stroke: observed 5-year survival",
    "value": 0.528,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
   },
   {
@@ -4303,8 +5513,8 @@
    "period": "First stroke 2008-2017",
    "n": 313162,
    "metric": "Stroke: predicted 10-year survival",
-   "value": 0.437,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "value": 0.329,
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
   },
   {
@@ -4313,8 +5523,26 @@
    "n": 313162,
    "metric": "Stroke: observed 10-year survival",
    "value": 0.364,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
+  },
+  {
+   "dataset": "England first-ever stroke, SSNAP national register (Bray et al. 2018)",
+   "period": "Admitted Jul 2013-Mar 2016, 1-year follow-up",
+   "n": 107891,
+   "metric": "Stroke: predicted 1-year survival",
+   "value": 0.723,
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at admission (stroke layer), with ages spread evenly within each published quartile (median 77, IQR 66-85; ends 18 and 100 assumed) and the cohort's sex mix. Observed: 1-year all-cause mortality among patients with more than a year of follow-up.",
+   "source": "bray_2018"
+  },
+  {
+   "dataset": "England first-ever stroke, SSNAP national register (Bray et al. 2018)",
+   "period": "Admitted Jul 2013-Mar 2016, 1-year follow-up",
+   "n": 107891,
+   "metric": "Stroke: observed 1-year survival",
+   "value": 0.736,
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at admission (stroke layer), with ages spread evenly within each published quartile (median 77, IQR 66-85; ends 18 and 100 assumed) and the cohort's sex mix. Observed: 1-year all-cause mortality among patients with more than a year of follow-up.",
+   "source": "bray_2018"
   },
   {
    "dataset": "Brazilian heart failure outpatients, Porto Alegre (Arq Bras Cardiol 2026)",
@@ -4343,10 +5571,28 @@
    "licence": "Published risk score; coefficients cited from the article"
   },
   {
+   "id": "michaels_2020",
+   "citation": "Michaels A, Aurora L, Peterson E, et al. Risk prediction in transition: MAGGIC score performance at discharge and incremental utility of natriuretic peptides. J Card Fail 2020;26(1):52-60. Patients discharged after heart failure were all scored as NYHA class IV; observed 1-year mortality still exceeded MAGGIC's prediction in every quintile (Table 2).",
+   "url": "https://doi.org/10.1016/j.cardfail.2019.11.016",
+   "licence": "NIH author manuscript (PMC10062381); method cited, no data reproduced"
+  },
+  {
    "id": "taylor_2019",
    "citation": "Taylor CJ, Ordóñez-Mena JM, Roalfe AK, et al. Trends in survival after a diagnosis of heart failure in the United Kingdom 2000-2017: population based cohort study. BMJ 2019;364:l223. Survival 1, 5, 10 and 15 years after diagnosis by age group (Table 3), 55,959 patients, 52.2% male (Table 1).",
    "url": "https://doi.org/10.1136/bmj.l223",
    "licence": "CC BY 4.0"
+  },
+  {
+   "id": "tong_2021",
+   "citation": "Tong X, Schieb L, George MG, et al. Racial/ethnic and geographic variations in long-term survival among Medicare beneficiaries after acute ischemic stroke. Prev Chronic Dis 2021;18:E15. U.S. Medicare fee-for-service, aged 66+, admitted 2008-2012 (n = 1,019,267, 44.3% male; Table 1); crude 5-year survival by age 66-74 / 75-84 / 85+: 64.2% / 45.6% / 18.9% (Table 2).",
+   "url": "https://doi.org/10.5888/pcd18.200242",
+   "licence": "U.S. Government work (public domain)"
+  },
+  {
+   "id": "takashima_2020",
+   "citation": "Takashima N, Arima H, Kita Y, et al. Long-term survival after stroke in 1.4 million Japanese population: Shiga Stroke and Heart Attack Registry. J Stroke 2020;22(3):336-344. First-ever stroke 2011: 296 of 2,176 died within 28 days (Tables 2 and 4); 5-year relative survival of 28-day survivors 82.0% (Table 3).",
+   "url": "https://doi.org/10.5853/jos.2020.00325",
+   "licence": "CC BY-NC 4.0 (figures cited, no text or data reproduced)"
   },
   {
    "id": "erfc_2015",
@@ -4385,6 +5631,12 @@
    "licence": "CC BY 4.0 (testing only; data not redistributed)"
   },
   {
+   "id": "far_nhl_2019",
+   "citation": "Spinar J, Spinarova L, Malek F, et al. Prognostic value of NT-proBNP added to clinical parameters to predict two-year prognosis of chronic heart failure patients with mid-range and reduced ejection fraction - a report from FAR NHL prospective registry. PLoS One 2019;14(3):e0214363. Patient-level data in S1 Table.",
+   "url": "https://doi.org/10.1371/journal.pone.0214363",
+   "licence": "CC BY 4.0 (testing only; data not redistributed)"
+  },
+  {
    "id": "arulmurugananthavadivel_2022",
    "citation": "Arulmurugananthavadivel A, Holt A, Strange JE, et al. Temporal trends in mortality and heart failure hospitalization in new-onset heart failure in Denmark 1997-2017. Eur Heart J Qual Care Clin Outcomes 2022;8:750-760.",
    "url": "https://doi.org/10.1093/ehjqcco/qcab073",
@@ -4395,6 +5647,12 @@
    "citation": "Peng Y, Ngo L, Hay K, Alghamry A, Colebourne K, Ranasinghe I. Long-term survival, stroke recurrence, and life expectancy after an acute stroke in Australia and New Zealand from 2008-2017: a population-wide cohort study. Stroke 2022;53:2538-2548.",
    "url": "https://doi.org/10.1161/STROKEAHA.121.038155",
    "licence": null
+  },
+  {
+   "id": "bray_2018",
+   "citation": "Bray BD, Paley L, Hoffman A, et al. Socioeconomic disparities in first stroke incidence, quality of care, and survival: a nationwide registry-based cohort study of 44 million adults in England. Lancet Public Health 2018;3(4):e185-e193. First-ever stroke Jul 2013-Mar 2016 (n = 145,324; median age 77, IQR 66-85; 72,912 male); 1-year mortality 28,434 of 107,891 (Table 1).",
+   "url": "https://doi.org/10.1016/S2468-2667(18)30030-6",
+   "licence": "CC BY 4.0"
   },
   {
    "id": "vargas_2026",

@@ -17,7 +17,7 @@ export type ExtractRule =
   | { rule: "observation_number"; loinc: string[]; snomed: string[]; units: Record<string, number>; max_age_days: number | null }
   | { rule: "observation_coded"; loinc: string[]; snomed: string[]; values: Record<string, string>; max_age_days: number | null }
   | { rule: "condition_category"; categories: { value: Value; codes: CodeSet }[] }
-  | { rule: "condition_present"; codes: CodeSet }
+  | { rule: "condition_present"; codes: CodeSet; admitted_within_days?: number | null }
   | { rule: "condition_weighted_sum"; groups: { weight: number; codes: CodeSet }[] }
   | { rule: "years_since_condition"; codes: CodeSet }
   | { rule: "years_since_category"; categories: { value: Value; codes: CodeSet }[] }

@@ -114,6 +114,27 @@ def test_maggic_never_beats_population_survival():
     assert s30 <= math.exp(-population_cum_hazard(q, 40, 30)) + 1e-12
 
 
+def test_recent_heart_failure_admission_takes_unrecorded_nyha_as_class_iv():
+    spec = CARDIO.build()
+    observed = {
+        **NO_CVD, "heart_failure": True, "age": 75, "sex": "male", "ef": 30, "sbp": 115,
+        "bmi": 26, "creatinine": 120, "smoker": "not_current", "hf_years": 3,
+        "beta_blocker": True, "acei_arb": True,
+    }  # fmt: skip
+    admitted = evaluate(spec, {**observed, "hf_admission": True})
+    class_iv = evaluate(spec, {**observed, "nyha": "IV"})
+    averaged = evaluate(spec, observed)
+    assert admitted["layer"]["id"] == "maggic_admitted"
+    assert averaged["layer"]["id"] == "maggic"
+    assert admitted["survival_at"] == pytest.approx(class_iv["survival_at"], abs=1e-12)
+    assert admitted["survival_at"]["1"] < averaged["survival_at"]["1"]
+    # A NYHA class in the record is used as recorded.
+    recorded = evaluate(spec, {**observed, "hf_admission": True, "nyha_admitted": "II"})
+    assert recorded["survival_at"] == pytest.approx(
+        evaluate(spec, {**observed, "nyha": "II"})["survival_at"], abs=1e-12
+    )
+
+
 def test_heart_failure_without_ef_reproduces_taylor_2019():
     spec = CARDIO.build()
     for _, age, published in CARDIO.TAYLOR_SURVIVAL[:3]:
@@ -124,6 +145,24 @@ def test_heart_failure_without_ef_reproduces_taylor_2019():
         mix = CARDIO.TAYLOR_MALE * male["survival_at"]["5"]
         mix += (1 - CARDIO.TAYLOR_MALE) * female["survival_at"]["5"]
         assert mix == pytest.approx(published[5], abs=1e-6)
+
+
+def test_stroke_layer_reproduces_tong_2021_five_year_survival():
+    spec = CARDIO.build()
+    for _, age, published in CARDIO.TONG_SURVIVAL_5Y:
+        obs = {**NO_CVD, "stroke": True, "stroke_years": 0, "age": age}
+        male = evaluate(spec, {**obs, "sex": "male"})
+        female = evaluate(spec, {**obs, "sex": "female"})
+        assert male["layer"]["id"] == "stroke"
+        mix = CARDIO.TONG_MALE * male["survival_at"]["5"]
+        mix += (1 - CARDIO.TONG_MALE) * female["survival_at"]["5"]
+        assert mix == pytest.approx(published, abs=2e-6)
+    # Surviving the first years improves the outlook; an undated stroke uses the base layer.
+    later = evaluate(spec, {**NO_CVD, "stroke": True, "stroke_years": 2, "age": 80, "sex": "male"})
+    first = evaluate(spec, {**NO_CVD, "stroke": True, "stroke_years": 0, "age": 80, "sex": "male"})
+    assert later["survival_at"]["1"] > first["survival_at"]["1"]
+    undated = evaluate(spec, {**NO_CVD, "stroke": True, "age": 80, "sex": "male"})
+    assert undated["layer"]["id"] == "base"
 
 
 def test_other_cardiovascular_conditions_multiply_hazard_ratios():

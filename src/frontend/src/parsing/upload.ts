@@ -62,7 +62,7 @@ export function parseUpload(text: string, asOf: string): PatientRecord {
 export function resolveDates(record: PatientRecord, asOf: string): PatientRecord {
   const raws = [
     record.birthDate,
-    ...record.conditions.map((c) => c.onset),
+    ...record.conditions.flatMap((c) => [c.onset, c.admitted]),
     ...record.observations.map((o) => o.date),
     ...record.medications.map((m) => m.date),
   ].filter((d): d is string => !!d);
@@ -93,7 +93,7 @@ export function resolveDates(record: PatientRecord, asOf: string): PatientRecord
   const birth = fix(record.birthDate);
   if (birth) out.birthDate = birth;
   else delete out.birthDate;
-  out.conditions = record.conditions.map((c) => withDate(c, "onset", fix(c.onset)));
+  out.conditions = record.conditions.map((c) => withDate(withDate(c, "onset", fix(c.onset)), "admitted", fix(c.admitted)));
   out.observations = record.observations.map((o) => withDate(o, "date", fix(o.date)));
   out.medications = record.medications.map((m) => withDate(m, "date", fix(m.date)));
   if (invalid) out.notes.push(`${invalid} date(s) in the file could not be understood and were ignored.`);
@@ -110,7 +110,7 @@ function withDate<T extends object, K extends keyof T & string>(item: T, key: K,
 /** Newest dated entry in the record (used to warn when the record is stale). */
 export function latestDate(record: PatientRecord): string | undefined {
   const dates = [
-    ...record.conditions.map((c) => c.onset),
+    ...record.conditions.flatMap((c) => [c.onset, c.admitted]),
     ...record.observations.map((o) => o.date),
     ...record.medications.map((m) => m.date),
   ].filter((d): d is string => !!d);

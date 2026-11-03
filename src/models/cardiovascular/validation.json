@@ -6,7 +6,7 @@
    "n": 299,
    "metric": "Heart failure, MAGGIC layer: Harrell's C-index",
    "value": 0.723,
-   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes (MAGGIC layer; other inputs averaged). Pre-2020: the only open patient-level heart-failure survival data found.",
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record does not show the hospital stay.",
    "source": "uci_hf_2015"
   },
   {
@@ -15,7 +15,7 @@
    "n": 299,
    "metric": "Heart failure, MAGGIC layer: predicted 6-month survival",
    "value": 0.928,
-   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes (MAGGIC layer; other inputs averaged). Pre-2020: the only open patient-level heart-failure survival data found.",
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record does not show the hospital stay.",
    "source": "uci_hf_2015"
   },
   {
@@ -24,8 +24,89 @@
    "n": 299,
    "metric": "Heart failure, MAGGIC layer: observed 6-month survival (Kaplan-Meier)",
    "value": 0.654,
-   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes (MAGGIC layer; other inputs averaged). Pre-2020: the only open patient-level heart-failure survival data found.",
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record does not show the hospital stay.",
    "source": "uci_hf_2015"
+  },
+  {
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "period": "April-December 2015 (follow-up up to 285 days)",
+   "n": 299,
+   "metric": "Heart failure, MAGGIC after a recent admission: Harrell's C-index",
+   "value": 0.722,
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record shows the heart-failure hospital stay, so an unrecorded NYHA class is taken as IV.",
+   "source": "uci_hf_2015"
+  },
+  {
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "period": "April-December 2015 (follow-up up to 285 days)",
+   "n": 299,
+   "metric": "Heart failure, MAGGIC after a recent admission: predicted 6-month survival",
+   "value": 0.896,
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record shows the heart-failure hospital stay, so an unrecorded NYHA class is taken as IV.",
+   "source": "uci_hf_2015"
+  },
+  {
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "period": "April-December 2015 (follow-up up to 285 days)",
+   "n": 299,
+   "metric": "Heart failure, MAGGIC after a recent admission: observed 6-month survival (Kaplan-Meier)",
+   "value": 0.654,
+   "notes": "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine, smoking and diabetes; other inputs averaged. Assumes the record shows the heart-failure hospital stay, so an unrecorded NYHA class is taken as IV.",
+   "source": "uci_hf_2015"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, all MAGGIC inputs: C-index (2-year outcome)",
+   "value": 0.739,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). Every MAGGIC input taken from the registry. The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, all MAGGIC inputs: predicted 2-year survival",
+   "value": 0.797,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). Every MAGGIC input taken from the registry. The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, all MAGGIC inputs: observed 2-year survival without transplant or LVAD",
+   "value": 0.851,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). Every MAGGIC input taken from the registry. The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, NYHA class not recorded: C-index (2-year outcome)",
+   "value": 0.698,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). As if the record lacked NYHA class (averaged over the MAGGIC cohort). The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, NYHA class not recorded: predicted 2-year survival",
+   "value": 0.786,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). As if the record lacked NYHA class (averaged over the MAGGIC cohort). The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
+  },
+  {
+   "dataset": "FAR NHL registry, Czech Republic (Spinar et al. PLoS One 2019)",
+   "period": "Enrolled Nov 2014-Nov 2015, followed to Nov 2017",
+   "n": 1084,
+   "metric": "Heart failure, NYHA class not recorded: observed 2-year survival without transplant or LVAD",
+   "value": 0.851,
+   "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). As if the record lacked NYHA class (averaged over the MAGGIC cohort). The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
+   "source": "far_nhl_2019"
   },
   {
    "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
@@ -248,8 +329,8 @@
    "period": "First stroke 2008-2017",
    "n": 313162,
    "metric": "Stroke: predicted 1-year survival",
-   "value": 0.903,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "value": 0.749,
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
   },
   {
@@ -258,7 +339,7 @@
    "n": 313162,
    "metric": "Stroke: observed 1-year survival",
    "value": 0.73,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
   },
   {
@@ -266,8 +347,8 @@
    "period": "First stroke 2008-2017",
    "n": 313162,
    "metric": "Stroke: predicted 5-year survival",
-   "value": 0.644,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "value": 0.516,
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
   },
   {
@@ -276,7 +357,7 @@
    "n": 313162,
    "metric": "Stroke: observed 5-year survival",
    "value": 0.528,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
   },
   {
@@ -284,8 +365,8 @@
    "period": "First stroke 2008-2017",
    "n": 313162,
    "metric": "Stroke: predicted 10-year survival",
-   "value": 0.437,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "value": 0.329,
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
   },
   {
@@ -294,8 +375,26 @@
    "n": 313162,
    "metric": "Stroke: observed 10-year survival",
    "value": 0.364,
-   "notes": "Published cohort: base layer, stroke only, averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix. The stroke hazard ratio describes people with a history of stroke, so early deaths after an acute stroke are expected to be underpredicted.",
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at the stroke (stroke layer), averaged over a normal age distribution with the published mean and SD (ages 18-100) and the cohort's sex mix.",
    "source": "peng_2022"
+  },
+  {
+   "dataset": "England first-ever stroke, SSNAP national register (Bray et al. 2018)",
+   "period": "Admitted Jul 2013-Mar 2016, 1-year follow-up",
+   "n": 107891,
+   "metric": "Stroke: predicted 1-year survival",
+   "value": 0.723,
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at admission (stroke layer), with ages spread evenly within each published quartile (median 77, IQR 66-85; ends 18 and 100 assumed) and the cohort's sex mix. Observed: 1-year all-cause mortality among patients with more than a year of follow-up.",
+   "source": "bray_2018"
+  },
+  {
+   "dataset": "England first-ever stroke, SSNAP national register (Bray et al. 2018)",
+   "period": "Admitted Jul 2013-Mar 2016, 1-year follow-up",
+   "n": 107891,
+   "metric": "Stroke: observed 1-year survival",
+   "value": 0.736,
+   "notes": "Published cohort, independent of the stroke layer's sources: predicted at admission (stroke layer), with ages spread evenly within each published quartile (median 77, IQR 66-85; ends 18 and 100 assumed) and the cohort's sex mix. Observed: 1-year all-cause mortality among patients with more than a year of follow-up.",
+   "source": "bray_2018"
   },
   {
    "dataset": "Brazilian heart failure outpatients, Porto Alegre (Arq Bras Cardiol 2026)",

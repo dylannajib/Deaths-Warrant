@@ -68,6 +68,21 @@ const verification = (r: Obj): string | undefined => {
   return codings(v)[0]?.code ?? str(v);
 };
 
+// v3 ActCode classes of a hospital stay. Other classes (MIMIC records emergency admissions as
+// EMER) count when the encounter records an admission and ends on a later day than it began.
+const INPATIENT_CLASSES = new Set(["IMP", "ACUTE", "NONAC", "SS"]);
+
+/** Start of the encounter if it was a hospital (inpatient) stay. */
+function admissionStart(encounter: Obj | undefined): string | undefined {
+  if (!encounter) return undefined;
+  const start = str(first(get(encounter, "period", "start")));
+  const end = str(first(get(encounter, "period", "end")));
+  const classes = arr(encounter.class).flatMap((c) => [str(first(get(c, "code"))), ...codings(c).map((x) => x.code)]);
+  const admitted = encounter.hospitalization !== undefined || encounter.admission !== undefined;
+  const overnight = !!start && !!end && end.slice(0, 10) > start.slice(0, 10);
+  return classes.some((c) => c !== undefined && INPATIENT_CLASSES.has(c)) || (admitted && overnight) ? start : undefined;
+}
+
 function firstDate(...candidates: Json[]): string | undefined {
   for (const c of candidates) {
     const s = str(first(c));
@@ -117,6 +132,18 @@ export function readFhir(doc: Json, format: "fhir-json" | "fhir-xml"): PatientRe
     record.deceased = true;
   }
 
+  // Encounter.diagnosis → Condition (R4: condition.reference; R5: condition[].reference.reference).
+  const diagnosedIn = new Map<string, Obj>();
+  for (const r of resources) {
+    if (str(r.resourceType) !== "Encounter") continue;
+    for (const d of objs(r.diagnosis)) {
+      for (const c of objs(d.condition)) {
+        const ref = str(first(c.reference)) ?? str(get(c, "reference", "reference"));
+        if (ref) diagnosedIn.set(ref, r);
+      }
+    }
+  }
+
   let datedByVisit = false;
   for (const r of resources) {
     switch (str(r.resourceType)) {
@@ -131,6 +158,8 @@ export function readFhir(doc: Json, format: "fhir-json" | "fhir-xml"): PatientRe
         const visitStart = onset ? undefined : firstDate(get(visit, "period", "start"));
         if (onset ?? visitStart) c.onset = (onset ?? visitStart)!;
         if (visitStart) datedByVisit = true;
+        const admitted = admissionStart(visit) ?? admissionStart(diagnosedIn.get(`Condition/${str(first(r.id)) ?? ""}`));
+        if (admitted) c.admitted = admitted;
         if (c.codes.length || c.text) record.conditions.push(c);
         break;
       }

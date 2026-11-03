@@ -107,10 +107,15 @@ class ConditionCategoryRule(_Strict):
 
 
 class ConditionPresentRule(_Strict):
-    """True if any matching condition is recorded; an unrecorded condition counts as absent."""
+    """True if any matching condition is recorded; an unrecorded condition counts as absent.
+
+    With ``admitted_within_days``, only a diagnosis recorded during a hospital stay that began
+    within that many days before the as-of date counts (e.g. a recent heart-failure admission).
+    """
 
     rule: Literal["condition_present"] = "condition_present"
     codes: CodeSet
+    admitted_within_days: int | None = Field(default=None, ge=1)
 
 
 class WeightedGroup(_Strict):

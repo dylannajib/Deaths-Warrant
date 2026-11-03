@@ -2,6 +2,7 @@
  {
   "observed": {
    "heart_failure": true,
+   "hf_admission": false,
    "coronary": false,
    "stroke": false,
    "atrial_fibrillation": false,
@@ -39,6 +40,7 @@
  {
   "observed": {
    "heart_failure": true,
+   "hf_admission": false,
    "coronary": false,
    "stroke": false,
    "atrial_fibrillation": false,
@@ -68,6 +70,37 @@
  {
   "observed": {
    "heart_failure": true,
+   "hf_admission": true,
+   "coronary": false,
+   "stroke": false,
+   "atrial_fibrillation": false,
+   "peripheral_artery": false,
+   "cardiomyopathy": false,
+   "age": 77,
+   "sex": "female",
+   "ef": 30,
+   "diabetes": false,
+   "copd": false
+  },
+  "expected": {
+   "layer": {
+    "id": "maggic_admitted",
+    "label": "Heart failure after a recent hospital stay: MAGGIC risk score"
+   },
+   "median_years": 2.759660296422207,
+   "range_low_years": 0.9780314019968377,
+   "range_high_years": 6.359106426855588,
+   "survival_at": {
+    "1": 0.7458797811798034,
+    "3": 0.47546973885442834,
+    "5": 0.32062945033745427
+   }
+  }
+ },
+ {
+  "observed": {
+   "heart_failure": true,
+   "hf_admission": false,
    "coronary": false,
    "stroke": false,
    "atrial_fibrillation": false,
@@ -97,6 +130,7 @@
  {
   "observed": {
    "heart_failure": true,
+   "hf_admission": false,
    "coronary": false,
    "stroke": false,
    "atrial_fibrillation": false,
@@ -125,11 +159,13 @@
  {
   "observed": {
    "heart_failure": false,
+   "hf_admission": false,
    "coronary": true,
    "stroke": true,
    "atrial_fibrillation": false,
    "peripheral_artery": false,
    "cardiomyopathy": false,
+   "stroke_years": 2.5,
    "age": 66,
    "sex": "female",
    "diabetes": true,
@@ -137,22 +173,23 @@
   },
   "expected": {
    "layer": {
-    "id": "base",
-    "label": "Other cardiovascular disease x population mortality"
+    "id": "stroke",
+    "label": "Stroke: survival by age at the stroke (U.S. Medicare)"
    },
-   "median_years": 6.443682694318149,
-   "range_low_years": 3.0578384030198507,
-   "range_high_years": 10.534158307692074,
+   "median_years": 12.094615413221614,
+   "range_low_years": 5.5005406277859645,
+   "range_high_years": 19.841924545754743,
    "survival_at": {
-    "1": 0.9167074684007525,
-    "3": 0.7547190933884486,
-    "5": 0.6027996569218795
+    "1": 0.951008125965621,
+    "3": 0.8579008266457275,
+    "5": 0.7709750338507579
    }
   }
  },
  {
   "observed": {
    "heart_failure": false,
+   "hf_admission": false,
    "coronary": false,
    "stroke": false,
    "atrial_fibrillation": true,

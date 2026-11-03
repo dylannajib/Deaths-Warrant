@@ -19,7 +19,7 @@ how to download it.
 
 ## What the suites prove
 
-**Python: 58 tests (`src/backend/tests/`)**
+**Python: 60 tests (`src/backend/tests/`)**
 
 * Every malformed model spec is rejected when it is exported.
 * The evaluator matches hand-worked closed-form results for every survival form, including
@@ -29,7 +29,7 @@ how to download it.
 * MAGGIC, ADO and SEER reproduce their published tables exactly.
 * Exports are deterministic, and CI fails if they are stale.
 
-**TypeScript: 124 tests (`src/frontend/src/`)**
+**TypeScript: 128 tests (`src/frontend/src/`)**
 
 | Area | What is checked |
 |---|---|
@@ -59,6 +59,8 @@ its dates into the 2100s.
   * Years since diagnosis was found for 21/22 cancer patients and 24/24 heart-failure patients.
   * A cancer stage was found for 8/22 cancer patients (from metastasis codes).
   * Systolic blood pressure was found for 38/71 cardiovascular patients.
+  * A heart-failure hospital stay in the 180 days before the newest entry was found for
+    18/24 heart-failure patients.
   * MIMIC has no echocardiography results and its lab codes are not LOINC, so no ejection
     fraction or creatinine was found. MAGGIC therefore never applied, and those patients used
     the heart-failure-by-age layer, as designed.
@@ -67,21 +69,45 @@ This test checks robustness on real records; it is not an accuracy test. Accurac
 
 ## Accuracy on real, published patient data
 
-No model was fitted to any of these datasets.
+No model was fitted to any of these datasets. Every test cohort has outcomes from 2010 onwards.
 
-| Model | Data (outcomes period) | Ranking (C-index) | Calibration |
+There are two measures:
+* **Ranking (C-index):** the share of patient pairs that the model put in the right order.
+  50% is a coin flip and 100% is perfect.
+* **Calibration:** predicted against observed percentage alive.
+
+| Model | Data (period) | Ranking | Calibration: predicted vs observed alive |
 |---|---|---|---|
-| Cancer | MSK-CHORD, 24,067 patients (sequenced from 2014, outcomes to Sep 2023) | 0.71 (0.68 using registry stage only) | 1/3/5-year survival: predicted 0.71/0.51/0.42, observed 0.80/0.57/0.46. For patients who died, the predicted 25–75% range held the actual years lived for 51% of them (50% is ideal). |
-| Cardiovascular | UCI heart-failure records, 299 patients (2015) | 0.72 | Overestimates 6-month survival: 0.93 predicted vs 0.65 observed. Every patient was NYHA class III–IV, which their records did not say. |
-| Cardiovascular | Published cohorts: acute stroke (2008–17); Brazilian MAGGIC validation (2008–14) | – | Stroke survival is overestimated (1 year: 0.90 vs 0.73), because the HR describes people with a history of stroke. In Brazil, MAGGIC predicted 21% 3-year mortality against 33% observed. |
-| Respiratory | NHANES 2007–2018 linked to death records, 3,818 patients (deaths to 2019) | 0.78 | 1/3/5-year survival: predicted 0.986/0.955/0.921, observed 0.980/0.948/0.914. |
-| Respiratory | Published US cohorts (followed to 2020) | – | Life expectancy at 65 relative to no COPD, by GOLD stage 1–4: predicted 0.91/0.79/0.55/0.44, observed 0.93/0.76/0.61/0.50. |
+| Cancer | MSK-CHORD, 24,067 patients (sequenced from 2014, outcomes to Sep 2023) | 71% (68% using registry stage only) | 1/3/5 years: 71/51/42% vs 80/57/46%. For patients who died, the predicted 25–75% range held the actual years lived for 51% of them (50% is ideal). |
+| Cancer | TCGA, 4,709 patients (diagnosed 2010–2013) | 74% | 1/3/5 years: 83/69/62% vs 89/70/61% |
+| Heart failure | FAR NHL registry, 1,088 outpatients (Czech Republic, 2014–2017) | 74% (70% without NYHA class) | 2 years: 79.7% vs 85.1% (outcome: death, transplant or LVAD) |
+| Heart failure | UCI records, 299 hospitalised patients (Pakistan, 2015) | 72% | 6 months: 89.6% (with the hospital stay recorded; 92.8% without) vs 65.4% |
+| Heart failure | Brazilian MAGGIC validation (published, 2008–2014) | – | 3-year mortality: 20.9% vs 33.4% |
+| Stroke | Australia and New Zealand, 313,162 first strokes (published, 2008–2017) | – | 1/5/10 years: 74.9/51.6/32.9% vs 73.0/52.8/36.4% |
+| Stroke | England SSNAP, first-ever strokes (published, 2013–2016) | – | 1 year: 72.3% vs 73.6% |
+| Respiratory | NHANES 2007–2018 linked to death records, 3,818 patients (deaths to 2019) | 78% | 1/3/5 years: 98.6/95.5/92.1% vs 98.0/94.8/91.4% |
+| Respiratory | Published US cohorts (followed to 2020) | – | Life expectancy at 65 relative to no COPD, by GOLD stage 1–4: 91/79/55/44% vs 93/76/61/50% |
 
-**On "2020 onwards":**
-* The most recent open outcomes are MSK-CHORD (to 2023) and the US pooled cohorts (to 2020).
-* NHANES public-use mortality follow-up stops at the end of 2019.
-* All other open cardiovascular data predates 2020; recent data requires credentialed access,
-  which this project does not use.
+**The test window (2010 onwards):**
+* The window was widened from 2020 onwards to 2010 onwards on 2026-11-03.
+* Open data with outcomes from 2020 onwards exists only for cancer (MSK-CHORD) and for US
+  COPD cohorts. All other recent data requires credentialed access, which this project does
+  not use.
+* Patients from 2010–2015 were treated with somewhat older therapies, so each result keeps its
+  period.
+
+**Changes after testing, from published sources only:**
+* **Stroke:** the constant hazard ratio was replaced by survival after an acute stroke by age
+  (U.S. Medicare 2008–2012, with the early-death share from the Shiga register). Its error
+  against Australia/New Zealand fell from 17 to 2 points at 1 year. Both stroke test cohorts
+  are independent of these sources.
+* **Recent heart-failure hospital stay:** a stay in the last 180 days is now read from the
+  record, and an unrecorded NYHA class is then taken as IV (Michaels 2020).
+* **MAGGIC was not recalibrated,** because 2010+ validations disagree on the direction of its
+  error. FAR NHL shows modern outpatients are slightly over-predicted, while UCI and Brazil are
+  under-predicted.
+* **Cancer's first-year pessimism** appears in both MSK-CHORD and TCGA. Both select patients
+  fit enough for surgery or sequencing, so it was documented, not tuned away.
 
 ## Security and robustness tests
 
@@ -122,6 +148,7 @@ These are also stated in each model's `sources.md` and in the app's Reasoning pa
 
 * US population mortality is used for every patient.
 * Some source cohorts are older than current treatment: MAGGIC 1980–2006, ADO 1980s–2000s.
+* The stroke layer rests on ischaemic strokes in people aged 66 or over (U.S. Medicare).
 * Cardiovascular hazard ratios are constant across ages.
 * Accuracy depends on what the uploaded record contains. Missing inputs are averaged over the
   published population, which widens the range.

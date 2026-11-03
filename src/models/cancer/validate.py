@@ -48,6 +48,7 @@ OUT = HERE / "validation.json"
 DATASET = "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)"
 PERIOD = "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot"
 MIN_GROUP = 20
+MIN_DEATHS = 20  # fewer deaths make the C-index too noisy to report
 YEARS = (1, 3, 5)
 
 STAGE = {
@@ -161,17 +162,30 @@ def _row(base: dict[str, Any], metric: str, value: float, notes: str) -> dict[st
     return {**base, "metric": metric, "value": round(value, 3), "notes": notes}
 
 
+MSK_CHORD = {"dataset": DATASET, "period": PERIOD, "source": "msk_chord"}
+
+
+def _base(meta: dict[str, str], n: int) -> dict[str, Any]:
+    return {"dataset": meta["dataset"], "period": meta["period"], "n": n, "source": meta["source"]}
+
+
 def metrics(
-    name: str, group: list[tuple[dict[str, Any], dict[str, Any]]], notes: str
+    name: str,
+    group: list[tuple[dict[str, Any], dict[str, Any]]],
+    notes: str,
+    meta: dict[str, str] = MSK_CHORD,
+    years: tuple[int, ...] = YEARS,
 ) -> list[dict]:
     if len(group) < MIN_GROUP:
         return []
     times = [p["years"] for p, _ in group]
     events = [p["died"] for p, _ in group]
-    base = {"dataset": DATASET, "period": PERIOD, "n": len(group), "source": "msk_chord"}
-    c = harrell_c(times, events, [pred["median"] for _, pred in group])
-    out = [_row(base, f"{name}: Harrell's C-index", c, notes)]
-    for t in YEARS:
+    base = _base(meta, len(group))
+    out = []
+    if sum(events) >= MIN_DEATHS:
+        c = harrell_c(times, events, [pred["median"] for _, pred in group])
+        out.append(_row(base, f"{name}: Harrell's C-index", c, notes))
+    for t in years:
         predicted, observed = calibration_at(
             t, times, events, [p["survival_at"][str(t)] for _, p in group]
         )
@@ -193,14 +207,18 @@ def metrics(
     return out
 
 
-def years_lived(group: list[tuple[dict[str, Any], dict[str, Any]]], notes: str) -> list[dict]:
+def years_lived(
+    group: list[tuple[dict[str, Any], dict[str, Any]]],
+    notes: str,
+    meta: dict[str, str] = MSK_CHORD,
+) -> list[dict]:
     """Prediction against actual years lived, for patients whose death was observed.
 
     Restricting to deaths favours short survivors (long survivors are still alive, censored),
     so these figures complement, and do not replace, the censoring-aware metrics above.
     """
     dead = [(p, pred) for p, pred in group if p["died"]]
-    base = {"dataset": DATASET, "period": PERIOD, "n": len(dead), "source": "msk_chord"}
+    base = _base(meta, len(dead))
     errors = sorted(abs(pred["median"] - p["years"]) for p, pred in dead)
     within = sum(pred["low"] <= p["years"] <= pred["high"] for p, pred in dead) / len(dead)
     note = notes + " Deceased patients only, so biased towards short survival."

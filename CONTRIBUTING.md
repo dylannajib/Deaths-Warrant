@@ -22,7 +22,9 @@ def golden_inputs() -> list[dict]:
   * age and sex;
   * the latest LOINC (or SNOMED) observation, with unit conversion;
   * a coded observation;
-  * diagnoses: diagnosis category, condition present, weighted condition sum (e.g. Charlson);
+  * diagnoses: diagnosis category, condition present (optionally only when recorded during a
+    hospital stay in the last N days, `admitted_within_days`), weighted condition sum (e.g.
+    Charlson);
   * years since a diagnosis, or since the diagnosis in the matched category;
   * medication present (unknown when the record lists no medications at all);
   * `first_of`, a list of rules tried in priority order.
@@ -55,12 +57,14 @@ def golden_inputs() -> list[dict]:
   life tables, SEER*Explorer and SNOMED CT hierarchies (`snomed_roots.json` →
   `snomed_sets.json`, because the browser matches SNOMED codes exactly). `sources/xpt.py`
   reads NHANES SAS transport files for validation.
-* **Validation**: put a `validate.py` in your folder that reads real, published patient data
+* **Validation**: test only on real data with outcomes from 2010 onwards, and label each
+  result with its period. Put a `validate.py` in your folder that reads real, published patient data
   from `data/` and writes `validation.json`. `build()` loads that file into the spec. Report
   only aggregate results (`n >= 20`), never commit patient-level data, and never train on
   data you then validate on. `src/models/cancer/validate.py` (patient level) and
   `src/models/cardiovascular/validate.py` (patient level plus published cohort results) are
-  worked examples.
+  worked examples. A second dataset can have its own script and results file (e.g. the cancer
+  model's `validate_tcga.py` → `validation_tcga.json`), loaded by `build()` alongside.
 
 The unit-test fixture in `src/models/_fixture/model.py` is a compact example of every survival
 form; `src/models/cancer/` is a complete real model.

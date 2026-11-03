@@ -66,6 +66,19 @@ describe("extractInputs", () => {
     expect(extractInputs(spec, { ...record, medications: [] }, "2026-11-02").observed.bb).toBeNull();
   });
 
+  it("counts a diagnosis only after a recent enough hospital stay when asked", () => {
+    const admitted = { ...spec, inputs: [input("stay", { rule: "condition_present", codes: { ...none, icd10: ["I50"] }, admitted_within_days: 180 }, "boolean")] };
+    const at = (date: string | undefined) => {
+      const cond = { codes: [{ system: "icd10" as const, code: "I509" }], ...(date ? { admitted: date } : {}) };
+      return extractInputs(admitted, { ...record, conditions: [cond] }, "2026-11-02");
+    };
+    expect(at("2026-06-01").observed.stay).toBe(true);
+    expect(at("2026-06-01").provenance.stay).toMatch(/Hospital stay from 2026-06-01/);
+    expect(at("2026-04-01").observed.stay).toBe(false); // over 180 days ago
+    expect(at("2027-01-01").observed.stay).toBe(false); // after the as-of date
+    expect(at(undefined).observed.stay).toBe(false); // diagnosis outside any hospital stay
+  });
+
   it("ignores measurements in unknown units", () => {
     expect(provenance.creat).toMatch(/100 umol\/L on 2025-01-01/);
   });

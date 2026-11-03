@@ -1,0 +1,1052 @@
+{
+ "cohort": {
+  "patients": 4709,
+  "deaths": 929
+ },
+ "results": [
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 4709,
+   "source": "tcga_gdc",
+   "metric": "All patients: Harrell's C-index",
+   "value": 0.743,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 4709,
+   "source": "tcga_gdc",
+   "metric": "All patients: predicted 1-year survival",
+   "value": 0.827,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 4709,
+   "source": "tcga_gdc",
+   "metric": "All patients: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.894,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 4709,
+   "source": "tcga_gdc",
+   "metric": "All patients: predicted 3-year survival",
+   "value": 0.685,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 4709,
+   "source": "tcga_gdc",
+   "metric": "All patients: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.704,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 4709,
+   "source": "tcga_gdc",
+   "metric": "All patients: predicted 5-year survival",
+   "value": 0.62,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 4709,
+   "source": "tcga_gdc",
+   "metric": "All patients: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.606,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 4709,
+   "source": "tcga_gdc",
+   "metric": "All patients: predicted median survival (years)",
+   "value": 10.75,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 929,
+   "source": "tcga_gdc",
+   "metric": "Deceased: median absolute error, predicted median vs years lived (years)",
+   "value": 1.942,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk. Deceased patients only, so biased towards short survival."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 929,
+   "source": "tcga_gdc",
+   "metric": "Deceased: share whose years lived fell in the predicted 25-75% range",
+   "value": 0.423,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk. Deceased patients only, so biased towards short survival."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 2965,
+   "source": "tcga_gdc",
+   "metric": "Layer site_stage: Harrell's C-index",
+   "value": 0.733,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 2965,
+   "source": "tcga_gdc",
+   "metric": "Layer site_stage: predicted 1-year survival",
+   "value": 0.821,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 2965,
+   "source": "tcga_gdc",
+   "metric": "Layer site_stage: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.877,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 2965,
+   "source": "tcga_gdc",
+   "metric": "Layer site_stage: predicted 3-year survival",
+   "value": 0.67,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 2965,
+   "source": "tcga_gdc",
+   "metric": "Layer site_stage: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.661,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 2965,
+   "source": "tcga_gdc",
+   "metric": "Layer site_stage: predicted 5-year survival",
+   "value": 0.599,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 2965,
+   "source": "tcga_gdc",
+   "metric": "Layer site_stage: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.555,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 2965,
+   "source": "tcga_gdc",
+   "metric": "Layer site_stage: predicted median survival (years)",
+   "value": 9.25,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1744,
+   "source": "tcga_gdc",
+   "metric": "Layer site: Harrell's C-index",
+   "value": 0.74,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1744,
+   "source": "tcga_gdc",
+   "metric": "Layer site: predicted 1-year survival",
+   "value": 0.836,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1744,
+   "source": "tcga_gdc",
+   "metric": "Layer site: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.922,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1744,
+   "source": "tcga_gdc",
+   "metric": "Layer site: predicted 3-year survival",
+   "value": 0.71,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1744,
+   "source": "tcga_gdc",
+   "metric": "Layer site: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.774,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1744,
+   "source": "tcga_gdc",
+   "metric": "Layer site: predicted 5-year survival",
+   "value": 0.655,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1744,
+   "source": "tcga_gdc",
+   "metric": "Layer site: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.68,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1744,
+   "source": "tcga_gdc",
+   "metric": "Layer site: predicted median survival (years)",
+   "value": 13.75,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1297,
+   "source": "tcga_gdc",
+   "metric": "Stage localized: Harrell's C-index",
+   "value": 0.701,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1297,
+   "source": "tcga_gdc",
+   "metric": "Stage localized: predicted 1-year survival",
+   "value": 0.896,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1297,
+   "source": "tcga_gdc",
+   "metric": "Stage localized: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.924,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1297,
+   "source": "tcga_gdc",
+   "metric": "Stage localized: predicted 3-year survival",
+   "value": 0.789,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1297,
+   "source": "tcga_gdc",
+   "metric": "Stage localized: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.782,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1297,
+   "source": "tcga_gdc",
+   "metric": "Stage localized: predicted 5-year survival",
+   "value": 0.722,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1297,
+   "source": "tcga_gdc",
+   "metric": "Stage localized: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.7,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1297,
+   "source": "tcga_gdc",
+   "metric": "Stage localized: predicted median survival (years)",
+   "value": 14.0,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1310,
+   "source": "tcga_gdc",
+   "metric": "Stage regional: Harrell's C-index",
+   "value": 0.737,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1310,
+   "source": "tcga_gdc",
+   "metric": "Stage regional: predicted 1-year survival",
+   "value": 0.815,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1310,
+   "source": "tcga_gdc",
+   "metric": "Stage regional: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.862,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1310,
+   "source": "tcga_gdc",
+   "metric": "Stage regional: predicted 3-year survival",
+   "value": 0.637,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1310,
+   "source": "tcga_gdc",
+   "metric": "Stage regional: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.602,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1310,
+   "source": "tcga_gdc",
+   "metric": "Stage regional: predicted 5-year survival",
+   "value": 0.562,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1310,
+   "source": "tcga_gdc",
+   "metric": "Stage regional: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.496,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1310,
+   "source": "tcga_gdc",
+   "metric": "Stage regional: predicted median survival (years)",
+   "value": 7.75,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 1310,
+   "source": "tcga_gdc",
+   "metric": "Stage regional: observed median survival (years, Kaplan-Meier)",
+   "value": 4.547,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 358,
+   "source": "tcga_gdc",
+   "metric": "Stage distant: Harrell's C-index",
+   "value": 0.626,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 358,
+   "source": "tcga_gdc",
+   "metric": "Stage distant: predicted 1-year survival",
+   "value": 0.573,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 358,
+   "source": "tcga_gdc",
+   "metric": "Stage distant: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.769,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 358,
+   "source": "tcga_gdc",
+   "metric": "Stage distant: predicted 3-year survival",
+   "value": 0.358,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 358,
+   "source": "tcga_gdc",
+   "metric": "Stage distant: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.485,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 358,
+   "source": "tcga_gdc",
+   "metric": "Stage distant: predicted 5-year survival",
+   "value": 0.287,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 358,
+   "source": "tcga_gdc",
+   "metric": "Stage distant: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.382,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 358,
+   "source": "tcga_gdc",
+   "metric": "Stage distant: predicted median survival (years)",
+   "value": 1.5,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 358,
+   "source": "tcga_gdc",
+   "metric": "Stage distant: observed median survival (years, Kaplan-Meier)",
+   "value": 2.732,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 453,
+   "source": "tcga_gdc",
+   "metric": "Site lung: Harrell's C-index",
+   "value": 0.552,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 453,
+   "source": "tcga_gdc",
+   "metric": "Site lung: predicted 1-year survival",
+   "value": 0.813,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 453,
+   "source": "tcga_gdc",
+   "metric": "Site lung: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.887,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 453,
+   "source": "tcga_gdc",
+   "metric": "Site lung: predicted 3-year survival",
+   "value": 0.626,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 453,
+   "source": "tcga_gdc",
+   "metric": "Site lung: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.587,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 453,
+   "source": "tcga_gdc",
+   "metric": "Site lung: predicted 5-year survival",
+   "value": 0.524,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 453,
+   "source": "tcga_gdc",
+   "metric": "Site lung: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.459,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 453,
+   "source": "tcga_gdc",
+   "metric": "Site lung: predicted median survival (years)",
+   "value": 5.75,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 453,
+   "source": "tcga_gdc",
+   "metric": "Site lung: observed median survival (years, Kaplan-Meier)",
+   "value": 4.191,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 424,
+   "source": "tcga_gdc",
+   "metric": "Site breast: Harrell's C-index",
+   "value": 0.779,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 424,
+   "source": "tcga_gdc",
+   "metric": "Site breast: predicted 1-year survival",
+   "value": 0.978,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 424,
+   "source": "tcga_gdc",
+   "metric": "Site breast: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.972,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 424,
+   "source": "tcga_gdc",
+   "metric": "Site breast: predicted 3-year survival",
+   "value": 0.92,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 424,
+   "source": "tcga_gdc",
+   "metric": "Site breast: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.851,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 424,
+   "source": "tcga_gdc",
+   "metric": "Site breast: predicted 5-year survival",
+   "value": 0.867,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 424,
+   "source": "tcga_gdc",
+   "metric": "Site breast: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.814,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 424,
+   "source": "tcga_gdc",
+   "metric": "Site breast: predicted median survival (years)",
+   "value": 21.0,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 416,
+   "source": "tcga_gdc",
+   "metric": "Site brain: Harrell's C-index",
+   "value": 0.838,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 416,
+   "source": "tcga_gdc",
+   "metric": "Site brain: predicted 1-year survival",
+   "value": 0.717,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 416,
+   "source": "tcga_gdc",
+   "metric": "Site brain: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.885,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 416,
+   "source": "tcga_gdc",
+   "metric": "Site brain: predicted 3-year survival",
+   "value": 0.499,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 416,
+   "source": "tcga_gdc",
+   "metric": "Site brain: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.664,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 416,
+   "source": "tcga_gdc",
+   "metric": "Site brain: predicted 5-year survival",
+   "value": 0.443,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 416,
+   "source": "tcga_gdc",
+   "metric": "Site brain: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.497,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 416,
+   "source": "tcga_gdc",
+   "metric": "Site brain: predicted median survival (years)",
+   "value": 3.0,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 416,
+   "source": "tcga_gdc",
+   "metric": "Site brain: observed median survival (years, Kaplan-Meier)",
+   "value": 4.054,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 328,
+   "source": "tcga_gdc",
+   "metric": "Site thyroid: predicted 1-year survival",
+   "value": 0.948,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 328,
+   "source": "tcga_gdc",
+   "metric": "Site thyroid: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.997,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 328,
+   "source": "tcga_gdc",
+   "metric": "Site thyroid: predicted 3-year survival",
+   "value": 0.922,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 328,
+   "source": "tcga_gdc",
+   "metric": "Site thyroid: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.997,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 328,
+   "source": "tcga_gdc",
+   "metric": "Site thyroid: predicted 5-year survival",
+   "value": 0.9,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 328,
+   "source": "tcga_gdc",
+   "metric": "Site thyroid: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.997,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 319,
+   "source": "tcga_gdc",
+   "metric": "Site stomach: Harrell's C-index",
+   "value": 0.636,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 319,
+   "source": "tcga_gdc",
+   "metric": "Site stomach: predicted 1-year survival",
+   "value": 0.759,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 319,
+   "source": "tcga_gdc",
+   "metric": "Site stomach: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.786,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 319,
+   "source": "tcga_gdc",
+   "metric": "Site stomach: predicted 3-year survival",
+   "value": 0.531,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 319,
+   "source": "tcga_gdc",
+   "metric": "Site stomach: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.479,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 319,
+   "source": "tcga_gdc",
+   "metric": "Site stomach: predicted 5-year survival",
+   "value": 0.444,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 319,
+   "source": "tcga_gdc",
+   "metric": "Site stomach: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.426,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 319,
+   "source": "tcga_gdc",
+   "metric": "Site stomach: predicted median survival (years)",
+   "value": 3.75,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 319,
+   "source": "tcga_gdc",
+   "metric": "Site stomach: observed median survival (years, Kaplan-Meier)",
+   "value": 2.393,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 292,
+   "source": "tcga_gdc",
+   "metric": "Site prostate: predicted 1-year survival",
+   "value": 0.985,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 292,
+   "source": "tcga_gdc",
+   "metric": "Site prostate: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.996,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 292,
+   "source": "tcga_gdc",
+   "metric": "Site prostate: predicted 3-year survival",
+   "value": 0.951,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 292,
+   "source": "tcga_gdc",
+   "metric": "Site prostate: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.988,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 292,
+   "source": "tcga_gdc",
+   "metric": "Site prostate: predicted 5-year survival",
+   "value": 0.916,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 292,
+   "source": "tcga_gdc",
+   "metric": "Site prostate: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.988,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 292,
+   "source": "tcga_gdc",
+   "metric": "Site prostate: predicted median survival (years)",
+   "value": 21.25,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 288,
+   "source": "tcga_gdc",
+   "metric": "Site other: Harrell's C-index",
+   "value": 0.607,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 288,
+   "source": "tcga_gdc",
+   "metric": "Site other: predicted 1-year survival",
+   "value": 0.837,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 288,
+   "source": "tcga_gdc",
+   "metric": "Site other: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.909,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 288,
+   "source": "tcga_gdc",
+   "metric": "Site other: predicted 3-year survival",
+   "value": 0.734,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 288,
+   "source": "tcga_gdc",
+   "metric": "Site other: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.75,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 288,
+   "source": "tcga_gdc",
+   "metric": "Site other: predicted 5-year survival",
+   "value": 0.678,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 288,
+   "source": "tcga_gdc",
+   "metric": "Site other: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.638,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 288,
+   "source": "tcga_gdc",
+   "metric": "Site other: predicted median survival (years)",
+   "value": 14.0,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 278,
+   "source": "tcga_gdc",
+   "metric": "Site kidney: Harrell's C-index",
+   "value": 0.76,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 278,
+   "source": "tcga_gdc",
+   "metric": "Site kidney: predicted 1-year survival",
+   "value": 0.883,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 278,
+   "source": "tcga_gdc",
+   "metric": "Site kidney: observed 1-year survival (Kaplan-Meier)",
+   "value": 0.944,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 278,
+   "source": "tcga_gdc",
+   "metric": "Site kidney: predicted 3-year survival",
+   "value": 0.796,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 278,
+   "source": "tcga_gdc",
+   "metric": "Site kidney: observed 3-year survival (Kaplan-Meier)",
+   "value": 0.873,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 278,
+   "source": "tcga_gdc",
+   "metric": "Site kidney: predicted 5-year survival",
+   "value": 0.737,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 278,
+   "source": "tcga_gdc",
+   "metric": "Site kidney: observed 5-year survival (Kaplan-Meier)",
+   "value": 0.873,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  },
+  {
+   "dataset": "TCGA, harmonised by the NCI Genomic Data Commons (cBioPortal *_tcga_gdc)",
+   "period": "Diagnosed 2010-2013, followed from diagnosis",
+   "n": 278,
+   "source": "tcga_gdc",
+   "metric": "Site kidney: predicted median survival (years)",
+   "value": 14.75,
+   "notes": "Predicted at diagnosis from age, sex, site and a summary stage derived from pathological TNM (an approximation of SEER summary stage). Follow-up is short (median about 2 years), so 5-year figures rest on few patients still at risk."
+  }
+ ]
+}

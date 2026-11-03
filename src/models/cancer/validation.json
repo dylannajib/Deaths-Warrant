@@ -1161,15 +1161,6 @@
    "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
    "n": 25,
    "source": "msk_chord",
-   "metric": "Site anus (registry + metastatic sample): Harrell's C-index",
-   "value": 0.81,
-   "notes": "Predicted at first sequencing from age, sex, registry site and stage at diagnosis, and years since diagnosis; a metastatic first sample counts as distant stage from day 0."
-  },
-  {
-   "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
-   "n": 25,
-   "source": "msk_chord",
    "metric": "Site anus (registry + metastatic sample): predicted 1-year survival",
    "value": 0.836,
    "notes": "Predicted at first sequencing from age, sex, registry site and stage at diagnosis, and years since diagnosis; a metastatic first sample counts as distant stage from day 0."

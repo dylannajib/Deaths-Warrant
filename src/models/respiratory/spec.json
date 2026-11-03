@@ -329,7 +329,8 @@
       "293241000119100",
       "10692761000119107"
      ]
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": null,
    "source": null,
@@ -372,7 +373,8 @@
       "714203003",
       "879963005"
      ]
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": null,
    "source": null,
@@ -501,7 +503,8 @@
       "10742121000119104",
       "16584951000119101"
      ]
-    }
+    },
+    "admitted_within_days": null
    },
    "missing": null,
    "source": null,

@@ -2,10 +2,18 @@
 
 Layers, most specific first:
 
-1. ``maggic``: heart failure with a recorded ejection fraction. The MAGGIC integer risk score
+1. ``maggic_admitted``: as ``maggic``, after a hospital stay for heart failure in the last 180
+   days. An unrecorded NYHA class is taken as IV, as Michaels et al. (J Card Fail 2020) did for
+   patients discharged after heart failure, instead of averaging over MAGGIC's outpatients.
+2. ``maggic``: heart failure with a recorded ejection fraction. The MAGGIC integer risk score
    (Pocock et al., Eur Heart J 2013) and its published 1- and 3-year mortality (Table 4),
    joined by a Weibull per score and never better than U.S. population survival.
-2. ``base``: any cardiovascular disease. U.S. population mortality (NCHS 2024) multiplied by
+3. ``heart_failure``: heart failure without an ejection fraction (Taylor et al. BMJ 2019).
+4. ``stroke``: a dated stroke. Survival after an acute ischaemic stroke by age (Tong et al. Prev
+   Chronic Dis 2021, U.S. Medicare 2008-2012), with the share of excess deaths in the first
+   28 days taken from a population-based stroke register (Takashima et al. J Stroke 2020),
+   conditional on the years since the stroke.
+5. ``base``: any cardiovascular disease. U.S. population mortality (NCHS 2024) multiplied by
    published all-cause mortality hazard ratios for each recorded condition; the conditions
    combine multiplicatively, as reported by the Emerging Risk Factors Collaboration.
 
@@ -261,6 +269,9 @@ EF_LOINC = ["10230-1", "8806-2", "18043-0"]
 NYHA_LOINC = ["88020-3", "88021-1"]
 SMOKING_LOINC = ["72166-2"]
 ROMAN = ["I", "II", "III", "IV"]
+# A heart-failure hospital stay this recent counts as "recently admitted" (Michaels 2020 scored
+# patients at discharge; six months keeps the record close to that setting).
+ADMITTED_WITHIN_DAYS = 180
 
 
 def _nyha_rule() -> dict[str, Any]:
@@ -449,6 +460,25 @@ def _inputs() -> list[dict[str, Any]]:
             "missing": MAGGIC_MISSING["nyha"],
             "source": "maggic_2013",
         },
+        _boolean(
+            "hf_admission",
+            f"Hospital stay for heart failure in the last {ADMITTED_WITHIN_DAYS} days",
+            {
+                "rule": "condition_present",
+                "codes": _codes("heart_failure"),
+                "admitted_within_days": ADMITTED_WITHIN_DAYS,
+            },
+            [{"value": False, "weight": 1.0}],
+        ),
+        {
+            "id": "nyha_admitted",
+            "label": "NYHA class (after a heart-failure hospital stay)",
+            "type": "enum",
+            "values": ROMAN,
+            "extract": _nyha_rule(),
+            "missing": [{"value": "IV", "weight": 1.0}],
+            "source": "michaels_2020",
+        },
         {
             "id": "smoker",
             "label": "Current smoker",
@@ -472,6 +502,16 @@ def _inputs() -> list[dict[str, Any]]:
             "extract": {"rule": "years_since_condition", "codes": _codes("heart_failure")},
             "missing": MAGGIC_MISSING["hf_years"],
             "source": "maggic_2013",
+        },
+        {
+            "id": "stroke_years",
+            "label": "Years since the stroke",
+            "type": "number",
+            "unit": "years",
+            "min": 0,
+            "max": 100,
+            "extract": {"rule": "years_since_condition", "codes": _codes("stroke")},
+            "missing": [],
         },
         _boolean(
             "beta_blocker",
@@ -549,6 +589,52 @@ def heart_failure_curves() -> list[dict[str, Any]]:
     return curves
 
 
+# Tong et al. Prev Chronic Dis 2021, Tables 1-2: U.S. Medicare fee-for-service beneficiaries aged
+# 66 or over admitted with acute ischaemic stroke 2008-2012 (n = 1,019,267; 44.3% male); crude
+# Kaplan-Meier 5-year survival from the stroke by age group.
+TONG_SURVIVAL_5Y = [  # (age_lt for the band, representative age, observed 5-year survival)
+    (75.0, 70, 0.642),
+    (85.0, 80, 0.456),
+    (None, 89, 0.189),
+]
+TONG_MALE = 0.443
+# Takashima et al. J Stroke 2020 (Shiga, Japan; first-ever stroke 2011): 296 of 2,176 died
+# within 28 days (Table 4 minus Table 2), and the 1,880 28-day survivors had 5-year relative
+# survival 0.820 (Table 3). Share of the 5-year excess cumulative hazard in the first 28 days:
+EARLY_DAYS = 28
+_EARLY = -math.log(1 - 296 / 2176)
+STROKE_EARLY_SHARE = _EARLY / (_EARLY - math.log(0.820))
+
+
+def stroke_curves() -> list[dict[str, Any]]:
+    """Relative survival after an acute stroke by age band (Tong 2021 at 5 years).
+
+    The band's 5-year excess cumulative hazard X5 = -ln(observed / population survival) (U.S.
+    life table, cohort sex mix) is split as in Takashima 2020: a share in the first 28 days,
+    the rest spread evenly to 5 years and continued at that rate afterwards.
+    """
+    table = load_life_table("us_2024")
+    early = EARLY_DAYS / 365.25
+    curves = []
+    for age_lt, age, observed in TONG_SURVIVAL_5Y:
+        pop = TONG_MALE * math.exp(-population_cum_hazard(table.male, age, 5)) + (
+            1 - TONG_MALE
+        ) * math.exp(-population_cum_hazard(table.female, age, 5))
+        x5 = -math.log(observed / pop)
+        relative = [
+            round(
+                math.exp(
+                    -x5
+                    * (STROKE_EARLY_SHARE + (1 - STROKE_EARLY_SHARE) * (k - early) / (5 - early))
+                ),
+                6,
+            )
+            for k in range(1, 6)
+        ]
+        curves.append({"match": {}, "age_lt": age_lt, "relative": relative})
+    return curves
+
+
 def _validation() -> list[dict[str, Any]]:
     if not VALIDATION_FILE.exists():
         return []
@@ -567,9 +653,10 @@ def build() -> ModelSpec:
         "version": "1.0.0",
         "order": 20,
         "description": (
-            "Heart failure with a recorded ejection fraction uses the MAGGIC risk score; other"
-            " cardiovascular disease uses U.S. population mortality multiplied by published"
-            " hazard ratios for each recorded condition."
+            "Heart failure uses the MAGGIC risk score when the ejection fraction is recorded,"
+            " otherwise survival by age at diagnosis; a dated stroke uses survival after stroke"
+            " by age; other cardiovascular disease uses U.S. population mortality multiplied by"
+            " published hazard ratios for each recorded condition."
         ),
         "group_codes": {
             "icd10": GROUP_ICD10,
@@ -578,6 +665,30 @@ def build() -> ModelSpec:
         },
         "inputs": _inputs(),
         "layers": [
+            {
+                "id": "maggic_admitted",
+                "label": "Heart failure after a recent hospital stay: MAGGIC risk score",
+                "description": (
+                    "As the MAGGIC layer below, for someone with a hospital stay for heart"
+                    f" failure in the last {ADMITTED_WITHIN_DAYS} days. If the record gives no"
+                    " NYHA class it is taken as IV (the most severe), as a published"
+                    " validation of MAGGIC at hospital discharge did; even so, that study"
+                    " observed slightly more deaths than MAGGIC predicted."
+                ),
+                "requires": ["ef"],
+                "when": {"heart_failure": [True], "hf_admission": [True]},
+                "survival": {
+                    "type": "score_weibull",
+                    "times": [1, 3],
+                    "survival": survival_table,
+                    "terms": [
+                        {**t, "input": "nyha_admitted"} if t["input"] == "nyha" else t
+                        for t in MAGGIC_TERMS
+                    ],
+                    "life_table": "us_2024",
+                },
+                "sources": ["maggic_2013", "michaels_2020", "nchs_us_2024"],
+            },
             {
                 "id": "maggic",
                 "label": "Heart failure: MAGGIC risk score",
@@ -620,6 +731,29 @@ def build() -> ModelSpec:
                 "sources": ["taylor_2019", "nchs_us_2024"],
             },
             {
+                "id": "stroke",
+                "label": "Stroke: survival by age at the stroke (U.S. Medicare)",
+                "description": (
+                    "Survival after an acute ischaemic stroke by age group, from 1,019,267 U.S."
+                    " Medicare patients aged 66 or over admitted 2008-2012 (5-year survival),"
+                    " relative to population survival and allowing for the years since your"
+                    " stroke. The share of deaths in the first 28 days comes from a"
+                    " population-based Japanese stroke register (2011). The Medicare curve for"
+                    " ages 66-74 is also used for younger patients, who were not in the cohort;"
+                    " after 5 years the excess mortality of years 1-5 continues. Other recorded"
+                    " conditions are not added: the cohort already had the usual mix."
+                ),
+                "requires": ["stroke_years"],
+                "when": {"stroke": [True]},
+                "survival": {
+                    "type": "relative_survival",
+                    "life_table": "us_2024",
+                    "since_input": "stroke_years",
+                    "curves": stroke_curves(),
+                },
+                "sources": ["tong_2021", "takashima_2020", "nchs_us_2024"],
+            },
+            {
                 "id": "base",
                 "label": "Other cardiovascular disease x population mortality",
                 "description": (
@@ -635,7 +769,18 @@ def build() -> ModelSpec:
                     "life_table": "us_2024",
                     "terms": _base_terms(),
                 },
-                "sources": [s["id"] for s in SOURCES["model"] if s["id"] != "maggic_2013"],
+                "sources": [
+                    s["id"]
+                    for s in SOURCES["model"]
+                    if s["id"]
+                    not in (
+                        "maggic_2013",
+                        "michaels_2020",
+                        "taylor_2019",
+                        "tong_2021",
+                        "takashima_2020",
+                    )
+                ],
             },
         ],
         "life_tables": {"us_2024": load_life_table("us_2024").model_dump()},
@@ -648,6 +793,7 @@ def build() -> ModelSpec:
 def golden_inputs() -> list[dict[str, Any]]:
     hf = {
         "heart_failure": True,
+        "hf_admission": False,
         "coronary": False,
         "stroke": False,
         "atrial_fibrillation": False,
@@ -672,6 +818,15 @@ def golden_inputs() -> list[dict[str, Any]]:
             "acei_arb": True,
         },
         {**hf, "age": 58, "sex": "female", "ef": 55, "diabetes": False, "copd": False},
+        {
+            **hf,
+            "hf_admission": True,
+            "age": 77,
+            "sex": "female",
+            "ef": 30,
+            "diabetes": False,
+            "copd": False,
+        },  # fmt: skip
         {**hf, "age": 85, "ef": 35, "diabetes": False, "copd": True, "creatinine": 300},
         {**hf, "age": 70, "sex": "male", "diabetes": False, "copd": False},
         {
@@ -679,6 +834,7 @@ def golden_inputs() -> list[dict[str, Any]]:
             "heart_failure": False,
             "coronary": True,
             "stroke": True,
+            "stroke_years": 2.5,
             "age": 66,
             "sex": "female",
             "diabetes": True,
