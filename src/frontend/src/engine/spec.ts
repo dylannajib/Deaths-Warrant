@@ -90,6 +90,13 @@ export type Survival =
       sex_input: string;
     };
 
+export type ScoreSurvival = Extract<Survival, { type: "score_weibull" | "score_life_table" }>;
+
+/** Survival forms driven by an integer risk score (shown to the user as points). */
+export function isScoreForm(survival: Survival): survival is ScoreSurvival {
+  return survival.type === "score_weibull" || survival.type === "score_life_table";
+}
+
 /** The life table a survival form reads (with its age and sex inputs), if any. */
 export function lifeTableOf(s: Survival): string | null {
   return s.type === "weibull_ph" ? null : s.life_table;

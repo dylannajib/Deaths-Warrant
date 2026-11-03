@@ -2,6 +2,7 @@
  "heart_failure": {"include": ["84114007"]},
  "coronary": {"include": ["414545008", "53741008", "22298006", "399211009"]},
  "stroke": {"include": ["230690007", "275526006"]},
+ "stroke_event": {"include": ["230690007"]},
  "atrial_fibrillation": {"include": ["49436004"]},
  "peripheral_artery": {"include": ["840580004", "399957001"]},
  "cardiomyopathy": {"include": ["85898001"]},

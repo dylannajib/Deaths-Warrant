@@ -137,14 +137,17 @@ def test_recent_heart_failure_admission_takes_unrecorded_nyha_as_class_iv():
 
 def test_heart_failure_without_ef_reproduces_taylor_2019():
     spec = CARDIO.build()
-    for _, age, published in CARDIO.TAYLOR_SURVIVAL[:3]:
+    # Every age band at 1 and 5 years (Table 3). This is a reproduction check of the layer's own
+    # source, so it lives here rather than in the published validation results.
+    for _, age, published in CARDIO.TAYLOR_SURVIVAL:
         obs = {**NO_CVD, "heart_failure": True, "age": age, "hf_years": 0}
         male = evaluate(spec, {**obs, "sex": "male"})
         female = evaluate(spec, {**obs, "sex": "female"})
         assert male["layer"]["id"] == "heart_failure"
-        mix = CARDIO.TAYLOR_MALE * male["survival_at"]["5"]
-        mix += (1 - CARDIO.TAYLOR_MALE) * female["survival_at"]["5"]
-        assert mix == pytest.approx(published[5], abs=1e-6)
+        for t in (1, 5):
+            mix = CARDIO.TAYLOR_MALE * male["survival_at"][str(t)]
+            mix += (1 - CARDIO.TAYLOR_MALE) * female["survival_at"][str(t)]
+            assert mix == pytest.approx(published[t], abs=1e-6)
 
 
 def test_stroke_layer_reproduces_tong_2021_five_year_survival():
@@ -163,6 +166,10 @@ def test_stroke_layer_reproduces_tong_2021_five_year_survival():
     assert later["survival_at"]["1"] > first["survival_at"]["1"]
     undated = evaluate(spec, {**NO_CVD, "stroke": True, "age": 80, "sex": "male"})
     assert undated["layer"]["id"] == "base"
+    # Sequelae and "history of stroke" codes cannot date the stroke.
+    timing = next(i for i in spec.inputs if i.id == "stroke_years").extract
+    assert "I69" not in timing.codes.icd10 and "438" not in timing.codes.icd9
+    assert "275526006" not in timing.codes.snomed
 
 
 def test_other_cardiovascular_conditions_multiply_hazard_ratios():

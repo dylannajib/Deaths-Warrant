@@ -3,9 +3,9 @@
 import { yearsBetween } from "../parsing/dates";
 import type { SourceFormat } from "../parsing/record";
 import { latestDate, parseUpload } from "../parsing/upload";
-import { evaluate, isScoreForm, type EvaluationResult } from "./evaluate";
+import { evaluate, type EvaluationResult } from "./evaluate";
 import { extractInputs, recordMatchesGroup } from "./extract";
-import type { ModelSpec, Source, ValidationResult } from "./spec";
+import { isScoreForm, type ModelSpec, type Source, type ValidationResult } from "./spec";
 
 export const STALE_AFTER_YEARS = 1;
 

@@ -32,7 +32,10 @@ export function App() {
     setFile(null);
     if (upload.current) upload.current.value = "";
   };
+  // Bumped whenever the user starts over, so a run still in flight cannot bring back its result.
+  const runId = useRef(0);
   const clearAll = () => {
+    runId.current += 1;
     releaseFile();
     setReport(null);
     setError(null);
@@ -49,12 +52,14 @@ export function App() {
     setError(null);
     setReport(null);
     setAnalysed(file.name);
+    const id = ++runId.current;
     try {
-      setReport(await runInWorker(file, modelId));
+      const result = await runInWorker(file, modelId);
+      if (id === runId.current) setReport(result);
     } catch (e) {
-      setError(e instanceof Error ? e.message : String(e));
+      if (id === runId.current) setError(e instanceof Error ? e.message : String(e));
     } finally {
-      releaseFile();
+      if (id === runId.current) releaseFile();
       setBusy(false);
     }
   };
@@ -99,6 +104,7 @@ export function App() {
               ref={upload}
               className="visually-hidden"
               type="file"
+              disabled={busy}
               accept=".json,.xml,application/json,application/xml,text/xml"
               onChange={(e) => {
                 setFile(e.target.files?.[0] ?? null);

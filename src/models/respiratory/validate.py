@@ -30,6 +30,7 @@ HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parents[1] / "backend")]  # model.py, deaths_warrant
 from model import CONDITIONS, build  # noqa: E402
 
+from deaths_warrant.cohort import sex_mix  # noqa: E402
 from deaths_warrant.evaluate import evaluate, population_cum_hazard, survival_function  # noqa: E402
 from deaths_warrant.registry import load_life_table  # noqa: E402
 from deaths_warrant.sources.xpt import read_xpt  # noqa: E402
@@ -39,7 +40,6 @@ from deaths_warrant.validation import (  # noqa: E402
     kaplan_meier,
     km_median,
     result_row,
-    sex_mix,
 )
 
 DATA = HERE.parents[2] / "data" / "nhanes"

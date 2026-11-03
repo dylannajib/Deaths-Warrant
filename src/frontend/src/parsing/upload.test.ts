@@ -110,10 +110,14 @@ describe("FHIR JSON", () => {
         { resource: { resourceType: "Condition", id: "c2", code: hf, encounter: { reference: "Encounter/emer" } } },
         { resource: { resourceType: "Condition", id: "c3", code: hf, encounter: { reference: "Encounter/ed" } } },
         { resource: { resourceType: "Condition", id: "c4", code: hf, onsetDateTime: "2019-01-01" } },
+        // R4 diagnosis list pointing at a urn:uuid fullUrl, on a Condition without an id
+        { resource: { resourceType: "Encounter", id: "r4", class: { code: "IMP" }, period: { start: "2026-09-15" }, diagnosis: [{ condition: { reference: "urn:uuid:c5" } }] } },
+        { fullUrl: "urn:uuid:c5", resource: { resourceType: "Condition", code: hf } },
+        { resource: { resourceType: "Condition", code: hf } }, // no id, no encounter: not a stay
       ],
     };
     const r = parseUpload(JSON.stringify(stays), asOf);
-    expect(r.conditions.map((c) => c.admitted)).toEqual(["2026-08-01", "2026-05-01", undefined, "2026-10-01"]);
+    expect(r.conditions.map((c) => c.admitted)).toEqual(["2026-08-01", "2026-05-01", undefined, "2026-10-01", "2026-09-15", undefined]);
     expect(r.conditions[3]?.onset).toBe("2019-01-01");
   });
 

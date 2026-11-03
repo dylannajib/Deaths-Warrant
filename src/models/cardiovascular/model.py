@@ -116,6 +116,14 @@ def _codes(key: str) -> dict[str, list[str]]:
     return codes(CONDITIONS[key], SNOMED[key])
 
 
+# A stroke itself, without sequelae (I69, ICD-9 438) or "history of stroke" SNOMED concepts.
+STROKE_EVENT_CODES = {
+    "icd10": [c for c in CONDITIONS["stroke"].icd10 if c != "I69"],
+    "icd9": [c for c in CONDITIONS["stroke"].icd9 if c != "438"],
+    "snomed": SNOMED["stroke_event"],
+}
+
+
 # ---------------------------------------------------------------- MAGGIC (Pocock et al. 2013)
 # Table 4: predicted probability of death at 1 and 3 years for each integer score 0..50.
 # fmt: off
@@ -508,7 +516,9 @@ def _inputs() -> list[dict[str, Any]]:
             "unit": "years",
             "min": 0,
             "max": 100,
-            "extract": {"rule": "years_since_condition", "codes": _codes("stroke")},
+            # Sequelae and "history of" codes are dated when recorded, not when the stroke
+            # happened, so they cannot time it; such records use the base layer instead.
+            "extract": {"rule": "years_since_condition", "codes": STROKE_EVENT_CODES},
             "missing": [],
         },
         _boolean(
@@ -731,7 +741,9 @@ def build() -> ModelSpec:
                     " relative to population survival and allowing for the years since your"
                     " stroke. The share of deaths in the first 28 days comes from a"
                     " population-based Japanese stroke register (2011). The Medicare curve for"
-                    " ages 66-74 is also used for younger patients, who were not in the cohort;"
+                    " ages 66-74 is also used for younger patients, who were not in the cohort,"
+                    " and the curves are used for haemorrhagic strokes too (in the Japanese"
+                    " register their 5-year survival was similar: 55% against 59%);"
                     " after 5 years the excess mortality of years 1-5 continues. Other recorded"
                     " conditions are not added: the cohort already had the usual mix."
                 ),

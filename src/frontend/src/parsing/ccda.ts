@@ -9,7 +9,7 @@
  * Dates are left raw here and resolved afterwards (see upload.ts).
  */
 
-import { makeCode, type Code, type Observation, type PatientRecord } from "./record";
+import { INPATIENT_ACT_CODES, makeCode, type Code, type Observation, type PatientRecord } from "./record";
 import { attr, child, children, descendants, type XmlElement } from "./xml";
 
 const PROBLEM_OBSERVATION = "2.16.840.1.113883.10.20.22.4.4";
@@ -19,7 +19,6 @@ const HOSPITAL_DIAGNOSIS = ["2.16.840.1.113883.10.20.22.4.33", "2.16.840.1.11388
 const ACT_CODE = "2.16.840.1.113883.5.4";
 const CPT = "2.16.840.1.113883.6.12";
 const SNOMED = "2.16.840.1.113883.6.96";
-const INPATIENT_ACT_CODES = ["IMP", "ACUTE", "NONAC", "SS"];
 const INPATIENT_CPT = /^992(2[1-6]|3[1-9])$/; // hospital inpatient and observation care
 const INPATIENT_SNOMED = ["32485007", "8715000", "183452005"]; // hospital admission (any, elective, emergency)
 

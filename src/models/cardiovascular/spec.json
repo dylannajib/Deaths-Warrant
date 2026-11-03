@@ -3218,8 +3218,7 @@
       "I61",
       "I62",
       "I63",
-      "I64",
-      "I69"
+      "I64"
      ],
      "icd9": [
       "430",
@@ -3227,8 +3226,7 @@
       "432",
       "433",
       "434",
-      "436",
-      "438"
+      "436"
      ],
      "snomed": [
       "10349009",
@@ -3257,11 +3255,9 @@
       "230714009",
       "230715005",
       "275434003",
-      "275526006",
       "276220007",
       "276221006",
       "281240008",
-      "308067002",
       "371040005",
       "371041009",
       "371121002",
@@ -3269,11 +3265,7 @@
       "384993003",
       "413758000",
       "422504002",
-      "429235008",
-      "429993008",
-      "440140008",
       "444657001",
-      "699429007",
       "716051003",
       "722929005",
       "724424009",
@@ -3296,21 +3288,10 @@
       "1344635001",
       "5571000124103",
       "9901000119100",
-      "97531000119106",
-      "99051000119101",
       "99451000119105",
       "106021000119105",
-      "118951000119103",
-      "118961000119101",
-      "118971000119107",
-      "140701000119108",
-      "140711000119106",
       "140911000119109",
       "140921000119102",
-      "141281000119101",
-      "141811000119106",
-      "141821000119104",
-      "141831000119101",
       "292661000119105",
       "292671000119104",
       "292681000119101",
@@ -3326,7 +3307,6 @@
       "329651000119102",
       "329671000119106",
       "330791000119108",
-      "690051000119100",
       "12067951000119107",
       "12204031000119101",
       "16000351000119109",
@@ -3352,8 +3332,6 @@
       "16661931000119102",
       "16661971000119104",
       "16891111000119104",
-      "16896851000119101",
-      "16896891000119106",
       "38595071000119104",
       "58173271000119101",
       "86553761000119103",
@@ -4802,7 +4780,7 @@
   {
    "id": "stroke",
    "label": "Stroke: survival by age at the stroke (U.S. Medicare)",
-   "description": "Survival after an acute ischaemic stroke by age group, from 1,019,267 U.S. Medicare patients aged 66 or over admitted 2008-2012 (5-year survival), relative to population survival and allowing for the years since your stroke. The share of deaths in the first 28 days comes from a population-based Japanese stroke register (2011). The Medicare curve for ages 66-74 is also used for younger patients, who were not in the cohort; after 5 years the excess mortality of years 1-5 continues. Other recorded conditions are not added: the cohort already had the usual mix.",
+   "description": "Survival after an acute ischaemic stroke by age group, from 1,019,267 U.S. Medicare patients aged 66 or over admitted 2008-2012 (5-year survival), relative to population survival and allowing for the years since your stroke. The share of deaths in the first 28 days comes from a population-based Japanese stroke register (2011). The Medicare curve for ages 66-74 is also used for younger patients, who were not in the cohort, and the curves are used for haemorrhagic strokes too (in the Japanese register their 5-year survival was similar: 55% against 59%); after 5 years the excess mortality of years 1-5 continues. Other recorded conditions are not added: the cohort already had the usual mix.",
    "requires": [
     "stroke_years"
    ],
@@ -5255,222 +5233,6 @@
    "value": 0.851,
    "notes": "Patient-level, outpatients with ejection fraction < 50% (MAGGIC layer). As if the record lacked NYHA class (averaged over the MAGGIC cohort). The registry's 2-year outcome is death, heart transplant or LVAD (combined); its date is not given, so only 2-year survival can be compared.",
    "source": "far_nhl_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 1938,
-   "metric": "Heart failure aged 45-54: predicted 1-year survival",
-   "value": 0.903,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 1938,
-   "metric": "Heart failure aged 45-54: observed 1-year survival",
-   "value": 0.903,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 1938,
-   "metric": "Heart failure aged 45-54: predicted 5-year survival",
-   "value": 0.785,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 1938,
-   "metric": "Heart failure aged 45-54: observed 5-year survival",
-   "value": 0.785,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 5426,
-   "metric": "Heart failure aged 55-64: predicted 1-year survival",
-   "value": 0.879,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 5426,
-   "metric": "Heart failure aged 55-64: observed 1-year survival",
-   "value": 0.879,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 5426,
-   "metric": "Heart failure aged 55-64: predicted 5-year survival",
-   "value": 0.706,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 5426,
-   "metric": "Heart failure aged 55-64: observed 5-year survival",
-   "value": 0.706,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 12485,
-   "metric": "Heart failure aged 65-74: predicted 1-year survival",
-   "value": 0.835,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 12485,
-   "metric": "Heart failure aged 65-74: observed 1-year survival",
-   "value": 0.835,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 12485,
-   "metric": "Heart failure aged 65-74: predicted 5-year survival",
-   "value": 0.591,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 12485,
-   "metric": "Heart failure aged 65-74: observed 5-year survival",
-   "value": 0.591,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 21534,
-   "metric": "Heart failure aged 75-84: predicted 1-year survival",
-   "value": 0.765,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 21534,
-   "metric": "Heart failure aged 75-84: observed 1-year survival",
-   "value": 0.765,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 21534,
-   "metric": "Heart failure aged 75-84: predicted 5-year survival",
-   "value": 0.432,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 21534,
-   "metric": "Heart failure aged 75-84: observed 5-year survival",
-   "value": 0.432,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 13453,
-   "metric": "Heart failure aged 85-94: predicted 1-year survival",
-   "value": 0.632,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 13453,
-   "metric": "Heart failure aged 85-94: observed 1-year survival",
-   "value": 0.632,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 13453,
-   "metric": "Heart failure aged 85-94: predicted 5-year survival",
-   "value": 0.223,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 13453,
-   "metric": "Heart failure aged 85-94: observed 5-year survival",
-   "value": 0.223,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 1123,
-   "metric": "Heart failure aged 95+: predicted 1-year survival",
-   "value": 0.439,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 1123,
-   "metric": "Heart failure aged 95+: observed 1-year survival",
-   "value": 0.439,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 1123,
-   "metric": "Heart failure aged 95+: predicted 5-year survival",
-   "value": 0.06,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
-  },
-  {
-   "dataset": "UK CPRD incident heart failure (Taylor et al. BMJ 2019)",
-   "period": "Diagnosed 2000-2017",
-   "n": 1123,
-   "metric": "Heart failure aged 95+: observed 5-year survival",
-   "value": 0.06,
-   "notes": "Reproduction check, not independent validation: the heart-failure layer (no ejection fraction) is built from this cohort's published survival. Predicted at diagnosis at the age band's representative age with the cohort's sex mix.",
-   "source": "taylor_2019"
   },
   {
    "dataset": "Australia and New Zealand first acute stroke (Peng et al. Stroke 2022)",

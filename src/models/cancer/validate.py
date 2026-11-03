@@ -41,7 +41,13 @@ sys.path[:0] = [str(HERE), str(HERE.parents[1] / "backend")]  # model.py, deaths
 from model import SITES, build  # noqa: E402
 
 from deaths_warrant.evaluate import evaluate  # noqa: E402
-from deaths_warrant.validation import calibration_at, harrell_c, kaplan_meier, km_median  # noqa: E402
+from deaths_warrant.validation import (  # noqa: E402
+    calibration_at,
+    harrell_c,
+    kaplan_meier,
+    km_median,
+    result_row,
+)
 
 DATA = HERE.parents[2] / "data" / "msk_chord"
 OUT = HERE / "validation.json"
@@ -159,7 +165,8 @@ def predict(observed: dict[str, Any]) -> dict[str, Any]:
 
 
 def _row(base: dict[str, Any], metric: str, value: float, notes: str) -> dict[str, Any]:
-    return {**base, "metric": metric, "value": round(value, 3), "notes": notes}
+    b = base
+    return result_row(b["dataset"], b["period"], b["n"], metric, value, notes, b["source"])
 
 
 MSK_CHORD = {"dataset": DATASET, "period": PERIOD, "source": "msk_chord"}

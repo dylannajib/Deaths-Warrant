@@ -4,7 +4,7 @@
  * file in evaluate.test.ts, so the two cannot silently drift. Change both together.
  */
 
-import { layerInputs, termInputs, type Band, type Input, type ModelSpec, type RelativeSurvivalCurve, type Survival, type Term, type Value, type WeightedValue } from "./spec";
+import { layerInputs, termInputs, type Band, type Input, type ModelSpec, type RelativeSurvivalCurve, type ScoreSurvival, type Survival, type Term, type Value, type WeightedValue } from "./spec";
 
 export const HORIZON_YEARS = 60;
 const BISECTION_STEPS = 64;
@@ -33,6 +33,7 @@ export interface EvaluationResult {
   terms: { input: string; kind: Term["kind"]; contribution: number | null }[];
 }
 
+/** Mirrors Input.accepts in spec.py: change both together. */
 function plausible(i: Input, v: Value): boolean {
   if (i.type === "number") return typeof v === "number" && Number.isFinite(v) && i.min <= v && v <= i.max;
   if (i.type === "enum") return typeof v === "string" && i.values.includes(v);
@@ -116,13 +117,6 @@ export function selectCurve(survival: Extract<Survival, { type: "relative_surviv
   );
   if (!curve) throw new Error("unreachable: the spec guarantees an all-ages curve");
   return curve;
-}
-
-type ScoreSurvival = Extract<Survival, { type: "score_weibull" | "score_life_table" }>;
-
-/** Survival forms driven by an integer risk score (shown to the user as points). */
-export function isScoreForm(survival: Survival): survival is ScoreSurvival {
-  return survival.type === "score_weibull" || survival.type === "score_life_table";
 }
 
 /** Integer risk score: the rounded term sum, clamped to the published table. */

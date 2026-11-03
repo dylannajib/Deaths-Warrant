@@ -33,6 +33,9 @@ export interface Medication {
   date?: string;
 }
 
+/** HL7 v3 ActCode encounter classes that mean a hospital (inpatient) stay. */
+export const INPATIENT_ACT_CODES: readonly string[] = ["IMP", "ACUTE", "NONAC", "SS"];
+
 export type SourceFormat = "fhir-json" | "fhir-xml" | "ccda";
 
 export interface PatientRecord {

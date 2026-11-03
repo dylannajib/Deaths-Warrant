@@ -10,9 +10,6 @@ from collections.abc import Sequence
 from itertools import groupby
 from typing import Any
 
-from .evaluate import evaluate
-from .spec import ModelSpec
-
 
 def kaplan_meier(times: Sequence[float], events: Sequence[bool]) -> list[tuple[float, float]]:
     """Kaplan–Meier survival estimate as (time, S(time)) steps at each event time."""
@@ -105,17 +102,3 @@ def result_row(
         "notes": notes,
         "source": source,
     }
-
-
-def survival_at(result: dict[str, Any], t: float) -> float:
-    """S(t) from an evaluation result's curve (exact at the curve's grid points)."""
-    step = result["curve"][1][0]
-    return result["curve"][round(t / step)][1]
-
-
-def sex_mix(spec: ModelSpec, observed: dict[str, Any], male: float, t: float) -> float:
-    """Survival at t for a cohort with the given male share, otherwise the same inputs."""
-    return sum(
-        w * survival_at(evaluate(spec, {**observed, "sex": sex}), t)
-        for sex, w in (("male", male), ("female", 1 - male))
-    )

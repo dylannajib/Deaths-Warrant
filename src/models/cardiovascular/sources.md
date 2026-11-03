@@ -67,8 +67,11 @@ the years since it.
 * The 66–74 curve is also used for younger patients, who were not in the Medicare cohort.
 * Other recorded conditions are not multiplied in, because the cohort already had the usual
   comorbidities of stroke patients.
-* An undated stroke cannot be placed in time, so it falls back to the base layer's hazard
-  ratio for a history of stroke.
+* A stroke recorded only as an undated diagnosis, a sequela (I69) or a "history of stroke"
+  concept cannot be placed in time. It falls back to the base layer's hazard ratio for a
+  history of stroke.
+* Haemorrhagic strokes use the same curves. In the Shiga register their 5-year survival was
+  similar to ischaemic strokes (55% against 59%). Both stroke test cohorts include all types.
 
 **Other cardiovascular disease:** each recorded condition multiplies population mortality by
 its published all-cause hazard ratio. The conditions combine multiplicatively, which is what
@@ -118,14 +121,14 @@ access. No cohort below was used to build the layer it tests.
   90/64/44%.
 * **First-ever stroke, England** (Bray et al. Lancet Public Health 2018; SSNAP, 2013–2016,
   published). Predicted 1-year survival is 72.3% against 73.6% observed.
-* **Taylor 2019** by age band is a reproduction check. The heart-failure layer is built from
-  these figures, so it matches them exactly; this is not independent evidence.
+* **Taylor 2019** is a source of the heart-failure layer, so it is not used as a test. A unit
+  test checks that the layer reproduces its published survival for every age band.
 
 Known limitations:
 
 * MAGGIC was derived from 1980–2006 studies, before current treatments such as ARNI and SGLT2
   inhibitors. Its error differs by setting (see above).
-* The stroke layer rests on ischaemic strokes in people aged 66 or over. Haemorrhagic strokes
-  had similar 5-year survival in the Shiga register (55% against 59%).
+* The stroke layer rests on ischaemic strokes in people aged 66 or over (see above for
+  haemorrhagic strokes).
 * Constant hazard ratios ignore the fact that excess risk shrinks with age.
 * U.S. population mortality is used for every patient.

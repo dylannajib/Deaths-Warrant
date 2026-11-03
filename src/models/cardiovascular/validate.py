@@ -29,25 +29,17 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parents[1] / "backend")]  # model.py, deaths_warrant
-from model import CONDITIONS, ROMAN, TAYLOR_MALE, build  # noqa: E402
+from model import CONDITIONS, ROMAN, build  # noqa: E402
 
+from deaths_warrant.cohort import curve_at, sex_mix  # noqa: E402
 from deaths_warrant.evaluate import evaluate  # noqa: E402
-from deaths_warrant.validation import calibration_at, harrell_c, result_row, sex_mix, survival_at  # noqa: E402
+from deaths_warrant.validation import calibration_at, harrell_c, result_row  # noqa: E402
 
 UCI = HERE.parents[2] / "data" / "uci_hf" / "heart_failure_clinical_records_dataset.csv"
 FAR_NHL = HERE.parents[2] / "data" / "far_nhl" / "pone.0214363.s001.csv"
 OUT = HERE / "validation.json"
 NO_CONDITIONS = {key: False for key in CONDITIONS} | {"diabetes": False, "copd": False}
 
-# Taylor et al. BMJ 2019, Tables 1 and 3: UK CPRD incident heart failure 2000-2017.
-TAYLOR = [  # (age band, representative age, n, observed 1-year, observed 5-year survival)
-    ("45-54", 50, 1938, 0.903, 0.785),
-    ("55-64", 60, 5426, 0.879, 0.706),
-    ("65-74", 70, 12485, 0.835, 0.591),
-    ("75-84", 80, 21534, 0.765, 0.432),
-    ("85-94", 90, 13453, 0.632, 0.223),
-    ("95+", 97, 1123, 0.439, 0.060),
-]
 # Peng et al. Stroke 2022: first acute stroke, Australia and New Zealand 2008-2017.
 PENG = {
     "n": 313_162,
@@ -97,7 +89,7 @@ def uci(spec) -> list[dict[str, Any]]:
             }
             result = evaluate(spec, observed)
             medians.append(result["median_years"] if result["median_years"] is not None else 60.0)
-            half_year.append(survival_at(result, 0.5))
+            half_year.append(curve_at(result, 0.5))
         notes = (
             "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine,"
             " smoking and diabetes; other inputs averaged."
@@ -184,13 +176,13 @@ def far_nhl(spec) -> list[dict[str, Any]]:
             if r["years_since_diagnosis_of_heart_failure"].strip():  # 5 blank: averaged
                 observed["hf_years"] = num(r, "years_since_diagnosis_of_heart_failure")
             if not with_nyha:
-                two_year.append(survival_at(evaluate(spec, observed), 2))
+                two_year.append(curve_at(evaluate(spec, observed), 2))
                 continue
             # Half classes (e.g. 2.5) are averaged over the two neighbouring classes.
             nyha = num(r, "NYHA")
             classes = {ROMAN[math.floor(nyha) - 1], ROMAN[math.ceil(nyha) - 1]}
             two_year.append(
-                sum(survival_at(evaluate(spec, {**observed, "nyha": c}), 2) for c in classes)
+                sum(curve_at(evaluate(spec, {**observed, "nyha": c}), 2) for c in classes)
                 / len(classes)
             )
         layer = "all MAGGIC inputs" if with_nyha else "NYHA class not recorded"
@@ -233,44 +225,6 @@ def far_nhl(spec) -> list[dict[str, Any]]:
                 "far_nhl_2019",
             ),
         ]
-    return out
-
-
-def taylor(spec) -> list[dict[str, Any]]:
-    dataset = "UK CPRD incident heart failure (Taylor et al. BMJ 2019)"
-    period = "Diagnosed 2000-2017"
-    notes = (
-        "Reproduction check, not independent validation: the heart-failure layer (no ejection"
-        " fraction) is built from this cohort's published survival. Predicted at diagnosis at"
-        " the age band's representative age with the cohort's sex mix."
-    )
-    out = []
-    for band, age, n, s1, s5 in TAYLOR:
-        observed = {**NO_CONDITIONS, "heart_failure": True, "age": age, "hf_years": 0.0}
-        for t, obs in ((1, s1), (5, s5)):
-            pred = sex_mix(spec, observed, TAYLOR_MALE, t)
-            out.append(
-                result_row(
-                    dataset,
-                    period,
-                    n,
-                    f"Heart failure aged {band}: predicted {t}-year survival",
-                    pred,
-                    notes,
-                    "taylor_2019",
-                )
-            )
-            out.append(
-                result_row(
-                    dataset,
-                    period,
-                    n,
-                    f"Heart failure aged {band}: observed {t}-year survival",
-                    obs,
-                    notes,
-                    "taylor_2019",
-                )
-            )
     return out
 
 
@@ -391,7 +345,7 @@ def brazil() -> list[dict[str, Any]]:
 
 def main() -> None:
     spec = build()
-    results = [*uci(spec), *far_nhl(spec), *taylor(spec), *peng(spec), *bray(spec), *brazil()]
+    results = [*uci(spec), *far_nhl(spec), *peng(spec), *bray(spec), *brazil()]
     OUT.write_text(json.dumps({"results": results}, indent=1) + "\n", "utf-8")
     for r in results:
         print(f"{r['n']:>7}  {r['metric']}: {r['value']}")
