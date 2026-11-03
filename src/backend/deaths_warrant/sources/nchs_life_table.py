@@ -4,7 +4,7 @@ python -m deaths_warrant.sources.nchs_life_table
 
 Source: Arias E, Xu JQ, Kochanek K. United States life tables, 2024. National Vital Statistics
 Reports vol 75 no 5. NCHS. Public domain (U.S. Government work).
-The open "100 and over" row has q = 1; it is replaced by the constant hazard 1/e(100) implied
+The open "100 and over" row has q = 1. It is replaced by the constant hazard 1/e(100) implied
 by that row's life expectancy, so survival beyond 100 decays smoothly instead of dropping to 0.
 """
 

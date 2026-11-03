@@ -20,7 +20,7 @@ def naive_c(times, events, predicted):
 
 
 def test_kaplan_meier_textbook_example():
-    # deaths at 1, 3; censored at 2, 4
+    # deaths at 1 and 3, censored at 2 and 4
     steps = kaplan_meier([1, 2, 3, 4], [True, False, True, False])
     assert steps == [(1, 0.75), (3, 0.375)]
     assert km_at(steps, 2.5) == 0.75

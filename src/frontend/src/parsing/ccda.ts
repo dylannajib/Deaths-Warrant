@@ -1,7 +1,7 @@
 /**
  * C-CDA R2.x ClinicalDocument → PatientRecord.
- * Problems come from Problem Observations (templateId ...22.4.4) wherever they appear;
- * results and vital signs from any other observation coded in LOINC; medications from
+ * Problems come from Problem Observations (templateId ...22.4.4) wherever they appear.
+ * Results and vital signs come from any other observation coded in LOINC, medications from
  * substanceAdministration entries other than Immunization Activities (vaccines are not
  * treatment). Negated entries (negationInd="true") are skipped. A problem recorded during a
  * hospital stay (inside an inpatient Encounter Activity, or a discharge summary's hospital
@@ -9,6 +9,7 @@
  * Dates are left raw here and resolved afterwards (see upload.ts).
  */
 
+import { RecordError } from "../errors";
 import { INPATIENT_ACT_CODES, makeCode, type Code, type Observation, type PatientRecord } from "./record";
 import { attr, child, children, descendants, type XmlElement } from "./xml";
 
@@ -22,7 +23,7 @@ const SNOMED = "2.16.840.1.113883.6.96";
 const INPATIENT_CPT = /^992(2[1-6]|3[1-9])$/; // hospital inpatient and observation care
 const INPATIENT_SNOMED = ["32485007", "8715000", "183452005"]; // hospital admission (any, elective, emergency)
 
-export class CcdaError extends Error {}
+export class CcdaError extends RecordError {}
 
 function codesOf(el: XmlElement | undefined): Code[] {
   if (!el || attr(el, "nullFlavor") && !attr(el, "code")) {

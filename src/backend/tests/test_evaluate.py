@@ -76,7 +76,7 @@ def test_beyond_reliable_flag(spec):
 
 
 def test_relative_survival_closed_form(spec):
-    # kind b: R(1) = 0.5, extended at the same excess hazard (ln 2 per year); flag off => HR 1
+    # kind b: R(1) = 0.5, extended at the same excess hazard (ln 2 per year), flag off => HR 1
     result = evaluate(spec, {"age": 60, "sex": "female", "kind": "b", "since": 0, "flag": False})
     assert result["layer"]["id"] == "relative"
     assert result["survival_at"]["1"] == pytest.approx(0.95 * 0.5)
@@ -89,7 +89,7 @@ def test_relative_survival_is_conditional_on_time_since_diagnosis(spec):
     result = evaluate(spec, {"age": 55, "sex": "male", "kind": "a", "since": 10, "flag": False})
     assert result["survival_at"]["1"] == pytest.approx(0.9 * 0.8 / 0.9)
     later = evaluate(spec, {"age": 55, "sex": "male", "kind": "a", "since": 0.5, "flag": False})
-    # diagnosed at 54.5 => all-ages curve; X(1.5) - X(0.5) on knots [0, -ln .8, -ln .6]
+    # diagnosed at 54.5 => all-ages curve, X(1.5) - X(0.5) on knots [0, -ln .8, -ln .6]
     x = [0.0, -math.log(0.8), -math.log(0.6)]
     expected = 0.9 * math.exp(-((x[1] + 0.5 * (x[2] - x[1])) - 0.5 * x[1]))
     assert later["survival_at"]["1"] == pytest.approx(expected)
@@ -101,7 +101,7 @@ def test_relative_survival_terms_scale_the_excess_hazard_only(spec):
 
 
 def test_score_weibull_joins_the_published_points(spec):
-    # age 70, score 6 => grid row "score >= 5", band "age >= 50" => 2; flag => +1; score 3
+    # age 70, score 6 => grid row "score >= 5", band "age >= 50" => 2, flag => +1, score 3
     result = evaluate(spec, {"age": 70, "sex": "male", "kind": "a", "score": 6, "flag": True})
     assert result["layer"]["id"] == "points"
     assert result["survival_at"]["1"] == pytest.approx(0.6)
@@ -131,7 +131,7 @@ def test_when_skips_layer_for_other_values(spec):
 
 
 def test_score_life_table_hits_the_published_point_and_follows_ageing(spec):
-    # age 75 => score 2 => S(3) = 0.5; flat female table q = 0.05 => HR = ln 2 / (-3 ln 0.95)
+    # age 75 => score 2 => S(3) = 0.5, flat female table q = 0.05 => HR = ln 2 / (-3 ln 0.95)
     result = evaluate(spec, {"age": 75, "sex": "female", "flag": True})
     assert result["layer"]["id"] == "points_3y"
     assert result["survival_at"]["3"] == pytest.approx(0.5)

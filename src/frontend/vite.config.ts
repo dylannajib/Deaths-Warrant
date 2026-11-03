@@ -45,6 +45,9 @@ const csp: Plugin = {
 export default defineConfig({
   plugins: [react(), csp],
   worker: { format: "es" },
+  // Source maps let the browser's developer tools show the original file and line for an
+  // error in the built site. The code is open source, so they reveal nothing new.
+  build: { sourcemap: true },
   server: { fs: { allow: [".."] } }, // model specs live in ../models
   preview: { headers: Object.fromEntries(HEADERS.map((h) => [h.slice(0, h.indexOf(":")), h.slice(h.indexOf(":") + 1).trim()])) },
   // fsModuleCache would keep stale import.meta.glob results when a new model folder appears.

@@ -5,7 +5,7 @@ python -m deaths_warrant.sources.mimic_fhir_demo
 Source: Bennett A, et al. MIMIC-IV Clinical Database Demo on FHIR (version 2.1.0). PhysioNet.
 https://physionet.org/content/mimic-iv-fhir-demo/2.1.0/ - open access, ODbL v1.0. 100 real,
 de-identified patients (dates shifted into the 2100s). Files are verified against the
-published SHA-256 sums and kept in the git-ignored data/mimic_fhir_demo/; the bundles feed the
+published SHA-256 sums and kept in the git-ignored data/mimic_fhir_demo/. The bundles feed the
 end-to-end tests in src/frontend/src/e2e/. Used for testing only.
 """
 

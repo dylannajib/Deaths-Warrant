@@ -7,12 +7,13 @@
 import { readCcda } from "./ccda";
 import { conventionForCountry, inferConvention, isAmbiguousFormat, parseDate, type Convention } from "./dates";
 import { fhirXmlToJson, readFhir } from "./fhir";
+import { RecordError } from "../errors";
 import type { PatientRecord } from "./record";
 import { MAX_DEPTH, parseXml } from "./xml";
 
 export const SOFT_LIMIT_BYTES = 50 * 1024 * 1024;
 
-export class UploadError extends Error {}
+export class UploadError extends RecordError {}
 
 const FHIR_NS = "http://hl7.org/fhir";
 const CDA_NS = "urn:hl7-org:v3";
@@ -52,8 +53,10 @@ export function parseUpload(text: string, asOf: string): PatientRecord {
     }
   } catch (e) {
     if (e instanceof UploadError) throw e;
-    const reason = e instanceof SyntaxError ? "it is not valid JSON" : e instanceof Error ? e.message : "it could not be read";
-    throw new UploadError(`Could not read the file: ${reason}.`);
+    // Problems with the file become an UploadError. Anything else is a bug and propagates.
+    if (e instanceof SyntaxError) throw new UploadError("Could not read the file: it is not valid JSON.");
+    if (e instanceof RecordError) throw new UploadError(`Could not read the file: ${e.message}.`);
+    throw e;
   }
   return resolveDates(record, asOf);
 }

@@ -9,6 +9,8 @@
  * nesting cannot overflow the stack.
  */
 
+import { RecordError } from "../errors";
+
 export interface XmlElement {
   /** Qualified name as written, e.g. "sdtc:raceCode". */
   name: string;
@@ -23,7 +25,7 @@ export interface XmlElement {
   text: string;
 }
 
-export class XmlError extends Error {}
+export class XmlError extends RecordError {}
 
 export const MAX_DEPTH = 256;
 export const MAX_NODES = 5_000_000;

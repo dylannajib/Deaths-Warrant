@@ -1,6 +1,6 @@
 /**
  * Date handling. Valid FHIR uses ISO 8601 and C-CDA uses HL7 TS (YYYYMMDD...), both
- * unambiguous. Non-conforming files may contain "03/04/50"-style dates; those are resolved by
+ * unambiguous. Non-conforming files may contain "03/04/50"-style dates. Those are resolved by
  * (1) the file's own convention, inferred from any date with a part above 12, else
  * (2) the patient's country (US => month first), else (3) day first, recorded as an assumption.
  * Two-digit years are placed in the century that keeps the date out of the future.

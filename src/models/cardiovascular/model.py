@@ -14,7 +14,7 @@ Layers, most specific first:
    28 days taken from a population-based stroke register (Takashima et al. J Stroke 2020),
    conditional on the years since the stroke.
 5. ``base``: any cardiovascular disease. U.S. population mortality (NCHS 2024) multiplied by
-   published all-cause mortality hazard ratios for each recorded condition; the conditions
+   published all-cause mortality hazard ratios for each recorded condition. The conditions
    combine multiplicatively, as reported by the Emerging Risk Factors Collaboration.
 
 MAGGIC inputs missing from the record are averaged over the MAGGIC cohort's own distribution
@@ -143,7 +143,7 @@ MAGGIC_DEATH = [
 # fmt: on
 
 
-# Figure 2 integer points. Bands are "x < lt"; MAGGIC's "20-24" etc. are integer ranges.
+# Figure 2 integer points. Bands are "x < lt", and MAGGIC's "20-24" etc. are integer ranges.
 MAGGIC_TERMS: list[dict[str, Any]] = [
     {
         "kind": "bands",
@@ -265,8 +265,8 @@ MAGGIC_MISSING = {
         {"value": 0.5, "weight": round(1 - _pooled(0.488, 0.497), 6)},
     ],
     "beta_blocker": _two(_pooled(0.404, 0.244), True, False),
-    # ACE-I or ARB: Table 1 lists them separately; their overlap is not reported, so the sum
-    # (an upper bound) is used.
+    # ACE-I or ARB: Table 1 lists them separately without their overlap, so the sum (an upper
+    # bound) is used.
     "acei_arb": _two(_pooled(0.680 + 0.033, 0.605 + 0.043), True, False),
 }
 
@@ -276,7 +276,7 @@ NYHA_LOINC = ["88020-3", "88021-1"]
 SMOKING_LOINC = ["72166-2"]
 ROMAN = ["I", "II", "III", "IV"]
 # A heart-failure hospital stay this recent counts as "recently admitted" (Michaels 2020 scored
-# patients at discharge; six months keeps the record close to that setting).
+# patients at discharge, and six months keeps the record close to that setting).
 ADMITTED_WITHIN_DAYS = 180
 
 
@@ -517,7 +517,7 @@ def _inputs() -> list[dict[str, Any]]:
             "min": 0,
             "max": 100,
             # Sequelae and "history of" codes are dated when recorded, not when the stroke
-            # happened, so they cannot time it; such records use the base layer instead.
+            # happened, so they cannot time it. Such records use the base layer instead.
             "extract": {"rule": "years_since_condition", "codes": STROKE_EVENT_CODES},
             "missing": [],
         },
@@ -552,7 +552,7 @@ def _base_terms() -> list[dict[str, Any]]:
 
 
 # Taylor et al. BMJ 2019, Table 3: survival 1, 5, 10, 15 years after a heart failure diagnosis
-# by age at diagnosis (UK, diagnosed 2000-2017; 52.2% male, Table 1).
+# by age at diagnosis (UK, diagnosed 2000-2017, 52.2% male, Table 1).
 TAYLOR_SURVIVAL = [  # (age_lt for the band, representative age, {year: survival})
     (55.0, 50, {1: 0.903, 5: 0.785, 10: 0.647, 15: 0.544}),
     (65.0, 60, {1: 0.879, 5: 0.706, 10: 0.528, 15: 0.384}),
@@ -569,7 +569,7 @@ def heart_failure_curves() -> list[dict[str, Any]]:
 
     R(t) = observed survival / population survival at the band's representative age (U.S.
     life table, cohort sex mix). The excess cumulative hazard -ln R is interpolated linearly
-    between the published years to give whole-year values; R is kept non-increasing.
+    between the published years to give whole-year values. R is kept non-increasing.
     """
     table = load_life_table("us_2024")
     curves = []
@@ -598,7 +598,7 @@ def heart_failure_curves() -> list[dict[str, Any]]:
 
 
 # Tong et al. Prev Chronic Dis 2021, Tables 1-2: U.S. Medicare fee-for-service beneficiaries aged
-# 66 or over admitted with acute ischaemic stroke 2008-2012 (n = 1,019,267; 44.3% male); crude
+# 66 or over admitted with acute ischaemic stroke 2008-2012 (n = 1,019,267, 44.3% male). Crude
 # Kaplan-Meier 5-year survival from the stroke by age group.
 TONG_SURVIVAL_5Y = [  # (age_lt for the band, representative age, observed 5-year survival)
     (75.0, 70, 0.642),
@@ -606,7 +606,7 @@ TONG_SURVIVAL_5Y = [  # (age_lt for the band, representative age, observed 5-yea
     (None, 89, 0.189),
 ]
 TONG_MALE = 0.443
-# Takashima et al. J Stroke 2020 (Shiga, Japan; first-ever stroke 2011): 296 of 2,176 died
+# Takashima et al. J Stroke 2020 (Shiga, Japan, first-ever stroke 2011): 296 of 2,176 died
 # within 28 days (Table 4 minus Table 2), and the 1,880 28-day survivors had 5-year relative
 # survival 0.820 (Table 3). Share of the 5-year excess cumulative hazard in the first 28 days:
 EARLY_DAYS = 28

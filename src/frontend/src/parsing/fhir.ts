@@ -1,17 +1,18 @@
 /**
  * FHIR (R4/R5) Bundle or Patient → PatientRecord. FHIR XML is first converted to the JSON
- * shape, so one reader serves both. Only the fields the models use are read; everything else
+ * shape, so one reader serves both. Only the fields the models use are read. Everything else
  * (narrative HTML included) is ignored and never rendered.
  * Dates are left raw here and resolved afterwards (see upload.ts).
  */
 
+import { RecordError } from "../errors";
 import { INPATIENT_ACT_CODES, makeCode, type Code, type Condition, type Medication, type Observation, type PatientRecord } from "./record";
 import { attr, type XmlElement } from "./xml";
 
 type Json = unknown;
 type Obj = Record<string, Json>;
 
-export class FhirError extends Error {}
+export class FhirError extends RecordError {}
 
 const isObj = (v: Json): v is Obj => typeof v === "object" && v !== null && !Array.isArray(v);
 const arr = (v: Json): Json[] => (v === undefined || v === null ? [] : Array.isArray(v) ? v : [v]);
@@ -28,7 +29,7 @@ const get = (o: Json, ...path: string[]): Json => {
   return cur;
 };
 
-/** FHIR XML element → FHIR JSON shape (children become arrays; `value` attributes primitives). */
+/** FHIR XML element → FHIR JSON shape (children become arrays, `value` attributes primitives). */
 export function fhirXmlToJson(root: XmlElement): Obj {
   const convert = (el: XmlElement): Json => {
     const value = attr(el, "value");
@@ -131,7 +132,7 @@ export function readFhir(doc: Json, format: "fhir-json" | "fhir-xml"): PatientRe
     record.deceased = true;
   }
 
-  // Encounter.diagnosis → Condition (R4: condition.reference; R5: condition[].reference.reference),
+  // Encounter.diagnosis → Condition (R4 condition.reference, R5 condition[].reference.reference),
   // resolved like any other reference (resource type/id or the entry's fullUrl).
   const diagnosedIn = new Map<Obj, Obj>();
   for (const r of resources) {

@@ -114,7 +114,7 @@ def excess_knots(relative: list[float]) -> list[float]:
 
 
 def excess_cum_hazard(knots: list[float], t: float) -> float:
-    """Linear between whole years; beyond the last year the last year's slope continues."""
+    """Linear between whole years. Beyond the last year, the last year's slope continues."""
     n = len(knots) - 1
     if t >= n:
         return knots[n] + (knots[n] - knots[n - 1]) * (t - n)

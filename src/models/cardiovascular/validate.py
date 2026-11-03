@@ -3,12 +3,12 @@
 Open patient-level cardiovascular data is scarce (most datasets need credentialed access), so
 three kinds of evidence are used, each labelled with its period:
 
-1. Patient level: the UCI "heart failure clinical records" (Ahmad et al. 2017; 299 patients,
-   2015; CC BY 4.0). Download heart_failure_clinical_records_dataset.csv from
+1. Patient level: the UCI "heart failure clinical records" (Ahmad et al. 2017, 299 patients,
+   2015, CC BY 4.0). Download heart_failure_clinical_records_dataset.csv from
    https://archive.ics.uci.edu/dataset/519/heart+failure+clinical+records into the
    git-ignored ``data/uci_hf/``.
-2. Patient level: the Czech FAR NHL registry (Spinar et al. PLoS One 2019; 1,088 patients with
-   ejection fraction < 50%, enrolled 2014-2015, followed to 2017; CC BY 4.0). Download S1 Table
+2. Patient level: the Czech FAR NHL registry (Spinar et al. PLoS One 2019, 1,088 patients with
+   ejection fraction < 50%, enrolled 2014-2015, followed to 2017, CC BY 4.0). Download S1 Table
    from https://journals.plos.org/plosone/article/file?type=supplementary&id=10.1371/journal.pone.0214363.s001
    as ``data/far_nhl/pone.0214363.s001.csv``.
 3. Published cohort results: the model's prediction for a cohort's published age and sex mix,

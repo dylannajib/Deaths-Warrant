@@ -1,17 +1,17 @@
 """Test the chronic lower respiratory disease model on real patients (testing only).
 
 1. Patient level: NHANES 2011-2018 (U.S. national survey) linked to the National Death Index
-   through 31 December 2019; public-use files, no registration. Only cycles interviewed from
-   2011 are used, so every outcome falls in the 2010+ test window. Download into the
-   git-ignored ``data/nhanes/``:
-   * DEMO_G..J.XPT and MCQ_G..J.XPT from https://wwwn.cdc.gov/nchs/nhanes/ (cycles 2011-2018);
+   through 31 December 2019, from public-use files with no registration. Only cycles
+   interviewed from 2011 are used, so every outcome falls in the 2010+ test window. Download
+   into the git-ignored ``data/nhanes/``:
+   * DEMO_G..J.XPT and MCQ_G..J.XPT from https://wwwn.cdc.gov/nchs/nhanes/ (cycles 2011-2018).
    * NHANES_<cycle>_MORT_2019_PUBLIC.dat from
      https://ftp.cdc.gov/pub/Health_Statistics/NCHS/datalinkage/linked_mortality/.
    COPD (emphysema, current chronic bronchitis or COPD) and current asthma are self-reported
-   doctor diagnoses; NHANES has no bronchiectasis question and its spirometry has no stored
+   doctor diagnoses. NHANES has no bronchiectasis question and its spirometry has no stored
    predicted values, so this tests the base layer.
-2. Published cohorts: Korean COPD 5-year mortality by age (Park 2019); U.S. life expectancy at
-   65 by GOLD stage relative to no COPD (Bhatt 2026; NHLBI Pooled Cohorts followed to 2020),
+2. Published cohorts: Korean COPD 5-year mortality by age (Park 2019), and U.S. life expectancy at
+   65 by GOLD stage relative to no COPD (Bhatt 2026, NHLBI Pooled Cohorts followed to 2020),
    for the ADO layer.
 
 From src/backend:  ../../.venv/bin/python ../models/respiratory/validate.py

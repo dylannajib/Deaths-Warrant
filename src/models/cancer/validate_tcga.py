@@ -1,7 +1,7 @@
 """Test the cancer model on TCGA patients diagnosed 2010 onwards (testing only, never training).
 
 The Cancer Genome Atlas clinical data as harmonised by the NCI Genomic Data Commons, served by
-the public cBioPortal API (studies ``*_tcga_gdc``; open access, no login). From src/backend:
+the public cBioPortal API (studies ``*_tcga_gdc``, open access, no login). From src/backend:
 
     ../../.venv/bin/python ../models/cancer/validate_tcga.py
 
@@ -12,9 +12,9 @@ Each patient is predicted at diagnosis (TCGA overall survival starts there) from
 diagnosis, sex, the ICD-O-3 site and morphology, and a summary stage derived from the
 pathological TNM stage:
 
-* distant: M1 (any subcategory) or overall stage IV;
-* regional: N1-N3, or N0 with overall stage III (tumour extension);
-* localized: N0 with overall stage I-II;
+* distant: M1 (any subcategory) or overall stage IV.
+* regional: N1-N3, or N0 with overall stage III (tumour extension).
+* localized: N0 with overall stage I-II.
 * otherwise unknown, so the model averages over the published stage mix.
 
 AJCC pathological stage is not the SEER summary stage the model was built on, so this mapping

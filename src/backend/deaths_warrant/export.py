@@ -21,13 +21,25 @@ SUMMARY_KEYS = {"schema_version", "id", "name", "order", "description"}
 
 
 def render(folder: ModelFolder) -> dict[str, str]:
+    try:
+        return _render(folder)
+    except Exception as e:
+        e.add_note(f"while exporting the model in {folder.path}")  # keeps the original traceback
+        raise
+
+
+def _render(folder: ModelFolder) -> dict[str, str]:
     module = folder.load()
     spec: ModelSpec = module.build()
     if spec.id != folder.id.removeprefix("_"):
         raise ValueError(f"{folder.path}: spec id {spec.id!r} must match folder name")
     golden: list[dict[str, Any]] = []
-    for observed in module.golden_inputs():
-        result = evaluate(spec, observed)
+    for index, observed in enumerate(module.golden_inputs()):
+        try:
+            result = evaluate(spec, observed)
+        except Exception as e:
+            e.add_note(f"golden_inputs()[{index}]: {observed}")
+            raise
         golden.append({"observed": observed, "expected": {k: result[k] for k in GOLDEN_KEYS}})
     layers_hit = {g["expected"]["layer"]["id"] for g in golden}
     if layers_hit != {layer.id for layer in spec.layers}:
@@ -35,7 +47,7 @@ def render(folder: ModelFolder) -> dict[str, str]:
     return {
         "spec.json": _dump(spec.model_dump(mode="json")),
         "golden.json": _dump(golden),
-        # What the page needs before a model is chosen; the full spec loads only in the worker.
+        # What the page needs before a model is chosen. The full spec loads only in the worker.
         "summary.json": _dump(spec.model_dump(mode="json", include=SUMMARY_KEYS)),
     }
 

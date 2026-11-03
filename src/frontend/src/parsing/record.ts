@@ -4,7 +4,7 @@ export type CodeSystem = "icd10" | "icd9" | "snomed" | "loinc" | "rxnorm" | "atc
 
 export interface Code {
   system: CodeSystem;
-  /** Normalised: ICD upper-case without dots; others as recorded. */
+  /** Normalised: ICD upper-case without dots, others as recorded. */
   code: string;
   display?: string;
 }

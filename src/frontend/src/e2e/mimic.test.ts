@@ -1,8 +1,8 @@
 /**
  * End-to-end tests on real FHIR: the 100 de-identified patients of the MIMIC-IV FHIR demo
  * (PhysioNet, ODbL), run through the exact browser pipeline (parse → extract → evaluate) for
- * every disease group. Build the data with `python -m deaths_warrant.sources.mimic_fhir_demo`;
- * without it (e.g. in CI) these tests are skipped. This checks real-world robustness and input
+ * every disease group. Build the data with `python -m deaths_warrant.sources.mimic_fhir_demo`.
+ * Without it (e.g. in CI) these tests are skipped. This checks real-world robustness and input
  * extraction, not accuracy: accuracy is validated per model on larger real datasets.
  *
  * MIMIC shifts dates into the 2100s, so each record is evaluated as of its own newest entry.

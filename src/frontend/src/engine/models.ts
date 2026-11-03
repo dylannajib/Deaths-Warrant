@@ -1,6 +1,6 @@
 /**
  * Every model under src/models/<id>/, bundled at build time (no network fetch to another
- * site). Adding a model folder is enough for it to appear; folders starting with "_" are
+ * site). Adding a model folder is enough for it to appear. Folders starting with "_" are
  * excluded, except that dev mode includes the unit-test fixture.
  *
  * The page imports only each model's summary.json (name and description, a few hundred

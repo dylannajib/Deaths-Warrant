@@ -35,7 +35,7 @@ interface InputBase {
   id: string;
   label: string;
   extract: ExtractRule;
-  /** null => required by every layer; [] => optional, used only by layers requiring it. */
+  /** null => required by every layer. [] => optional, used only by layers requiring it. */
   missing: WeightedValue[] | null;
   source: string | null;
 }

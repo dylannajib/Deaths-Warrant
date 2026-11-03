@@ -63,3 +63,12 @@ def test_golden_inputs_must_cover_every_layer(tmp_path):
     models = write_model(tmp_path, [{"age": 60, "score": 4}])
     with pytest.raises(ValueError, match="every layer"):
         render(discover(models)[0])
+
+
+def test_export_errors_name_the_model_and_golden_case(tmp_path):
+    models = write_model(tmp_path, [{"age": 60}, {"score": 4}])  # second case lacks the age
+    with pytest.raises(Exception) as caught:
+        render(discover(models)[0])
+    notes = "\n".join(getattr(caught.value, "__notes__", []))
+    assert "golden_inputs()[1]: {'score': 4}" in notes
+    assert str(tmp_path / "fixture") in notes

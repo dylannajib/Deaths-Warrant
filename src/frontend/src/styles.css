@@ -139,7 +139,7 @@ a { color: inherit; }
 .table tbody th { font-weight: 600; }
 .drop-body { overflow-wrap: anywhere; }
 
-/* Survival chart: one series in ink; recessive grid; hover crosshair */
+/* Survival chart: one series in ink, recessive grid, hover crosshair */
 .chart { width: 100%; height: auto; display: block; margin: 1rem 0; touch-action: pan-y; }
 .chart .grid { stroke: var(--rule); stroke-width: 1; }
 .chart .tick { fill: var(--muted); font-size: 15px; font-family: var(--serif); }

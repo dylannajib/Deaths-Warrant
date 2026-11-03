@@ -5,6 +5,7 @@
  */
 
 import { loadModel } from "../engine/loader";
+import { describeFailure } from "../errors";
 import { runPrognosis } from "../engine/prognosis";
 import type { WorkerRequest, WorkerResponse } from "./protocol";
 
@@ -16,7 +17,7 @@ self.onmessage = async (event: MessageEvent<WorkerRequest>) => {
     if (!spec) throw new Error("Unknown disease group");
     response = { ok: true, report: runPrognosis(await file.text(), spec, asOf) };
   } catch (e) {
-    response = { ok: false, error: e instanceof Error ? e.message : "Something went wrong reading the file." };
+    response = { ok: false, error: describeFailure(e) };
   }
   self.postMessage(response);
 };

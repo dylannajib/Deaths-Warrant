@@ -86,9 +86,9 @@ NO_CVD = {
 
 
 def test_maggic_score_matches_hand_calculation_and_table_4():
-    # Pocock 2013 Figure 2: EF 25 -> 5; age 72 with EF < 30 -> 6; SBP 105 with EF < 30 -> 5;
-    # BMI 23 -> 3; creatinine 160 -> 4; NYHA III -> 6; male -> 1; diabetes -> 3;
-    # HF >= 18 months -> 2; on beta-blocker and ACE-I -> 0. Total 35.
+    # Pocock 2013 Figure 2: EF 25 -> 5, age 72 with EF < 30 -> 6, SBP 105 with EF < 30 -> 5,
+    # BMI 23 -> 3, creatinine 160 -> 4, NYHA III -> 6, male -> 1, diabetes -> 3,
+    # HF >= 18 months -> 2, on beta-blocker and ACE-I -> 0. Total 35.
     spec = CARDIO.build()
     observed = {
         **NO_CVD, "heart_failure": True, "diabetes": True, "age": 72, "sex": "male", "ef": 25,
@@ -160,7 +160,7 @@ def test_stroke_layer_reproduces_tong_2021_five_year_survival():
         mix = CARDIO.TONG_MALE * male["survival_at"]["5"]
         mix += (1 - CARDIO.TONG_MALE) * female["survival_at"]["5"]
         assert mix == pytest.approx(published, abs=2e-6)
-    # Surviving the first years improves the outlook; an undated stroke uses the base layer.
+    # Surviving the first years improves the outlook. An undated stroke uses the base layer.
     later = evaluate(spec, {**NO_CVD, "stroke": True, "stroke_years": 2, "age": 80, "sex": "male"})
     first = evaluate(spec, {**NO_CVD, "stroke": True, "stroke_years": 0, "age": 80, "sex": "male"})
     assert later["survival_at"]["1"] > first["survival_at"]["1"]
@@ -187,7 +187,7 @@ NO_CLRD = {"copd": False, "bronchiectasis": False, "asthma": False}
 
 
 def test_updated_ado_score_matches_hand_calculation_and_table():
-    # Puhan 2012 Table 3: FEV1 42% -> 3; mMRC 3 -> 2; age 68 -> 4. Score 9 -> 20.1% at 3 years
+    # Puhan 2012 Table 3: FEV1 42% -> 3, mMRC 3 -> 2, age 68 -> 4. Score 9 -> 20.1% at 3 years
     spec = RESP.build()
     obs = {**NO_CLRD, "copd": True, "age": 68, "sex": "male", "fev1_pct": 42, "mmrc": 3}
     result = evaluate(spec, obs)

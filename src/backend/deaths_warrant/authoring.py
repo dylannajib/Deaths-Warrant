@@ -1,6 +1,6 @@
 """Helpers shared by model authors (``src/models/<id>/model.py``).
 
-They build plain spec dictionaries; ``ModelSpec`` still validates everything a model returns.
+They build plain spec dictionaries. ``ModelSpec`` still validates everything a model returns.
 """
 
 from __future__ import annotations

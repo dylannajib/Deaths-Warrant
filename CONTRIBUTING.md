@@ -83,3 +83,15 @@ Commit `model.py`, `spec.json`, `golden.json`, `summary.json`, `sources.md` and 
 `validate.py` and `validation.json`. CI fails if the exported files
 are stale or if the TypeScript evaluator disagrees with Python. The model appears in the site's
 disease-group picker automatically.
+
+## When something goes wrong
+
+* **In the browser:** a problem with the uploaded file throws a `RecordError` (or a subclass:
+  `UploadError`, `XmlError`, `FhirError`, `CcdaError`, `EvaluationError`), and its message is
+  shown to the user. Anything else is a bug. The page then says so, names the error and the
+  first stack frame, and the full stack trace goes to the browser console.
+  Production builds ship source maps, so developer tools show the original file and line. See
+  `src/frontend/src/errors.ts`.
+* **In the pipeline:** if a model fails to export, the traceback ends with notes naming the
+  model folder and, for a golden case, its index and inputs. A spec that breaks the contract
+  fails Pydantic validation, which names the offending field.

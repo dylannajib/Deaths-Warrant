@@ -1,6 +1,6 @@
 """Test the cancer model's accuracy on MSK-CHORD: real patients, testing only, never training.
 
-Download the MSK-CHORD (Jee et al., Nature 2024; CC BY-NC-ND 4.0) clinical files from
+Download the MSK-CHORD (Jee et al., Nature 2024, CC BY-NC-ND 4.0) clinical files from
 https://github.com/cBioPortal/datahub/tree/master/public/msk_chord_2024 into the git-ignored
 ``data/msk_chord/``: data_clinical_patient.txt, data_clinical_sample.txt,
 data_timeline_diagnosis.txt. Then, from src/backend:
@@ -8,21 +8,21 @@ data_timeline_diagnosis.txt. Then, from src/backend:
     ../../.venv/bin/python ../models/cancer/validate.py
 
 Writes ``validation.json`` beside this file, containing aggregate results only (every group has
-n >= 20); patient-level data never leaves ``data/``.
+n >= 20). Patient-level data never leaves ``data/``.
 
 Each patient is predicted as of their first MSK-IMPACT sequencing (day 0, the origin of
 MSK-CHORD's overall survival), using only what a medical record would hold at that date:
 age, sex, the tumour-registry primary site and SEER summary stage at diagnosis, and the years
 since diagnosis. Two scenarios are reported:
 
-* ``registry``: stage at diagnosis as recorded by the tumour registry;
+* ``registry``: stage at diagnosis as recorded by the tumour registry.
 * ``registry + metastatic sample``: additionally, a first sequenced sample taken from a
   metastasis is treated as a recorded distant metastasis dated day 0 (as a metastasis code in
   a FHIR record would be).
 
 Assumptions (stated in the published notes): age at day 0 = CURRENT_AGE_DEID minus follow-up
-(the dataset gives age at last contact or death; ages capped at 89 are excluded); patients with
-more than one registry primary are excluded so the site is unambiguous.
+(the dataset gives age at last contact or death, and ages capped at 89 are excluded). Patients
+with more than one registry primary are excluded so the site is unambiguous.
 """
 
 from __future__ import annotations

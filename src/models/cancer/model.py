@@ -4,8 +4,8 @@ Survival = (population survival for the patient's age and sex, NCHS 2024 life ta
          x (SEER relative survival for the cancer site, stage and age at diagnosis),
 conditional on the years already survived since diagnosis. Three layers, most specific first:
 
-1. site x SEER summary stage x age at diagnosis;
-2. site x age at diagnosis (all stages combined), when the stage is not recorded;
+1. site x SEER summary stage x age at diagnosis.
+2. site x age at diagnosis (all stages combined), when the stage is not recorded.
 3. all cancer sites combined x age at diagnosis, when no site-specific diagnosis is recorded.
 
 Data: ``seer_relative_survival.json`` (``python -m deaths_warrant.sources.seer_explorer``) and
@@ -73,7 +73,8 @@ SITES: dict[str, tuple[str, list[str], list[str]]] = {
 }
 OTHER = "other"  # any other invasive cancer: SEER "all sites combined"
 # Invasive primaries outside SITES. Excludes non-melanoma skin cancer (ICD-10 C44, ICD-9 173),
-# which SEER does not register, and secondary neoplasms (C77-C79, C7B; 196-198, 209.7).
+# which SEER does not register, and secondary neoplasms (ICD-10 C77-C79 and C7B, ICD-9
+# 196-198 and 209.7).
 # ICD-10-CM adds alphanumeric categories: C4A Merkel cell carcinoma, C7A malignant
 # neuroendocrine tumours (found missing by the MIMIC-IV end-to-end tests).
 OTHER_ICD10 = [f"C{n:02d}" for n in range(98) if n not in (44, 77, 78, 79)] + ["C4A", "C7A"]
@@ -91,7 +92,7 @@ AGE_LABELS = {"lt50": "under 50", "50_64": "50-64", "65_74": "65-74", "75plus": 
 
 # AJCC stage groups (TNM) map to SEER summary stage approximately: I-II localized, III
 # regional, IV distant. Stage II includes some node-positive cancers (e.g. breast IIB), so this
-# is a deliberate simplification; M and N categories, when recorded, take precedence.
+# is a deliberate simplification. M and N categories, when recorded, take precedence.
 STAGE_GROUP_LOINC = ["21908-9", "21902-2", "21914-7"]  # clinical, pathological, other
 DISTANT_M_LOINC = ["21907-1", "21901-4"]
 NODES_N_LOINC = ["21906-3", "21900-6"]
@@ -201,7 +202,7 @@ def relative_curve(site: str, age: str, stage: str) -> tuple[list[float], str]:
     k = _recency_k(cell, pooled)
     out, prev = [], 1.0
     for r in cell["curve"]:
-        prev = min(prev, min(1.0, r) ** k)  # SEER can exceed 100%; survival never rises
+        prev = min(prev, min(1.0, r) ** k)  # SEER can exceed 100%, but survival never rises
         out.append(round(prev, 6))
     return out, note
 

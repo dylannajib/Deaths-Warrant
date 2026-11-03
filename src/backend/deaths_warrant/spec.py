@@ -1,7 +1,7 @@
 """The model spec: the JSON contract between the Python pipeline and the browser evaluator.
 
 Every model is exported as one self-contained ``spec.json`` validated by ``ModelSpec``.
-The TypeScript mirror lives in ``src/frontend/src/engine/spec.ts``; keep both in sync and
+The TypeScript mirror lives in ``src/frontend/src/engine/spec.ts``. Keep both in sync and
 bump ``SCHEMA_VERSION`` on any breaking change.
 """
 
@@ -25,7 +25,7 @@ class _Strict(BaseModel):
 
 
 class CodeSet(_Strict):
-    """Clinical codes. ICD codes match by prefix (dots ignored); SNOMED/LOINC/RxNorm exactly."""
+    """Clinical codes. ICD codes match by prefix (dots ignored), SNOMED/LOINC/RxNorm exactly."""
 
     icd10: list[str] = []
     icd9: list[str] = []
@@ -109,7 +109,7 @@ class ConditionCategoryRule(_Strict):
 
 
 class ConditionPresentRule(_Strict):
-    """True if any matching condition is recorded; an unrecorded condition counts as absent.
+    """True if any matching condition is recorded. An unrecorded condition counts as absent.
 
     With ``admitted_within_days``, only a diagnosis recorded during a hospital stay that began
     within that many days before the as-of date counts (e.g. a recent heart-failure admission).
@@ -199,7 +199,7 @@ class _InputBase(_Strict):
     label: str
     extract: ExtractRule
     # Population distribution used when the record lacks this input. None => required by
-    # every layer; [] => optional, usable only by layers that require it.
+    # every layer. [] => optional, usable only by layers that require it.
     missing: list[WeightedValue] | None = None
     source: str | None = None  # Source id backing the missing-value distribution
 
@@ -254,7 +254,7 @@ class LinearTerm(_Strict):
 
 
 class Band(_Strict):
-    lt: float | None  # upper bound (exclusive); None = catch-all, must be last
+    lt: float | None  # upper bound (exclusive), None = catch-all, must be last
     value: float
 
 
@@ -277,7 +277,7 @@ class BandsTerm(_Strict):
 
 
 class GridRow(_Strict):
-    lt: float | None  # upper bound on the row input (exclusive); None = catch-all, last
+    lt: float | None  # upper bound on the row input (exclusive), None = catch-all, last
     bands: list[Band] = Field(min_length=1)  # bands of the ``by`` input
 
     @model_validator(mode="after")
@@ -304,7 +304,7 @@ class GridTerm(_Strict):
 
 
 class CategoryTerm(_Strict):
-    """Coefficient per category; booleans use the keys "true"/"false"."""
+    """Coefficient per category. Booleans use the keys "true"/"false"."""
 
     kind: Literal["category"] = "category"
     input: str
@@ -343,7 +343,7 @@ class LifeTablePH(_Strict):
 class RelativeSurvivalCurve(_Strict):
     """Published relative survival R(k) at whole years k = 1..n since diagnosis (R(0) = 1).
 
-    ``match`` selects the curve by enum inputs; ``age_lt`` bounds the age at diagnosis
+    ``match`` selects the curve by enum inputs, and ``age_lt`` bounds the age at diagnosis
     (exclusive, None = any age). The first matching curve is used.
     """
 
@@ -453,7 +453,7 @@ def life_table_of(survival: Survival) -> str | None:
 
 
 class LifeTable(_Strict):
-    """Annual probability of death q(x) for integer ages 0..len-1; the last age repeats."""
+    """Annual probability of death q(x) for integer ages 0..len-1. The last age repeats."""
 
     source: str
     female: list[float] = Field(min_length=2)

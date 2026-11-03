@@ -2,8 +2,8 @@
 
 A model module must define:
 
-* ``build() -> ModelSpec`` — the full spec, coefficients included.
-* ``golden_inputs() -> list[dict]`` — observed-input sets covering every layer; the exporter
+* ``build() -> ModelSpec``: the full spec, coefficients included.
+* ``golden_inputs() -> list[dict]``: observed-input sets covering every layer. The exporter
   evaluates them and writes ``golden.json`` so the browser evaluator can be checked against it.
 
 Folders starting with ``_`` are not shown in the app: ``_shared`` holds shared data and

@@ -4,11 +4,11 @@ python -m deaths_warrant.sources.seer_explorer [--refresh]
 
 Source: SEER*Explorer, Surveillance Research Program, National Cancer Institute
 (https://seer.cancer.gov/statistics-network/explorer/), SEER 21 registries. Published aggregate
-statistics; U.S. Government work, cite as requested by NCI. For each site and age group at
+statistics, a U.S. Government work, cited as NCI requests. For each site and age group at
 diagnosis it stores, per SEER summary stage:
 
 * ``curve``: relative survival at 1..10 years since diagnosis ("By Time Since Diagnosis",
-  diagnosed 2000-2022), the shape of the survival curve;
+  diagnosed 2000-2022), the shape of the survival curve.
 * ``recent_5y``: 5-year relative survival for the most recent diagnosis years available
   ("5-Year Survival", 2016-2022), used to bring the curve up to date.
 

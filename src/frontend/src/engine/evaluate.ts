@@ -4,6 +4,7 @@
  * file in evaluate.test.ts, so the two cannot silently drift. Change both together.
  */
 
+import { RecordError } from "../errors";
 import { layerInputs, termInputs, type Band, type Input, type ModelSpec, type RelativeSurvivalCurve, type ScoreSurvival, type Survival, type Term, type Value, type WeightedValue } from "./spec";
 
 export const HORIZON_YEARS = 60;
@@ -16,7 +17,8 @@ export type Observed = Record<string, Value | null | undefined>;
 type SurvivalFn = (t: number) => number;
 export type InputStatus = "observed" | "missing" | "implausible" | "unused";
 
-export class EvaluationError extends Error {}
+/** A required input (such as the birth date) is missing: a problem with the record, not a bug. */
+export class EvaluationError extends RecordError {}
 
 export interface EvaluationResult {
   model: string;
@@ -101,7 +103,7 @@ export function excessKnots(relative: number[]): number[] {
   return [0, ...relative.map((r) => -Math.log(r))];
 }
 
-/** Linear between whole years; beyond the last year the last year's slope continues. */
+/** Linear between whole years. Beyond the last year, the last year's slope continues. */
 export function excessCumHazard(knots: number[], t: number): number {
   const n = knots.length - 1;
   if (t >= n) return knots[n]! + (knots[n]! - knots[n - 1]!) * (t - n);

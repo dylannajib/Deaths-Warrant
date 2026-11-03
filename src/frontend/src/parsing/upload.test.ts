@@ -1,7 +1,7 @@
 /**
- * Format tests. The documents below are minimal structural snippets that exercise the parsers;
- * they carry no clinical meaning and are never used to judge model accuracy (that uses real
- * published data only — see src/backend/deaths_warrant/validation.py).
+ * Format tests. The documents below are minimal structural snippets that exercise the parsers.
+ * They carry no clinical meaning and are never used to judge model accuracy, which uses real
+ * published data only (see src/backend/deaths_warrant/validation.py).
  */
 
 import { describe, expect, it } from "vitest";

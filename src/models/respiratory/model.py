@@ -3,7 +3,7 @@
 Layers, most specific first:
 
 1. ``ado``: COPD with a recorded FEV1 % predicted. The updated ADO index (age, dyspnoea,
-   airflow obstruction; Puhan et al., BMJ Open 2012) and its published 3-year mortality per
+   airflow obstruction, from Puhan et al., BMJ Open 2012) and its published 3-year mortality per
    score, applied as a hazard ratio on population mortality so the curve follows ageing.
 2. ``base``: any chronic lower respiratory disease. U.S. population mortality (NCHS 2024)
    multiplied by a published all-cause mortality hazard ratio for each recorded condition.
@@ -92,7 +92,7 @@ ADO_TERMS = [
     },
 ]
 
-# ADO cohort (13 914 people with COPD, Table 1): 60% male; mMRC mean 1.1 (SD 1.3), binned to
+# ADO cohort (13 914 people with COPD, Table 1): 60% male, mMRC mean 1.1 (SD 1.3), binned to
 # the integer grades 0-4 under a normal approximation (tails folded into the end grades).
 ADO_MALE = 0.60
 MMRC_MEAN, MMRC_SD = 1.1, 1.3

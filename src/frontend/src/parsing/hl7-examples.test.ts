@@ -1,5 +1,5 @@
 /**
- * Parsers on official HL7 example documents (CC0; see fixtures/README.md): real-world C-CDA
+ * Parsers on official HL7 example documents (CC0, see fixtures/README.md): real-world C-CDA
  * and FHIR structure, including the XML and JSON forms of the same FHIR resources.
  */
 

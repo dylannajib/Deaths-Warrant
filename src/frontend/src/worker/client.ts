@@ -18,9 +18,11 @@ export function runInWorker(file: File, modelId: string): Promise<PrognosisRepor
       if (event.data.ok) resolve(event.data.report);
       else reject(new Error(event.data.error));
     };
-    worker.onerror = () => {
+    // The worker itself failed to load or crashed (most likely out of memory on a huge file).
+    worker.onerror = (event) => {
       clearTimeout(timer);
-      reject(new Error("The file could not be analysed."));
+      console.error("Death's Warrant worker failed:", event.message || event);
+      reject(new Error("The analysis stopped unexpectedly. The file may be too large for this device's memory."));
     };
     const request: WorkerRequest = { file, modelId, asOf: todayIso() };
     worker.postMessage(request);

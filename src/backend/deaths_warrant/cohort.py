@@ -12,7 +12,7 @@ from .spec import ModelSpec
 
 
 def curve_at(result: dict[str, Any], t: float) -> float:
-    """S(t) read from an evaluation result's curve; t must lie on the curve's time grid."""
+    """S(t) read from an evaluation result's curve. t must lie on the curve's time grid."""
     step = result["curve"][1][0]
     k = round(t / step)
     if abs(k * step - t) > 1e-9:
