@@ -94,7 +94,8 @@ frontend changes are needed.
 | Package | Where | Why |
 |---|---|---|
 | react, react-dom | site | UI framework (project requirement) |
-| Cormorant Garamond | site | typeface, self-hosted woff2 (SIL OFL 1.1, `public/fonts/OFL.txt`) |
+| Cormorant Garamond | site | typeface, self-hosted woff2 (SIL OFL 1.1, `public/fonts/OFL-cormorant-garamond.txt`) |
+| Beth Ellen | site | title typeface, self-hosted woff2 (SIL OFL 1.1, `public/fonts/OFL-beth-ellen.txt`) |
 | typescript | dev | type checking (project requirement) |
 | vite, @vitejs/plugin-react | dev | build and dev server; the official React plugin is the only plugin |
 | vitest | dev | tests, including golden parity |
