@@ -21,11 +21,11 @@ jobs:
         with:
           python-version: "3.14"
       - run: pip install -r requirements-dev.txt
-      - run: ruff check . ../models
-      - run: ruff format --check . ../models
+      - run: ruff check . ../prognosis-models
+      - run: ruff format --check . ../prognosis-models
       - run: python -m pytest -q
       - name: Committed spec.json / golden.json match model.py
-        run: python -m deaths_warrant.export --check
+        run: python -m general.export --check
 
   web:
     name: Website

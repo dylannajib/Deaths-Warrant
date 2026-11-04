@@ -1,97 +1,59 @@
-# Contributing a prognosis model
+# Adding a prognosis model
 
-Each disease group lives in `src/models/<id>/` (lower-case id, letters, digits, `_`).
+A model is one folder, `src/prognosis-models/<id>/` (lower-case letters, digits, `_`). The
+site, the exporter and CI find it automatically. No other code changes.
 
 ## 1. Write `model.py`
 
-It must define two functions:
-
 ```python
-from deaths_warrant.spec import ModelSpec
+from general.spec import ModelSpec
 
-def build() -> ModelSpec:
-    """Return the complete spec: inputs, layers, coefficients, sources."""
-
-def golden_inputs() -> list[dict]:
-    """Observed-input sets that together exercise every layer."""
+def build() -> ModelSpec: ...            # inputs, layers, coefficients, sources
+def golden_inputs() -> list[dict]: ...   # test inputs that reach every layer
 ```
 
-`src/backend/deaths_warrant/spec.py` documents every building block:
+`src/backend/general/spec.py` defines every building block. `cancer/` is a full example and
+`_fixture/` a small one.
 
-* **Inputs** say how to read a value from the record (`extract`):
-  * age and sex;
-  * the latest LOINC (or SNOMED) observation, with unit conversion;
-  * a coded observation;
-  * diagnoses: diagnosis category, condition present (optionally only when recorded during a
-    hospital stay in the last N days, `admitted_within_days`), weighted condition sum (e.g.
-    Charlson);
-  * years since a diagnosis, or since the diagnosis in the matched category;
-  * medication present (unknown when the record lists no medications at all);
-  * `first_of`, a list of rules tried in priority order.
+* **Inputs** say how to read a value from the record: age, sex, the latest observation, a
+  diagnosis (optionally only from a recent hospital stay), years since a diagnosis, or a
+  medication. If an input can be missing, give it a population distribution to average over.
+* **Layers** are tried in order and the first whose inputs are present is used. The last layer
+  must need nothing. Survival forms: `weibull_ph`, `life_table_ph`, `relative_survival`,
+  `score_weibull`, `score_life_table`. A new form must be added to both `evaluate.py` and
+  `src/frontend/engine/evaluate.ts`.
+* **Sources:** every number must come from a published, citable source whose licence allows
+  reuse. List them in the spec and in `sources.md`.
+* **Source data:** a script in your folder (like `cancer/build_seer.py`) downloads the
+  published table into `data/` and writes a small JSON file next to it. Commit the JSON.
 
-  How the `missing` field works:
-  * no `missing` (`null`): the input is required;
-  * a distribution: the input is averaged over that distribution when absent;
-  * `[]`: the input is optional, and only layers that `require` it may use it.
-* **Layers** are tried in order. The first layer is used whose `requires` inputs are all
-  present and whose `when` inputs have one of the listed values, e.g.
-  `"when": {"heart_failure": [true]}`.
-  The last layer must require nothing. Survival forms:
-  * `weibull_ph`;
-  * `life_table_ph`: population mortality × a hazard ratio;
-  * `relative_survival`: population mortality × published relative survival, conditional on
-    the years since diagnosis.
-  * `score_weibull`: a published integer risk score and its survival at two times, with an
-    optional cap at population survival (e.g. MAGGIC).
-  * `score_life_table`: a published integer risk score and its survival at one time, applied
-    as a hazard ratio on population mortality (e.g. ADO at 3 years).
+## 2. Validate on real patients
 
-  Terms can be `linear`, `bands`, `category`, or `grid` (a two-way interaction, e.g. age
-  points that depend on the ejection-fraction band). A new form needs the same change in
-  `evaluate.py` and `src/frontend/src/engine/evaluate.ts`.
-* **Sources**: every coefficient must trace to a published, citable source with a licence that
-  permits redistribution of derived coefficients. Record them in `sources` and `sources.md`.
-* **Source data**: write a builder in `src/backend/deaths_warrant/sources/` that downloads the
-  published table into the git-ignored `data/` cache and writes a small JSON file into your
-  model folder. Commit the JSON so the export is reproducible offline. Builders exist for NCHS
-  life tables, SEER*Explorer and SNOMED CT hierarchies (`snomed_roots.json` →
-  `snomed_sets.json`, because the browser matches SNOMED codes exactly). `sources/xpt.py`
-  reads NHANES SAS transport files for validation.
-* **Validation**: test on real patient-level data with outcomes from 2010 onwards, or on
-  published cohort results whose follow-up runs past 2010, and label each result with its
-  period. Put a `validate.py` in your folder that reads real, published patient data
-  from `data/` and writes `validation.json`. `build()` loads that file into the spec. Report
-  only aggregate results (`n >= 20`), never commit patient-level data, and never train on
-  data you then validate on. `src/models/cancer/validate.py` (patient level) and
-  `src/models/cardiovascular/validate.py` (patient level plus published cohort results) are
-  worked examples. A second dataset can have its own script and results file (e.g. the cancer
-  model's `validate_tcga.py` → `validation_tcga.json`), loaded by `build()` alongside.
+Write `validate.py` (see `cardiovascular/validate.py`). It reads real, published patient data
+from the git-ignored `data/` and writes `validation.json` with `general.validation`.
 
-The unit-test fixture in `src/models/_fixture/model.py` is a compact example of every survival
-form; `src/models/cancer/` is a complete real model.
+* Patient-level outcomes from 2010 onwards, or published cohorts followed past 2010. Label
+  each result with its period.
+* Never test on data the model was built from.
+* Report only groups of 20 or more. Never commit patient-level data.
 
-## 2. Export and test
+CI fails if a model has no validation results.
+
+## 3. Export, test, commit
 
 ```bash
 cd src/backend
-../../.venv/bin/python -m deaths_warrant.export   # writes spec.json, golden.json, summary.json
+../../.venv/bin/python -m general.export   # writes spec.json, golden.json, summary.json
 ../../.venv/bin/python -m pytest
-cd ../frontend && npm test                        # replays golden.json in TypeScript
+cd ../frontend && npm test                 # checks TypeScript matches Python
 ```
 
-Commit `model.py`, `spec.json`, `golden.json`, `summary.json`, `sources.md` and any source-data JSON,
-`validate.py` and `validation.json`. CI fails if the exported files
-are stale or if the TypeScript evaluator disagrees with Python. The model appears in the site's
-disease-group picker automatically.
+Commit the whole folder. Add a row to the models table in `README.md` and the accuracy table
+in `TESTING.md`.
 
 ## When something goes wrong
 
-* **In the browser:** a problem with the uploaded file throws a `RecordError` (or a subclass:
-  `UploadError`, `XmlError`, `FhirError`, `CcdaError`, `EvaluationError`), and its message is
-  shown to the user. Anything else is a bug. The page then says so, names the error and the
-  first stack frame, and the full stack trace goes to the browser console.
-  Production builds ship source maps, so developer tools show the original file and line. See
-  `src/frontend/src/errors.ts`.
-* **In the pipeline:** if a model fails to export, the traceback ends with notes naming the
-  model folder and, for a golden case, its index and inputs. A spec that breaks the contract
-  fails Pydantic validation, which names the offending field.
+* **Browser:** problems with the uploaded file throw a `RecordError` and its message is shown.
+  Anything else is a bug: the page shows a short reference and the full stack goes to the
+  console (source maps are on). See `src/frontend/errors.ts`.
+* **Export:** errors name the model folder, and for a golden case its index and inputs.

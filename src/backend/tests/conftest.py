@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import pytest
 
-from deaths_warrant.registry import MODELS_DIR, ModelFolder
-from deaths_warrant.spec import ModelSpec
+from general.registry import load_model
+from general.spec import ModelSpec
 
-FIXTURE = ModelFolder("_fixture", MODELS_DIR / "_fixture").load()
+FIXTURE = load_model("_fixture")
 FIXTURE_SPEC = FIXTURE.FIXTURE_SPEC
 
 

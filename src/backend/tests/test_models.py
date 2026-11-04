@@ -6,11 +6,11 @@ import math
 
 import pytest
 
-from deaths_warrant.evaluate import evaluate, population_cum_hazard
-from deaths_warrant.registry import MODELS_DIR, ModelFolder, discover, load_life_table
-from deaths_warrant.spec import RelativeSurvival
+from general.evaluate import evaluate, population_cum_hazard
+from general.registry import discover, load_life_table, load_model
+from general.spec import RelativeSurvival
 
-CANCER = ModelFolder("cancer", MODELS_DIR / "cancer").load()
+CANCER = load_model("cancer")
 
 
 @pytest.mark.parametrize(
@@ -72,7 +72,7 @@ def test_cancer_survival_since_diagnosis_improves_prognosis():
     assert survivor > new  # conditional survival: having survived 5 years is good news
 
 
-CARDIO = ModelFolder("cardiovascular", MODELS_DIR / "cardiovascular").load()
+CARDIO = load_model("cardiovascular")
 NO_CVD = {
     "heart_failure": False,
     "coronary": False,
@@ -182,7 +182,7 @@ def test_other_cardiovascular_conditions_multiply_hazard_ratios():
     assert both["survival_at"]["1"] == pytest.approx(math.exp(-2.0 * 2.1 * h), rel=1e-5)
 
 
-RESP = ModelFolder("respiratory", MODELS_DIR / "respiratory").load()
+RESP = load_model("respiratory")
 NO_CLRD = {"copd": False, "bronchiectasis": False, "asthma": False}
 
 

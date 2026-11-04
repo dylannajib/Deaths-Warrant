@@ -3,7 +3,7 @@ import random
 
 import pytest
 
-from deaths_warrant.validation import calibration_at, harrell_c, kaplan_meier, km_at, km_median
+from general.validation import calibration_at, harrell_c, kaplan_meier, km_at, km_median
 
 
 def naive_c(times, events, predicted):

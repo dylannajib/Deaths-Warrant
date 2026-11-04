@@ -3,7 +3,7 @@ import copy
 import pytest
 from pydantic import ValidationError
 
-from deaths_warrant.spec import ModelSpec
+from general.spec import ModelSpec
 
 from .conftest import FIXTURE_SPEC
 

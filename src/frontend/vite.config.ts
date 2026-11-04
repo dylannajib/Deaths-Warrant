@@ -48,8 +48,8 @@ export default defineConfig({
   // Source maps let the browser's developer tools show the original file and line for an
   // error in the built site. The code is open source, so they reveal nothing new.
   build: { sourcemap: true },
-  server: { fs: { allow: [".."] } }, // model specs live in ../models
+  server: { fs: { allow: [".."] } }, // model specs live in ../prognosis-models
   preview: { headers: Object.fromEntries(HEADERS.map((h) => [h.slice(0, h.indexOf(":")), h.slice(h.indexOf(":") + 1).trim()])) },
   // fsModuleCache would keep stale import.meta.glob results when a new model folder appears.
-  test: { include: ["src/**/*.test.{ts,tsx}"], fsModuleCache: false },
+  test: { include: ["**/*.test.{ts,tsx}"], exclude: ["node_modules/**", "dist/**"], fsModuleCache: false },
 });

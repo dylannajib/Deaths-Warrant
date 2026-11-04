@@ -1,109 +1,74 @@
 # Death's Warrant
 
 A free, open-source prognosis service. Upload your patient record (FHIR JSON, FHIR XML or
-C-CDA XML), pick your disease group, and get an estimate of how many years you likely have
-left, with the full reasoning behind it.
+C-CDA), pick your disease group, and get an estimate of how many years you likely have left,
+with the reasoning behind it.
 
-> Death's Warrant is not a clinically validated tool. Treat results as an estimate subject to
-> change, and discuss them with your care team.
+> Not a clinically validated tool. Treat results as an estimate and discuss them with your
+> care team.
 
-## Privacy by architecture
+## Privacy
 
-Your file **never leaves your device**. Parsing and prognosis run entirely in your browser,
-in a Web Worker that is discarded after each run. There is no server-side code, no database,
-no analytics and no third-party scripts. The production Content Security Policy sets
-`connect-src 'self'`, so the browser itself refuses to send data to any other site. It is
-defined once in `src/frontend/vite.config.ts` and delivered both as HTTP headers (the build
-writes `dist/_headers`; these also cover the worker) and as a meta tag. After a run the page
-releases the file; "Clear result", or leaving the page, removes the result too. Because
-the code is open source, you can check this claim yourself (and watch the Network tab).
+Your file never leaves your device. Everything runs in your browser, in a Web Worker that is
+thrown away after each run. There is no server, database, analytics or third-party script,
+and the Content Security Policy (`connect-src 'self'`, set in `src/frontend/vite.config.ts`)
+stops the browser from sending data anywhere else.
 
-## How it works
+## Layout
 
 ```
 src/
-  models/<group>/        one folder per disease group
-    model.py             model definition, built only from published, citable sources
-    spec.json            exported coefficients (generated)
-    golden.json          reference test cases (generated)
-    summary.json         name and description for the page (generated)
-    sources.md           method, citations, licences, validation summary
-    validate.py          accuracy test on real patient data (data kept in git-ignored data/)
-    validation.json      aggregate validation results (generated)
-  models/_shared/        data shared by models (population life tables)
-  backend/               offline Python pipeline: spec schema, reference evaluator,
-                         export, accuracy validation (never runs on the website)
-  frontend/              React + TypeScript site; parses uploads and runs spec.json
+  prognosis-models/<group>/   one folder per disease group (see CONTRIBUTING.md)
+  prognosis-models/_shared/   population life tables
+  backend/general/            offline Python pipeline: spec schema, evaluator, export
+  backend/tests/
+  frontend/                   React + TypeScript site: parses uploads, runs spec.json
 ```
 
-* **Models** are broad, one per disease group, and layered. A *base layer* (population life
-  table × diagnosis-specific hazard ratio × comorbidity) covers every condition in the group.
-  *Refinement layers* (e.g. cancer site × stage survival, MAGGIC for heart failure, ADO/BODE
-  for COPD) take over when the record has the inputs they need. Missing inputs are averaged
-  over published population distributions, which widens the reported range.
-* **Models so far:** *Cancer*. This is U.S. population mortality (NCHS 2024 life tables)
-  × SEER relative survival by site, stage and age at diagnosis. It is conditional on the years
-  already survived, and the curves are rescaled to 2016–2022 diagnoses. On 24,067 real
-  MSK-CHORD patients, Harrell's C-index is 0.71. See `src/models/cancer/sources.md`.
-  *Cardiovascular disease*. Heart failure with a recorded ejection fraction uses the MAGGIC
-  risk score. Heart failure without one uses UK survival by age at diagnosis. Other
-  cardiovascular conditions use population mortality × published hazard ratios. See
-  `src/models/cardiovascular/sources.md`.
-  *Chronic lower respiratory disease*. COPD with a recorded FEV1 % predicted uses the updated
-  ADO index. Otherwise population mortality × published hazard ratios for COPD,
-  bronchiectasis and asthma. On 2,602 real NHANES patients (interviewed 2011–2018), Harrell's C-index is 0.78. See
-  `src/models/respiratory/sources.md`.
-* **Two implementations, one answer.** Python is the reference; the browser runs a
-  TypeScript port. CI replays every `golden.json` against the TypeScript evaluator.
-* **Accuracy** is tested only against real, published patient data, never data we invent.
-  Patient-level datasets are used solely for testing, never for training, and are never
-  committed (see `.gitignore`); only aggregate results are published.
+Each model is layered. A base layer (population mortality × published hazard ratios) covers
+any condition in the group. More specific layers (cancer site × stage, MAGGIC for heart
+failure, ADO for COPD) take over when the record has their inputs. Missing inputs are
+averaged over published population data, which widens the range.
+
+Python is the reference evaluator and the browser runs a TypeScript port. CI checks they agree
+on every case in each model's `golden.json`.
+
+## Models
+
+| Group | Method | Accuracy (see [TESTING.md](TESTING.md)) |
+|---|---|---|
+| Cancer | U.S. life tables × SEER relative survival by site, stage and age | C-index 0.71 on 24,067 MSK-CHORD patients |
+| Cardiovascular | MAGGIC, heart failure and stroke survival by age, or hazard ratios | C-index 0.74 on 1,088 FAR NHL patients |
+| Chronic lower respiratory | ADO index, or hazard ratios for COPD, bronchiectasis, asthma | C-index 0.78 on 2,602 NHANES patients |
+
+Each model's `sources.md` has its method, sources and results.
 
 ## Development
 
-Requirements: Python 3.14, Node 22.
+Python 3.14 and Node 22.
 
 ```bash
 python3 -m venv .venv && .venv/bin/pip install -r src/backend/requirements-dev.txt
 ```
 
 ```bash
-cd src/backend && ../../.venv/bin/python -m pytest && ../../.venv/bin/python -m deaths_warrant.export
+cd src/backend && ../../.venv/bin/python -m pytest && ../../.venv/bin/python -m general.export
 ```
 
 ```bash
 cd src/frontend && npm ci && npm test && npm run dev
 ```
 
-`npm run dev` serves the localhost site; dev mode also lists the unit-test fixture model.
-The page loads only each model's `summary.json`; the worker loads the chosen model's full
-`spec.json` on demand, so adding models does not slow the page down.
-
-## Testing
-
-See [TESTING.md](TESTING.md): how to run every suite, the accuracy results on real patient
-data, the end-to-end and security tests, and what final testing found.
-
-## Adding a disease group
-
-See [CONTRIBUTING.md](CONTRIBUTING.md). A new model is a new folder under `src/models/`; no
-frontend changes are needed.
-
 ## Dependencies
 
-| Package | Where | Why |
-|---|---|---|
-| react, react-dom | site | UI framework (project requirement) |
-| Cormorant Garamond | site | typeface, self-hosted woff2 (SIL OFL 1.1, `public/fonts/OFL-cormorant-garamond.txt`) |
-| Beth Ellen | site | title typeface, self-hosted woff2 (SIL OFL 1.1, `public/fonts/OFL-beth-ellen.txt`) |
-| typescript | dev | type checking (project requirement) |
-| vite, @vitejs/plugin-react | dev | build and dev server; the official React plugin is the only plugin |
-| vitest | dev | tests, including golden parity |
-| @types/react, @types/react-dom | dev | type definitions |
-| @types/node | dev | type definitions for the tests only (they read files with `node:fs`) |
-| pydantic | pipeline | validates every model spec (project requirement) |
-| pytest, ruff | pipeline dev | tests and lint |
+| Package | Why |
+|---|---|
+| react, react-dom | UI (project requirement) |
+| typescript, vite, @vitejs/plugin-react, vitest | type checking, build, tests |
+| @types/react, @types/react-dom, @types/node | type definitions (node only for tests) |
+| pydantic | validates every model spec (project requirement) |
+| pytest, ruff | Python tests and lint |
+| Cormorant Garamond, Beth Ellen | self-hosted fonts (SIL OFL 1.1, `src/frontend/public/fonts/`) |
 
-The XML parser is our own (~200 lines): the browser's `DOMParser` is not available in Web
-Workers, and owning the parser lets us reject DOCTYPE/ENTITY declarations outright, which
-rules out XXE and entity-expansion attacks.
+The XML parser is our own (about 200 lines). `DOMParser` is not available in Web Workers, and
+our parser refuses any DOCTYPE or ENTITY, which rules out XXE and entity-expansion attacks.

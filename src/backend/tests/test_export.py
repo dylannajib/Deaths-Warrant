@@ -3,8 +3,8 @@ import textwrap
 
 import pytest
 
-from deaths_warrant.export import render
-from deaths_warrant.registry import discover
+from general.export import render
+from general.registry import discover
 
 from .conftest import FIXTURE_SPEC
 
@@ -17,7 +17,7 @@ def write_model(tmp_path, golden_inputs):
         textwrap.dedent(f"""
         import json
         from pathlib import Path
-        from deaths_warrant.spec import ModelSpec
+        from general.spec import ModelSpec
 
         def build():
             data = (Path(__file__).parent / "spec_data.json").read_text()

@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from deaths_warrant.evaluate import (
+from general.evaluate import (
     EvaluationError,
     evaluate,
     population_cum_hazard,
