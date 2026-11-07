@@ -58,7 +58,7 @@ export class GroupMismatchError extends RecordError {}
 export function runPrognosis(text: string, spec: ModelSpec, asOf: string): PrognosisReport {
   const record = parseUpload(text, asOf);
   if (!recordMatchesGroup(spec, record)) {
-    throw new GroupMismatchError(`No ${spec.name.toLowerCase()} diagnosis found on this record. Check that you selected the right disease group.`);
+    throw new GroupMismatchError(`No ${spec.name.toLowerCase()} diagnosis found on this record.\nCheck that you selected the right disease group.`);
   }
   const { observed, provenance } = extractInputs(spec, record, asOf);
   const result = evaluate(spec, observed);

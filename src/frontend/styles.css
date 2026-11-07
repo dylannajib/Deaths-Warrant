@@ -63,8 +63,6 @@ ul { list-style-type: circle; }
 .links a { display: flex; align-items: center; gap: 0.65rem; font-weight: 700; font-size: 1.1rem; line-height: 1.5rem; text-decoration: none; }
 .links a:hover { text-decoration: underline; }
 .links img { flex: none; width: 1.5rem; height: 1.5rem; border-radius: 50%; object-fit: cover; }
-/* The founder picture is black on black: a ring gives it the same round outline as the GitHub mark. */
-.links img.ringed { box-shadow: 0 0 0 1px var(--ink); }
 .links h2 { margin: 0.9rem 0 0; font-size: 1.25rem; font-weight: 700; line-height: 1.5rem; }
 .links a.person { font-weight: 400; }
 
@@ -74,7 +72,8 @@ ul { list-style-type: circle; }
   .release-notes { position: absolute; top: 0; right: 0; width: calc((100vw - 50rem) / 2); }
 }
 .release-notes h2 { margin: 0; font-size: 1.25rem; font-weight: 700; }
-.release-notes h3 { margin: 0.6rem 0 0; font-size: 1.05rem; font-weight: 700; }
+.release-notes .release { margin-top: 0.6rem; }
+.release-notes .release > button { font-weight: 700; text-align: left; }
 .release-notes ul { margin: 0.25rem 0 0; padding-left: 1.25rem; }
 
 /* The paper column holds the title and main texts, with the page's black showing either side. */
@@ -83,7 +82,7 @@ ul { list-style-type: circle; }
   --ink: #111111;
   --ink-2: #3a3a3a;
   --muted: #6b6b6b;
-  --rule: #3a3a3a; /* the same grey as the disclaimer text (--ink-2) */
+  --rule: #6b6b6b; /* the same grey as muted text (--muted) */
   --soft: rgba(0, 0, 0, 0.08);
   --warn: #8a3b12;
   --focus: #1a56db;
@@ -121,8 +120,12 @@ ul { list-style-type: circle; }
 
 /* Dropdowns (disease group, See more, Reasoning): the content slides open below the heading. */
 .dropdown > button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
-/* Bold everywhere: the regular weight's uneven strokes look like a tick once rotated. */
-.dropdown .arrow { display: inline-block; margin-right: 0.4rem; font-weight: 700; transition: transform 0.2s ease; }
+/* A square box, so the arrow stays inside it when rotated. Otherwise a dropdown nested in
+   another (whose body hides overflow) cuts off half the "v", which looks like a tick. */
+.dropdown .arrow {
+  display: inline-block; width: 1em; line-height: 1; text-align: center; margin-right: 0.15rem;
+  font-weight: 700; transition: transform 0.2s ease;
+}
 .dropdown > button[aria-expanded="true"] .arrow { transform: rotate(90deg); }
 .dropdown-body { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.25s ease, opacity 0.25s ease; }
 .dropdown > button[aria-expanded="true"] + .dropdown-body { grid-template-rows: 1fr; opacity: 1; }
@@ -150,19 +153,24 @@ ul { list-style-type: circle; }
 }
 .clear:hover { text-decoration: underline; }
 
-.error { margin: 2rem auto 0; max-width: 34rem; color: var(--warn); text-align: center; }
+/* One sentence per line, on a grey panel. */
+.error {
+  margin: 2rem auto 0; max-width: 34rem; padding: 0.75rem 1rem; white-space: pre-line;
+  color: var(--ink); background: var(--soft); border-radius: 4px; text-align: center;
+}
 
 /* Result: fades and slides in when it appears */
 @keyframes appear { from { opacity: 0; transform: translateY(0.75rem); } }
-.result, .error { animation: appear 0.35s ease both; }
+.result { animation: appear 0.35s ease both; }
 .result { margin: 3rem auto 0; max-width: 40rem; }
 /* The amount sits above its label. ResultView scales the amount to the label's width. */
-.headline { display: grid; justify-items: center; font-family: var(--display); font-size: 1.9rem; line-height: 1.5; margin: 0; }
+.headline { display: grid; justify-items: center; font-size: 1.9rem; line-height: 1.5; margin: 0; }
 .headline span { white-space: nowrap; }
-.headline .amount { line-height: 1.1; }
+.headline .amount { font-family: var(--display); line-height: 1.1; }
+.headline .label { font-style: italic; margin-top: 0.5rem; }
 .warnings { margin: 1.5rem 0 0; padding: 0.75rem 1rem 0.75rem 2rem; background: var(--soft); color: var(--ink); border-radius: 4px; }
-.drop { margin-top: 1.5rem; border-top: 1px solid var(--rule); padding-top: 0.75rem; }
-.drop > button { font-weight: 700; font-size: 1.45rem; }
+.drop { margin-top: 1.5rem; padding-top: calc(0.75rem + 1px); } /* +1px keeps the gap of the removed line */
+.drop > button { display: block; margin: 0 auto; font-weight: 700; font-size: 1.45rem; }
 .drop-body { padding-top: 0.75rem; }
 .reasoning h3 { font-size: 1.3rem; font-style: italic; margin: 1.5rem 0 0.4rem; }
 .reasoning ul { padding-left: 1.25rem; }
@@ -172,10 +180,11 @@ ul { list-style-type: circle; }
 .tag { font-size: 0.9rem; font-weight: 700; border: 1px solid var(--ink); border-radius: 3px; padding: 0 0.3rem; }
 
 .table { width: 100%; border-collapse: collapse; font-size: 1.05rem; margin: 0.5rem 0; }
-.table caption { text-align: left; font-weight: 700; padding-bottom: 0.25rem; }
+/* Captions match the Reasoning headings ("Model" etc.). */
+.table caption { text-align: left; font-size: 1.3rem; font-style: italic; font-weight: 700; padding-bottom: 0.25rem; }
 .table th, .table td { text-align: left; vertical-align: top; padding: 0.35rem 0.5rem 0.35rem 0; border-bottom: 1px solid var(--rule); }
 .table tr:last-child > * { border-bottom: 0; }
-.table thead tr:last-child > * { border-bottom: 1px solid var(--rule); }
+.table thead tr:last-child > * { border-bottom: 1px solid var(--ink); } /* only the line under the labels is black */
 .table thead th { font-weight: 700; }
 .table tbody th { font-weight: 600; }
 /* Fixed column widths: equal for small tables, set per column for the wider ones. */
@@ -212,5 +221,5 @@ ul { list-style-type: circle; }
 }
 @media (prefers-reduced-motion: reduce) {
   .dropdown .arrow, .dropdown-body { transition: none; }
-  .result, .error { animation: none; }
+  .result { animation: none; }
 }

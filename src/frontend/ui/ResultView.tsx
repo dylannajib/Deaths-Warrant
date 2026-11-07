@@ -33,7 +33,24 @@ export function ResultView({ report }: { report: PrognosisReport }) {
   );
 }
 
-/** The amount above its label, scaled so the two are the same width. */
+/**
+ * The width of a span's visible glyphs, and how far to shift it so they sit centred in its box.
+ * Fonts leave uneven space beside their glyphs (handwriting and italics most of all), so
+ * centring the boxes does not make the text look centred.
+ */
+function ink(el: HTMLElement): { width: number; shift: number } {
+  const ctx = document.createElement("canvas").getContext("2d");
+  if (!ctx) return { width: el.getBoundingClientRect().width, shift: 0 };
+  const cs = getComputedStyle(el);
+  ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+  const m = ctx.measureText(el.textContent ?? "");
+  return {
+    width: m.actualBoundingBoxLeft + m.actualBoundingBoxRight,
+    shift: (m.width - m.actualBoundingBoxRight + m.actualBoundingBoxLeft) / 2,
+  };
+}
+
+/** The amount above its label, scaled so the two are the same width and visibly centred. */
 function Headline({ parts: [amount, label] }: { parts: [string, string] }) {
   const amountRef = useRef<HTMLSpanElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
@@ -43,8 +60,9 @@ function Headline({ parts: [amount, label] }: { parts: [string, string] }) {
       const l = labelRef.current;
       if (!a || !l) return;
       a.style.fontSize = "1em";
-      const scale = l.getBoundingClientRect().width / a.getBoundingClientRect().width;
+      const scale = ink(l).width / ink(a).width;
       a.style.fontSize = `${Math.min(scale, MAX_AMOUNT_SCALE)}em`;
+      for (const el of [a, l]) el.style.transform = `translateX(${ink(el).shift}px)`;
     };
     fit();
     void document.fonts.ready.then(fit); // widths change once the web font arrives
@@ -54,7 +72,9 @@ function Headline({ parts: [amount, label] }: { parts: [string, string] }) {
       <span ref={amountRef} className="amount">
         {amount}
       </span>
-      <span ref={labelRef}>{label}</span>
+      <span ref={labelRef} className="label">
+        {label}
+      </span>
     </p>
   );
 }

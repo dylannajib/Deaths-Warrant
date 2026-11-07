@@ -73,7 +73,7 @@ export function App() {
         </a>
         <h2>Contributors</h2>
         <a className="person" href={FOUNDER_URL} target="_blank" rel="noopener noreferrer">
-          <img className="ringed" src={founderPfp} alt="" width={24} height={24} />
+          <img src={founderPfp} alt="" width={24} height={24} />
           <span>
             <strong>Founder</strong> @dylannajib
           </span>
