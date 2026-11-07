@@ -2,25 +2,25 @@
  "model": [
   {
    "id": "puhan_2012",
-   "citation": "Puhan MA, Hansel NN, Sobradillo P, et al. Large-scale international validation of the ADO index in subjects with COPD: an individual subject data analysis of 10 cohorts. BMJ Open 2012;2:e002152. Updated ADO points (Table 3), 3-year mortality per score 0-14 (Table 4), cohort characteristics (Table 1; 13,914 people with COPD).",
+   "citation": "Puhan MA, Hansel NN, Sobradillo P, et al. Large-scale international validation of the ADO index in subjects with COPD: an individual subject data analysis of 10 cohorts. BMJ Open 2012, 2:e002152. Updated ADO points (Table 3), 3-year mortality per score 0-14 (Table 4), cohort characteristics (Table 1, 13,914 people with COPD).",
    "url": "https://doi.org/10.1136/bmjopen-2012-002152",
    "licence": "CC BY-NC 2.0 (open access)"
   },
   {
    "id": "zhao_2025",
-   "citation": "Zhao G, Wang L, Lei S, Li Y, Li J, Feng Z. All-cause and cause-specific mortality in chronic obstructive pulmonary disease: a systematic review and meta-analysis. Int J Chron Obstruct Pulmon Dis 2025;20:4173-4190. All-cause mortality HR 1.80 (1.40-2.30) vs no COPD.",
+   "citation": "Zhao G, Wang L, Lei S, Li Y, Li J, Feng Z. All-cause and cause-specific mortality in chronic obstructive pulmonary disease: a systematic review and meta-analysis. Int J Chron Obstruct Pulmon Dis 2025, 20:4173-4190. All-cause mortality HR 1.80 (1.40-2.30) vs no COPD.",
    "url": "https://doi.org/10.2147/COPD.S563250",
    "licence": "CC BY-NC 4.0"
   },
   {
    "id": "zhang_2022",
-   "citation": "Zhang B, Li ZF, An ZY, et al. Association between asthma and all-cause mortality and cardiovascular disease morbidity and mortality: a meta-analysis of cohort studies. Front Cardiovasc Med 2022;9:861798. All-cause mortality RR 1.38 (1.07-1.77) vs no asthma.",
+   "citation": "Zhang B, Li ZF, An ZY, et al. Association between asthma and all-cause mortality and cardiovascular disease morbidity and mortality: a meta-analysis of cohort studies. Front Cardiovasc Med 2022, 9:861798. All-cause mortality RR 1.38 (1.07-1.77) vs no asthma.",
    "url": "https://doi.org/10.3389/fcvm.2022.861798",
    "licence": "CC BY 4.0"
   },
   {
    "id": "quint_2016",
-   "citation": "Quint JK, Millett ER, Joshi M, et al. Changes in the incidence, prevalence and mortality of bronchiectasis in the UK from 2004 to 2013: a population-based cohort study. Eur Respir J 2016;47:186-193. Age-adjusted comparative mortality figure vs the general population: women 2.26, men 2.14 (2.2 used).",
+   "citation": "Quint JK, Millett ER, Joshi M, et al. Changes in the incidence, prevalence and mortality of bronchiectasis in the UK from 2004 to 2013: a population-based cohort study. Eur Respir J 2016, 47:186-193. Age-adjusted comparative mortality figure vs the general population: women 2.26, men 2.14 (2.2 used).",
    "url": "https://doi.org/10.1183/13993003.01033-2015",
    "licence": null
   },
@@ -36,17 +36,17 @@
    "id": "nhanes_lmf_2019",
    "citation": "National Center for Health Statistics. NHANES 2007-2018 (demographics, medical conditions questionnaire) linked to the National Death Index, public-use linked mortality files with follow-up through 31 December 2019.",
    "url": "https://www.cdc.gov/nchs/linked-data/mortality-files/index.html",
-   "licence": "U.S. Government work (public domain); used for testing only"
+   "licence": "U.S. Government work (public domain), used for testing only"
   },
   {
    "id": "park_2019",
-   "citation": "Park SC, Kim DW, Park EC, et al. Mortality of patients with chronic obstructive pulmonary disease: a nationwide population-based cohort study. Korean J Intern Med 2019;34:1272-1278.",
+   "citation": "Park SC, Kim DW, Park EC, et al. Mortality of patients with chronic obstructive pulmonary disease: a nationwide population-based cohort study. Korean J Intern Med 2019, 34:1272-1278.",
    "url": "https://doi.org/10.3904/kjim.2017.428",
    "licence": "CC BY-NC 4.0 (open access)"
   },
   {
    "id": "bhatt_2026",
-   "citation": "Bhatt SP, Sun Y, Wang Y, et al. Life expectancy in chronic obstructive pulmonary disease. JAMA Intern Med 2026;186(7):852-860. NHLBI Pooled Cohorts, n = 45,886, enrolled 1983-2011, followed to 2020.",
+   "citation": "Bhatt SP, Sun Y, Wang Y, et al. Life expectancy in chronic obstructive pulmonary disease. JAMA Intern Med 2026, 186(7):852-860. NHLBI Pooled Cohorts, n = 45,886, enrolled 1983-2011, followed to 2020.",
    "url": "https://doi.org/10.1001/jamainternmed.2026.0207",
    "licence": null
   }

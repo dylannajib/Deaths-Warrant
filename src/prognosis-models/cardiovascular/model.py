@@ -89,27 +89,6 @@ DIABETES = (
     1.9,
 )
 COPD = {"icd10": ["J43", "J44"], "icd9": ["491", "492", "496"], "snomed": SNOMED["copd"]}
-# Cardiovascular group: rheumatic, hypertensive, ischaemic, pulmonary-heart, other heart,
-# cerebrovascular and arterial disease (veins and lymphatics excluded).
-GROUP_ICD10 = [
-    "I05",
-    "I06",
-    "I07",
-    "I08",
-    "I09",
-    "I11",
-    "I13",
-    *(f"I{n}" for n in range(20, 29)),
-    *(f"I{n}" for n in range(30, 53)),
-    *(f"I{n}" for n in range(60, 75)),
-]
-GROUP_ICD9 = [
-    *(str(n) for n in range(393, 399)),
-    "402",
-    "404",
-    *(str(n) for n in range(410, 439)),
-    *(str(n) for n in range(440, 445)),
-]
 
 
 def _codes(key: str) -> dict[str, list[str]]:
@@ -655,14 +634,15 @@ def build() -> ModelSpec:
         "version": "1.0.0",
         "order": 20,
         "description": (
-            "Heart failure uses the MAGGIC risk score when the ejection fraction is recorded,"
-            " otherwise survival by age at diagnosis; a dated stroke uses survival after stroke"
-            " by age; other cardiovascular disease uses U.S. population mortality multiplied by"
-            " published hazard ratios for each recorded condition."
+            "Heart failure with a recorded ejection fraction uses the MAGGIC risk score. Heart "
+            "failure without one uses survival by age at diagnosis. A dated stroke uses survival "
+            "after stroke by age. Other cardiovascular disease uses U.S. population mortality "
+            "multiplied by published hazard ratios."
         ),
+        # The group is the diagnoses this model scores, so a record with none of them is flagged.
         "group_codes": {
-            "icd10": GROUP_ICD10,
-            "icd9": GROUP_ICD9,
+            "icd10": sorted({p for c in CONDITIONS.values() for p in c.icd10}),
+            "icd9": sorted({p for c in CONDITIONS.values() for p in c.icd9}),
             "snomed": sorted({c for key in CONDITIONS for c in SNOMED[key]}, key=int),
         },
         "inputs": _inputs(),
@@ -671,11 +651,10 @@ def build() -> ModelSpec:
                 "id": "maggic_admitted",
                 "label": "Heart failure after a recent hospital stay: MAGGIC risk score",
                 "description": (
-                    "As the MAGGIC layer below, for someone with a hospital stay for heart"
-                    f" failure in the last {ADMITTED_WITHIN_DAYS} days. If the record gives no"
-                    " NYHA class it is taken as IV (the most severe), as a published"
-                    " validation of MAGGIC at hospital discharge did; even so, that study"
-                    " observed slightly more deaths than MAGGIC predicted."
+                    "MAGGIC risk score, applied after a heart failure hospital stay in the last"
+                    f" {ADMITTED_WITHIN_DAYS} days. A missing NYHA class is set to IV, following a"
+                    " published validation of MAGGIC at hospital discharge (Michaels 2020). That"
+                    " study observed slightly more deaths than MAGGIC predicted."
                 ),
                 "requires": ["ef"],
                 "when": {"heart_failure": [True], "hf_admission": [True]},
@@ -695,12 +674,11 @@ def build() -> ModelSpec:
                 "id": "maggic",
                 "label": "Heart failure: MAGGIC risk score",
                 "description": (
-                    "The MAGGIC integer risk score from 13 routine measurements, with the"
-                    " published 1- and 3-year mortality for that score (39,372 patients from 30"
-                    " studies, 1980-2006). Survival beyond 3 years extends the same Weibull"
-                    " curve and is never better than the general population of your age and"
-                    " sex. Measurements missing from the record are averaged over the MAGGIC"
-                    " cohort, which widens the range."
+                    "MAGGIC integer risk score from 13 routine measurements. Published 1-year and"
+                    " 3-year mortality per score, from 39,372 patients in 30 studies (1980-"
+                    "2006). A Weibull curve extends survival past 3 years. Survival is capped at "
+                    "general population survival for the same age and sex. Missing measurements "
+                    "are averaged over the MAGGIC cohort. This widens the range."
                 ),
                 "requires": ["ef"],
                 "when": {"heart_failure": [True]},
@@ -717,11 +695,11 @@ def build() -> ModelSpec:
                 "id": "heart_failure",
                 "label": "Heart failure: survival by age at diagnosis (UK cohort)",
                 "description": (
-                    "Your ejection fraction was not found, so MAGGIC cannot be used. Survival"
-                    " after a heart failure diagnosis by age at diagnosis, from 55,959 UK"
-                    " patients diagnosed 2000-2017, relative to population survival and"
-                    " allowing for the years since your diagnosis. After 15 years (5 years if"
-                    " diagnosed at 95 or over) the last published excess mortality continues."
+                    "Ejection fraction not found, so MAGGIC does not apply. Survival after a "
+                    "heart failure diagnosis by age at diagnosis, from 55,959 UK patients "
+                    "diagnosed 2000-2017. Applied relative to population survival, conditional"
+                    " on years since diagnosis. After 15 years (5 years if diagnosed at 95 or "
+                    "over), the last published excess mortality is applied."
                 ),
                 "when": {"heart_failure": [True]},
                 "survival": {
@@ -736,16 +714,15 @@ def build() -> ModelSpec:
                 "id": "stroke",
                 "label": "Stroke: survival by age at the stroke (U.S. Medicare)",
                 "description": (
-                    "Survival after an acute ischaemic stroke by age group, from 1,019,267 U.S."
-                    " Medicare patients aged 66 or over admitted 2008-2012 (5-year survival),"
-                    " relative to population survival and allowing for the years since your"
-                    " stroke. The share of deaths in the first 28 days comes from a"
-                    " population-based Japanese stroke register (2011). The Medicare curve for"
-                    " ages 66-74 is also used for younger patients, who were not in the cohort,"
-                    " and the curves are used for haemorrhagic strokes too (in the Japanese"
-                    " register their 5-year survival was similar: 55% against 59%);"
-                    " after 5 years the excess mortality of years 1-5 continues. Other recorded"
-                    " conditions are not added: the cohort already had the usual mix."
+                    "5-year survival after acute ischaemic stroke by age group, from 1,019,267 "
+                    "U.S. Medicare patients aged 66 or over, admitted 2008-2012. Applied "
+                    "relative to population survival, conditional on years since the stroke. "
+                    "Share of deaths in the first 28 days: Shiga stroke register, Japan, 2011. "
+                    "Patients under 66 use the 66-74 curve. Haemorrhagic strokes use the same "
+                    "curves (5-year survival 55% against 59% for ischaemic strokes in the Shiga "
+                    "register). After 5 years, the year 1-5 excess mortality is applied. Other"
+                    " recorded conditions are not added, because the cohort already included "
+                    "them."
                 ),
                 "requires": ["stroke_years"],
                 "when": {"stroke": [True]},
@@ -761,12 +738,12 @@ def build() -> ModelSpec:
                 "id": "base",
                 "label": "Other cardiovascular disease x population mortality",
                 "description": (
-                    "U.S. population mortality for your age and sex, multiplied by the published"
-                    " all-cause mortality hazard ratio of each recorded condition (coronary"
-                    " disease, stroke, atrial fibrillation, peripheral artery disease,"
-                    " cardiomyopathy, diabetes). Several conditions multiply, as found"
-                    " by the Emerging Risk Factors Collaboration; because each ratio was"
-                    " measured separately, this may overstate risk when several are present."
+                    "U.S. population mortality for age and sex, multiplied by the published "
+                    "all-cause mortality hazard ratio of each recorded condition: coronary "
+                    "disease, stroke, atrial fibrillation, peripheral artery disease, "
+                    "cardiomyopathy, diabetes. Ratios for several conditions are multiplied "
+                    "(Emerging Risk Factors Collaboration). Each ratio was measured on its own, "
+                    "so risk may be overstated when several conditions are present."
                 ),
                 "survival": {
                     "type": "life_table_ph",

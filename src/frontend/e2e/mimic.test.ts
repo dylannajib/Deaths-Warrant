@@ -12,7 +12,7 @@ import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { extractInputs, recordMatchesGroup } from "../engine/extract";
-import { runPrognosis } from "../engine/prognosis";
+import { GroupMismatchError, runPrognosis } from "../engine/prognosis";
 import { latestDate, parseUpload } from "../parsing/upload";
 import { REAL_SPECS } from "../testing/specs";
 
@@ -23,8 +23,8 @@ const specs = REAL_SPECS;
 // Independent ICD patterns per group. A group without one is not cross-checked.
 const ICD: Record<string, RegExp | undefined> = {
   cancer: /^(C\d|1[4-9]\d|20[0-8])/, // malignant neoplasms (ICD-10 C, ICD-9 140-208)
-  cardiovascular: /^(I(0[5-9]|1[13]|2\d|[3-5]\d|6\d|7[0-4])|39[3-8]|40[24]|4[1-3]\d|44[0-4])/,
-  respiratory: /^(J4[0-7]|49[0-6])/,
+  cardiovascular: /^(I(110|13[02]|2[0-5]|4[238]|50|6[0-4]|69|702|739)|402[019]1|404[019][13]|41[0-4]|425|4273[12]|428|43[0-4]|43[68]|4402|4439)/, // scored diagnoses
+  respiratory: /^(J4[1-7]|49[1-46])/,
 };
 
 describe.skipIf(!available)("MIMIC-IV FHIR demo, end to end", () => {
@@ -43,24 +43,28 @@ describe.skipIf(!available)("MIMIC-IV FHIR demo, end to end", () => {
       expect(asOf).toBeTruthy();
       const codes = record.conditions.flatMap((c) => c.codes.filter((x) => x.system === "icd9" || x.system === "icd10").map((x) => x.code));
       for (const spec of specs) {
-        const started = performance.now();
-        const report = runPrognosis(text, spec, asOf);
-        slowest = Math.max(slowest, performance.now() - started);
-        const r = report.result;
         const s = (summary[spec.id] ??= { patients: 0, groupMatch: 0, icdInGroup: 0, agreement: 0 });
         s.patients! += 1;
-
-        // Sane numbers: survival falls over time, the range brackets the median.
-        expect(r.survival_at["1"]).toBeGreaterThanOrEqual(r.survival_at["5"]!);
-        for (let k = 1; k < r.curve.length; k++) expect(r.curve[k]![1]).toBeLessThanOrEqual(r.curve[k - 1]![1] + 1e-12);
-        if (r.median_years !== null) {
-          expect(r.median_years).toBeGreaterThan(0);
-          expect(r.range_low_years!).toBeLessThanOrEqual(r.median_years);
-          if (r.range_high_years !== null) expect(r.range_high_years).toBeGreaterThanOrEqual(r.median_years);
+        const matched = recordMatchesGroup(spec, record);
+        const started = performance.now();
+        if (!matched) {
+          // A record without a diagnosis from the group is refused, not estimated.
+          expect(() => runPrognosis(text, spec, asOf)).toThrow(GroupMismatchError);
+        } else {
+          const r = runPrognosis(text, spec, asOf).result;
+          // Sane numbers: survival falls over time, the range brackets the median.
+          expect(r.survival_at["1"]).toBeGreaterThanOrEqual(r.survival_at["5"]!);
+          for (let k = 1; k < r.curve.length; k++) expect(r.curve[k]![1]).toBeLessThanOrEqual(r.curve[k - 1]![1] + 1e-12);
+          if (r.median_years !== null) {
+            expect(r.median_years).toBeGreaterThan(0);
+            expect(r.range_low_years!).toBeLessThanOrEqual(r.median_years);
+            if (r.range_high_years !== null) expect(r.range_high_years).toBeGreaterThanOrEqual(r.median_years);
+          }
+          s[`layer:${r.layer.id}`] = (s[`layer:${r.layer.id}`] ?? 0) + 1;
         }
+        slowest = Math.max(slowest, performance.now() - started);
 
         // Group detection agrees with an independent ICD check of the same record.
-        const matched = recordMatchesGroup(spec, record);
         const pattern = ICD[spec.id];
         const byIcd = pattern ? codes.some((c) => pattern.test(c)) : recordMatchesGroup(spec, record);
         s.groupMatch! += Number(matched);
@@ -70,7 +74,6 @@ describe.skipIf(!available)("MIMIC-IV FHIR demo, end to end", () => {
           const hits = record.conditions.flatMap((c) => c.codes).filter((c) => (c.system === "snomed" || c.system === "icd9" || c.system === "icd10")).map((c) => `${c.system}:${c.code}`);
           disagreements.push(`${spec.id} ${file.slice(0, 8)} matched=${matched} icd=${byIcd} ${hits.filter((h) => /:(C|I|J|1[4-9]|20|39|4[0-4]|49)/.test(h)).slice(0, 12).join(" ")}`);
         }
-        s[`layer:${r.layer.id}`] = (s[`layer:${r.layer.id}`] ?? 0) + Number(matched);
         if (matched) {
           const { observed } = extractInputs(spec, record, asOf);
           for (const [id, v] of Object.entries(observed)) {

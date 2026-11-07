@@ -22,7 +22,7 @@ describe("HL7 C-CDA examples", () => {
   });
 
   it("ignores the example's malformed dates instead of guessing", () => {
-    expect(parse("ccda-ccd-1.xml").notes).toContain("1 date(s) in the file could not be understood and were ignored.");
+    expect(parse("ccda-ccd-1.xml").notes).toContain("1 unreadable date(s) ignored.");
   });
 
   it("reads vital signs and an empty problem list", () => {

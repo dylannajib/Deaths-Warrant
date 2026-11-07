@@ -1,7 +1,7 @@
 {
  "results": [
   {
-   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan, Ahmad et al. 2017)",
    "period": "April-December 2015 (follow-up up to 285 days)",
    "n": 299,
    "metric": "Heart failure, MAGGIC layer: Harrell's C-index",
@@ -10,7 +10,7 @@
    "source": "uci_hf_2015"
   },
   {
-   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan, Ahmad et al. 2017)",
    "period": "April-December 2015 (follow-up up to 285 days)",
    "n": 299,
    "metric": "Heart failure, MAGGIC layer: predicted 6-month survival",
@@ -19,7 +19,7 @@
    "source": "uci_hf_2015"
   },
   {
-   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan, Ahmad et al. 2017)",
    "period": "April-December 2015 (follow-up up to 285 days)",
    "n": 299,
    "metric": "Heart failure, MAGGIC layer: observed 6-month survival (Kaplan-Meier)",
@@ -28,7 +28,7 @@
    "source": "uci_hf_2015"
   },
   {
-   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan, Ahmad et al. 2017)",
    "period": "April-December 2015 (follow-up up to 285 days)",
    "n": 299,
    "metric": "Heart failure, MAGGIC after a recent admission: Harrell's C-index",
@@ -37,7 +37,7 @@
    "source": "uci_hf_2015"
   },
   {
-   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan, Ahmad et al. 2017)",
    "period": "April-December 2015 (follow-up up to 285 days)",
    "n": 299,
    "metric": "Heart failure, MAGGIC after a recent admission: predicted 6-month survival",
@@ -46,7 +46,7 @@
    "source": "uci_hf_2015"
   },
   {
-   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)",
+   "dataset": "UCI heart failure clinical records (Faisalabad, Pakistan, Ahmad et al. 2017)",
    "period": "April-December 2015 (follow-up up to 285 days)",
    "n": 299,
    "metric": "Heart failure, MAGGIC after a recent admission: observed 6-month survival (Kaplan-Meier)",

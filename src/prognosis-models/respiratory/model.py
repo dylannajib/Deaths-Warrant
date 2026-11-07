@@ -46,8 +46,6 @@ CONDITIONS: dict[str, Condition] = {
     "bronchiectasis": Condition("Bronchiectasis", ["J47"], ["494"], 2.2, "quint_2016"),
     "asthma": Condition("Asthma", ["J45", "J46"], ["493"], 1.38, "zhang_2022"),
 }
-GROUP_ICD10 = [f"J{n}" for n in range(40, 48)]
-GROUP_ICD9 = [str(n) for n in range(490, 497)]
 
 
 def _codes(key: str) -> dict[str, list[str]]:
@@ -55,7 +53,7 @@ def _codes(key: str) -> dict[str, list[str]]:
 
 
 # ---------------------------------------------------------------- updated ADO index
-# Puhan MA et al. BMJ Open 2012;2:e002152, Table 3 (points) and Table 4 (3-year mortality).
+# Puhan MA et al. BMJ Open 2012, 2:e002152, Table 3 (points) and Table 4 (3-year mortality).
 ADO_3Y_MORTALITY = [
     0.007,
     0.010,
@@ -139,13 +137,14 @@ def build() -> ModelSpec:
         "version": "1.0.0",
         "order": 30,
         "description": (
-            "COPD with a recorded lung function test uses the updated ADO index (age,"
-            " breathlessness, airflow obstruction); otherwise U.S. population mortality is"
-            " multiplied by a published hazard ratio for each recorded condition."
+            "COPD with a recorded lung function test uses the updated ADO index (age, "
+            "breathlessness, airflow obstruction). Otherwise U.S. population mortality is "
+            "multiplied by a published hazard ratio for each recorded condition."
         ),
+        # The group is the diagnoses this model scores, so a record with none of them is flagged.
         "group_codes": {
-            "icd10": GROUP_ICD10,
-            "icd9": GROUP_ICD9,
+            "icd10": sorted({p for c in CONDITIONS.values() for p in c.icd10}),
+            "icd9": sorted({p for c in CONDITIONS.values() for p in c.icd9}),
             "snomed": sorted({c for key in CONDITIONS for c in SNOMED[key]}, key=int),
         },
         "inputs": [
@@ -205,11 +204,11 @@ def build() -> ModelSpec:
                 "id": "ado",
                 "label": "COPD: updated ADO index",
                 "description": (
-                    "The updated ADO index scores age, breathlessness (mMRC) and airflow"
-                    " obstruction (FEV1 % predicted); its published 3-year mortality (13,914"
-                    " people with COPD in 10 cohorts) sets how much higher your mortality is"
-                    " than the general population of your age and sex, which then follows"
-                    " normal ageing. Never better than the general population."
+                    "Updated ADO index: points for age, breathlessness (mMRC) and airflow "
+                    "obstruction (FEV1 % predicted). The published 3-year mortality per score "
+                    "(13,914 people with COPD, 10 cohorts) sets a hazard ratio against general "
+                    "population mortality for the same age and sex. Survival then follows normal "
+                    "ageing and is capped at general population survival."
                 ),
                 "requires": ["fev1_pct"],
                 "when": {"copd": [True]},
@@ -226,9 +225,9 @@ def build() -> ModelSpec:
                 "id": "base",
                 "label": "Respiratory conditions x population mortality",
                 "description": (
-                    "U.S. population mortality for your age and sex, multiplied by the published"
-                    " all-cause mortality hazard ratio of each recorded condition (COPD,"
-                    " bronchiectasis, asthma)."
+                    "U.S. population mortality for age and sex, multiplied by the published "
+                    "all-cause mortality hazard ratio of each recorded condition: COPD, "
+                    "bronchiectasis, asthma."
                 ),
                 "survival": {
                     "type": "life_table_ph",

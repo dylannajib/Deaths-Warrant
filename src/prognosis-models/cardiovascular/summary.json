@@ -3,5 +3,5 @@
  "id": "cardiovascular",
  "name": "Cardiovascular disease",
  "order": 20,
- "description": "Heart failure uses the MAGGIC risk score when the ejection fraction is recorded, otherwise survival by age at diagnosis; a dated stroke uses survival after stroke by age; other cardiovascular disease uses U.S. population mortality multiplied by published hazard ratios for each recorded condition."
+ "description": "Heart failure with a recorded ejection fraction uses the MAGGIC risk score. Heart failure without one uses survival by age at diagnosis. A dated stroke uses survival after stroke by age. Other cardiovascular disease uses U.S. population mortality multiplied by published hazard ratios."
 }

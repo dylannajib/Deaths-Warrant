@@ -33,12 +33,13 @@ function report(observed: Record<string, number | string | boolean>, overrides: 
 describe("ResultView", () => {
   it("shows the headline, both dropdowns and what was read", () => {
     const html = renderToStaticMarkup(<ResultView report={report({ age: 60, score: 4, flag: false })} />);
-    expect(html).toContain("Remaining years: <strong>3.5</strong>");
-    expect(html).toContain("See more</button>");
-    expect(html).toContain("Reasoning</button>");
+    expect(html).toContain('<p class="headline"><span class="amount">3.5</span><span>Years Left</span></p>');
+    expect(html).toContain("<th scope=\"col\">25-75% range</th>");
+    expect(html).toContain("See More</span></button>");
+    expect(html).toContain("Reasoning</span></button>");
     expect(html).toContain("from test score");
     expect(html).toContain("A published source.");
-    expect(html).toContain("No validation results have been published");
+    expect(html).toContain("No validation results published");
     expect(html).toContain("<svg"); // survival chart
   });
 
@@ -47,15 +48,20 @@ describe("ResultView", () => {
       <ResultView report={report({ age: 60, sex: "male" }, { warnings: ["No fixture diagnosis was found."] })} />,
     );
     expect(html).toContain("No fixture diagnosis was found.");
-    expect(html).toContain("Averaged: 2 50%, 6 50%");
-    expect(html).toContain("More specific option not used");
+    expect(html).toContain("Averaged: 2 (50%), 6 (50%)");
+    expect(html).toContain("<em>Points</em> could not be used because the record has no score or kind.");
   });
 
   it("shows 20+ with the computed value when beyond the reliable range", () => {
     const r = report({ age: 0, sex: "female" });
     const html = renderToStaticMarkup(<ResultView report={{ ...r, model: { ...r.model, max_reliable_years: 10 }, result: { ...r.result, beyond_reliable: true } }} />);
-    expect(html).toContain("<strong>10+</strong>");
-    expect(html).toContain("The model&#x27;s computed median is 11.6 years");
+    expect(html).toContain('<span class="amount">10+</span><span>Years Left</span>');
+    expect(html).toContain("Computed median: 11.6 years");
+  });
+
+  it("uses no semicolons or em dashes in its own text", () => {
+    const text = renderToStaticMarkup(<ResultView report={report({ age: 60, sex: "male" })} />).replace(/<[^>]+>|&[#a-z0-9]+;/gi, " "); // tags and HTML entities
+    expect(text).not.toMatch(/[;—]/);
   });
 
   it("shows text from the uploaded file as text, never as HTML", () => {

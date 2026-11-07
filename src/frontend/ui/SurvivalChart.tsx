@@ -8,7 +8,7 @@ import { chartEndYears, formatPercent } from "./format";
 
 const W = 640;
 const H = 260;
-const M = { top: 12, right: 16, bottom: 34, left: 48 };
+const M = { top: 12, right: 16, bottom: 34, left: 76 };
 const PLOT_W = W - M.left - M.right;
 const PLOT_H = H - M.top - M.bottom;
 
@@ -60,7 +60,7 @@ export function SurvivalChart({ curve, medianYears }: Props) {
       onBlur={() => setActive(null)}
     >
       <title id={titleId}>
-        Estimated share of people alive over the next {end} years. Use the left and right arrow keys to read values.
+        {`Estimated share of people alive over the next ${end} years. Use the left and right arrow keys to read values.`}
       </title>
       {[0, 0.25, 0.5, 0.75, 1].map((s) => (
         <g key={s}>
@@ -76,7 +76,10 @@ export function SurvivalChart({ curve, medianYears }: Props) {
         </text>
       ))}
       <text className="tick" x={W - M.right} y={H - 2} textAnchor="end">
-        years from now
+        Years from now
+      </text>
+      <text className="tick" transform={`translate(16 ${M.top + PLOT_H / 2}) rotate(-90)`} textAnchor="middle" dominantBaseline="middle">
+        Survival %
       </text>
       <path className="area" d={area} />
       <path className="line" d={line} />

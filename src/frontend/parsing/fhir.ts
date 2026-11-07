@@ -188,7 +188,7 @@ export function readFhir(doc: Json, format: "fhir-json" | "fhir-xml"): PatientRe
       }
     }
   }
-  if (datedByVisit) record.notes.push("Some diagnoses had no date of their own, so the start of the hospital visit they were recorded in was used.");
+  if (datedByVisit) record.notes.push("Diagnoses without a date were dated to the start of their hospital visit.");
   return record;
 }
 

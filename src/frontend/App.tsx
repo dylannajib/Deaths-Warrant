@@ -1,4 +1,4 @@
-/** The page: links, title, coverage, upload, disease group, run, result, disclaimer. */
+/** The page: links, title, coverage, upload, disease group, run, result, disclaimer, release notes. */
 
 import { useEffect, useRef, useState } from "react";
 import founderPfp from "./assets/founder-pfp.png";
@@ -7,6 +7,7 @@ import { MODELS } from "./engine/models";
 import type { PrognosisReport } from "./engine/prognosis";
 import { SOFT_LIMIT_BYTES } from "./parsing/upload";
 import { Dropdown } from "./ui/Dropdown";
+import { ReleaseNotes } from "./ui/ReleaseNotes";
 import { ResultView } from "./ui/ResultView";
 import { runInWorker } from "./worker/client";
 
@@ -31,6 +32,7 @@ export function App() {
   const clearAll = () => {
     runId.current += 1;
     setFile(null);
+    setModelId(null);
     if (upload.current) upload.current.value = "";
     setReport(null);
     setError(null);
@@ -69,9 +71,12 @@ export function App() {
           <img src={githubLogo} alt="" width={24} height={24} />
           GitHub Repository
         </a>
-        <a href={FOUNDER_URL} target="_blank" rel="noopener noreferrer">
+        <h2>Contributors</h2>
+        <a className="person" href={FOUNDER_URL} target="_blank" rel="noopener noreferrer">
           <img className="ringed" src={founderPfp} alt="" width={24} height={24} />
-          Founder’s GitHub
+          <span>
+            <strong>Founder</strong> @dylannajib
+          </span>
         </a>
       </nav>
 
@@ -79,8 +84,7 @@ export function App() {
         <main className="page">
           <header className="hero">
             <h1>Death’s Warrant</h1>
-            <p className="tagline">a free, open-source prognosis service</p>
-            <p className="lede">Know how long you likely have left.</p>
+            <p className="tagline">a free, open-source, prognostic life expectancy estimator</p>
           </header>
 
           <section className="coverage" aria-labelledby="coverage-title">
@@ -150,7 +154,7 @@ export function App() {
               <>
                 <ResultView report={report} />
                 <button type="button" className="clear" onClick={clearAll}>
-                  Clear result
+                  Clear
                 </button>
               </>
             )}
@@ -159,9 +163,11 @@ export function App() {
 
         <footer className="disclaimer">
           <p>Death’s Warrant is not a clinically-validated tool. Treat your results as an estimate subject to change.</p>
-          <p>Any data you upload is read, analysed and then discarded, locally in your browser.</p>
+          <p>Any data you upload is read, analysed then discarded locally in your browser.</p>
         </footer>
       </div>
+
+      <ReleaseNotes />
     </>
   );
 }

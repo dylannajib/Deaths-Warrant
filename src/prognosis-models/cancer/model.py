@@ -247,8 +247,8 @@ def _layer(
 
 
 EXTRAPOLATION = (
-    " SEER publishes survival up to 10 years after diagnosis; beyond that the 10th year's"
-    " excess mortality is assumed to continue."
+    " SEER data ends at 10 years after diagnosis. After 10 years, the year-10 excess mortality"
+    " is applied."
 )
 
 
@@ -260,9 +260,8 @@ def build() -> ModelSpec:
         "version": "1.0.0",
         "order": 10,
         "description": (
-            "Population mortality for your age and sex combined with U.S. SEER cancer survival"
-            " for your cancer site, stage and age at diagnosis, allowing for the time you have"
-            " already survived since diagnosis."
+            "U.S. population mortality by age and sex, combined with SEER cancer survival by"
+            " site, stage and age at diagnosis, conditional on years since diagnosis."
         ),
         "group_codes": {
             "icd10": sorted(
@@ -342,9 +341,9 @@ def build() -> ModelSpec:
             _layer(
                 "site_stage",
                 "Cancer site and stage (SEER)",
-                "Relative survival for your cancer site, stage and age at diagnosis, diagnosed"
-                " in the U.S. 2000-2022 and rescaled to 2016-2022 5-year survival. A recorded"
-                " distant metastasis counts as distant stage, timed from the metastasis."
+                "SEER relative survival by cancer site, stage and age at diagnosis. U.S. diagnoses"
+                " 2000-2022, rescaled to 2016-2022 5-year survival. A recorded distant"
+                " metastasis sets the stage to distant and the time to the metastasis date."
                 + EXTRAPOLATION,
                 ["site", "stage"],
                 ["site", "stage"],
@@ -353,8 +352,9 @@ def build() -> ModelSpec:
             _layer(
                 "site",
                 "Cancer site, all stages (SEER)",
-                "Your stage was not found in the record, so survival for all stages of your"
-                " cancer site combined is used; the range is therefore wider." + EXTRAPOLATION,
+                "Stage not found in the record. SEER relative survival by cancer site and age at"
+                " diagnosis, all stages combined. The range is wider than with a known stage."
+                + EXTRAPOLATION,
                 ["site"],
                 ["site"],
                 _curves(site_values, None),
@@ -362,8 +362,9 @@ def build() -> ModelSpec:
             _layer(
                 "all_sites",
                 "All cancers combined (SEER)",
-                "No cancer diagnosis was found in the record, so survival for all cancer sites"
-                " combined is used. This is the least specific estimate." + EXTRAPOLATION,
+                "Cancer site not found in the record. SEER relative survival for all cancer"
+                " sites combined, by age at diagnosis. This is the least specific layer."
+                + EXTRAPOLATION,
                 [],
                 [],
                 _curves([""], None),
@@ -377,10 +378,10 @@ def build() -> ModelSpec:
                 "citation": (
                     "SEER*Explorer: An interactive website for SEER cancer statistics."
                     " Surveillance Research Program, National Cancer Institute. SEER 21"
-                    f" registries; relative survival retrieved {SEER['retrieved']}."
+                    f" registries, relative survival retrieved {SEER['retrieved']}."
                 ),
                 "url": "https://seer.cancer.gov/statistics-network/explorer/",
-                "licence": "U.S. Government work (public domain); citation requested by NCI",
+                "licence": "U.S. Government work (public domain), citation requested by NCI",
             },
             {
                 "id": "nchs_us_2024",
@@ -398,17 +399,17 @@ def build() -> ModelSpec:
                     " prediction. Nature 2024. MSK-CHORD dataset via cBioPortal (msk_chord_2024)."
                 ),
                 "url": "https://www.cbioportal.org/study/summary?id=msk_chord_2024",
-                "licence": "CC BY-NC-ND 4.0 (used for testing only; data not redistributed)",
+                "licence": "CC BY-NC-ND 4.0 (testing only)",
             },
             {
                 "id": "tcga_gdc",
                 "citation": (
                     "The Cancer Genome Atlas (TCGA) Research Network. Clinical data harmonised by"
                     " the NCI Genomic Data Commons (Grossman RL, et al. N Engl J Med"
-                    " 2016;375:1109-1112), via cBioPortal (studies *_tcga_gdc)."
+                    " 2016, 375:1109-1112), via cBioPortal (studies *_tcga_gdc)."
                 ),
                 "url": "https://www.cbioportal.org/datasets",
-                "licence": "NCI GDC open-access tier (used for testing only; not redistributed)",
+                "licence": "NCI GDC open-access tier (testing only)",
             },
         ],
     }

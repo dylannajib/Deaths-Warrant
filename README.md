@@ -1,18 +1,11 @@
 # Death's Warrant
 
-A free, open-source prognosis service. Upload your patient record (FHIR JSON, FHIR XML or
-C-CDA), pick your disease group, and get an estimate of how many years you likely have left,
-with the reasoning behind it.
-
-> Not a clinically validated tool. Treat results as an estimate and discuss them with your
-> care team.
+A free, open-source, prognostic life expectancy estimator. Upload your patient record (FHIR JSON, FHIR XML or C-CDA), pick your disease group, and get an estimate of how many years you likely have left with the reasoning behind it.
 
 ## Privacy
 
-Your file never leaves your device. Everything runs in your browser, in a Web Worker that is
-thrown away after each run. There is no server, database, analytics or third-party script,
-and the Content Security Policy (`connect-src 'self'`, set in `src/frontend/vite.config.ts`)
-stops the browser from sending data anywhere else.
+Death's Warrant runs in your browser, in a Web Worker that is thrown away after each run. It hosts no server, database, analytics or third-party script,
+and the Content Security Policy (`connect-src 'self'`, set in `src/frontend/vite.config.ts`) stops your browser from sending data anywhere else.
 
 ## Layout
 

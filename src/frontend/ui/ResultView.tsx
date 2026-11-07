@@ -1,24 +1,21 @@
-/** The headline, warnings, and the "See more" and "Reasoning" dropdowns for one report. */
+/** The headline, warnings, and the "See More" and "Reasoning" dropdowns for one report. */
 
+import { useLayoutEffect, useRef } from "react";
 import type { PrognosisReport } from "../engine/prognosis";
 import type { Source, ValidationResult } from "../engine/spec";
-import { formatAssumed, formatDuration, formatPercent, formatRemaining, formatValue } from "./format";
 import { Dropdown } from "./Dropdown";
+import { formatAssumed, formatDuration, formatPercent, formatRange, formatRemaining, formatValue, listInWords } from "./format";
 import { SurvivalChart } from "./SurvivalChart";
 
 const FORMAT_LABEL = { "fhir-json": "FHIR JSON", "fhir-xml": "FHIR XML", ccda: "C-CDA" } as const;
 
+/** The largest the amount may grow, as a multiple of the label size (a lone "1" would be huge). */
+const MAX_AMOUNT_SCALE = 6;
+
 export function ResultView({ report }: { report: PrognosisReport }) {
-  const { result, model } = report;
-  const headline = formatRemaining(result.median_years, model.max_reliable_years);
   return (
     <section className="result" aria-label="Your result">
-      <p className="headline">
-        {headline.label}: <strong>{headline.value}</strong>
-      </p>
-      <p className="basis">
-        {model.name} model · {model.layer.label}
-      </p>
+      <Headline parts={formatRemaining(report.result.median_years, report.model.max_reliable_years)} />
       {report.warnings.length > 0 && (
         <ul className="warnings">
           {report.warnings.map((w) => (
@@ -26,7 +23,7 @@ export function ResultView({ report }: { report: PrognosisReport }) {
           ))}
         </ul>
       )}
-      <Dropdown className="drop" title="See more">
+      <Dropdown className="drop" title="See More">
         <SeeMore report={report} />
       </Dropdown>
       <Dropdown className="drop" title="Reasoning">
@@ -36,23 +33,59 @@ export function ResultView({ report }: { report: PrognosisReport }) {
   );
 }
 
+/** The amount above its label, scaled so the two are the same width. */
+function Headline({ parts: [amount, label] }: { parts: [string, string] }) {
+  const amountRef = useRef<HTMLSpanElement>(null);
+  const labelRef = useRef<HTMLSpanElement>(null);
+  useLayoutEffect(() => {
+    const fit = () => {
+      const a = amountRef.current;
+      const l = labelRef.current;
+      if (!a || !l) return;
+      a.style.fontSize = "1em";
+      const scale = l.getBoundingClientRect().width / a.getBoundingClientRect().width;
+      a.style.fontSize = `${Math.min(scale, MAX_AMOUNT_SCALE)}em`;
+    };
+    fit();
+    void document.fonts.ready.then(fit); // widths change once the web font arrives
+  }, [amount, label]);
+  return (
+    <p className="headline">
+      <span ref={amountRef} className="amount">
+        {amount}
+      </span>
+      <span ref={labelRef}>{label}</span>
+    </p>
+  );
+}
+
 function SeeMore({ report }: { report: PrognosisReport }) {
   const r = report.result;
   return (
     <div className="drop-body">
-      <p>
-        Half of people in your situation are estimated to live longer than {formatDuration(r.median_years)}, and half
-        less. The middle half are estimated to live between {formatDuration(r.range_low_years)} and{" "}
-        {formatDuration(r.range_high_years)}.
-      </p>
+      <table className="table even">
+        <caption>Estimated time left</caption>
+        <thead>
+          <tr>
+            <th scope="col">Median survival</th>
+            <th scope="col">25-75% range</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>{formatDuration(r.median_years)}</td>
+            <td>{formatRange(r.range_low_years, r.range_high_years)}</td>
+          </tr>
+        </tbody>
+      </table>
       <SurvivalChart curve={r.curve} medianYears={r.median_years} />
-      <table className="table">
-        <caption>Estimated chance of being alive</caption>
+      <table className="table even">
+        <caption>Probability of survival</caption>
         <thead>
           <tr>
             {Object.keys(r.survival_at).map((t) => (
               <th key={t} scope="col">
-                In {t} year{t === "1" ? "" : "s"}
+                {t} year{t === "1" ? "" : "s"}
               </th>
             ))}
           </tr>
@@ -77,45 +110,41 @@ function Reasoning({ report }: { report: PrognosisReport }) {
     <div className="drop-body reasoning">
       <h3>Model</h3>
       <p>
-        <strong>{model.layer.label}</strong> ({model.name} model, version {model.version}). {model.layer.description}
+        <strong>{model.layer.label}</strong>. {model.name} model, version {model.version}.
       </p>
-      {result.skipped_layers.length > 0 && (
-        <ul>
-          {result.skipped_layers.map((l) => (
-            <li key={l.id}>
-              More specific option not used, <em>{l.label}</em>: needs {l.lacking.map(label).join(", ")}.
-            </li>
-          ))}
-        </ul>
-      )}
+      <p>{model.layer.description}</p>
+      {result.skipped_layers.map((l) => (
+        <p key={l.id}>
+          <em>{l.label}</em> could not be used because the record has no {listInWords(l.lacking.map(label), "or")}.
+        </p>
+      ))}
       {result.beyond_reliable && (
         <p>
-          The model's computed median is {formatDuration(result.median_years)}. Beyond {model.max_reliable_years} years
-          the estimate rests on extrapolating published survival, so it is shown as "{model.max_reliable_years}+".
+          Computed median: {formatDuration(result.median_years)}. Estimates above {model.max_reliable_years} years are
+          extrapolated and shown as {model.max_reliable_years}+.
         </p>
       )}
 
-      <h3>What was read from your record</h3>
-      <table className="table">
+      <h3>Inputs read from the record</h3>
+      <table className="table inputs">
         <thead>
           <tr>
             <th scope="col">Input</th>
             <th scope="col">Value</th>
-            <th scope="col">Where it came from</th>
+            <th scope="col">Source</th>
           </tr>
         </thead>
         <tbody>
           {used.map((i) => {
             const unit = model.inputs[i.id]?.unit ?? null;
-            const where =
-              i.status === "implausible"
-                ? `${provenance[i.id]}; outside the plausible range, so ignored`
-                : provenance[i.id];
+            let where = provenance[i.id] ?? "";
+            if (i.status === "implausible") where += ". Outside the plausible range, ignored";
+            if (i.assumed && i.status === "missing") where += ". Averaged over published population data";
             return (
               <tr key={i.id}>
                 <th scope="row">{label(i.id)}</th>
                 <td>{i.assumed ? `Averaged: ${formatAssumed(i.assumed, unit)}` : formatValue(i.value, unit)}</td>
-                <td>{i.assumed && i.status === "missing" ? `${where}; averaged over the published population` : where}</td>
+                <td>{where}</td>
               </tr>
             );
           })}
@@ -126,11 +155,10 @@ function Reasoning({ report }: { report: PrognosisReport }) {
 
       <h3>Assumptions</h3>
       <ul>
-        <li>
-          Estimated as of {report.asOf}, from a {FORMAT_LABEL[report.format]} file, using U.S. population mortality for
-          your age and sex.
-        </li>
-        <li>Inputs missing from your record are averaged over published population data, which widens the range.</li>
+        <li>Date of estimate: {report.asOf}.</li>
+        <li>File format: {FORMAT_LABEL[report.format]}.</li>
+        <li>Population mortality: United States life tables, by age and sex.</li>
+        <li>Missing inputs are averaged over published population data. This widens the range.</li>
         {report.notes.map((n) => (
           <li key={n}>{n}</li>
         ))}
@@ -139,7 +167,7 @@ function Reasoning({ report }: { report: PrognosisReport }) {
       <h3>Sources</h3>
       <SourceList sources={model.sources} used={model.layer.sources} />
 
-      <h3>How accurate has this model been?</h3>
+      <h3>Model's current accuracy</h3>
       <Validation results={model.validation} />
     </div>
   );
@@ -152,14 +180,14 @@ function Terms({ report, label }: { report: PrognosisReport; label: (id: string)
   return (
     <>
       <h3>{points ? "Score points" : "Risk multipliers"}</h3>
-      <table className="table">
+      <table className="table even">
         <tbody>
           {terms.map((t, k) => (
             <tr key={`${t.input}-${k}`}>
               <th scope="row">{label(t.input)}</th>
               <td>
                 {t.contribution === null
-                  ? "averaged (not recorded)"
+                  ? "Not recorded, averaged"
                   : points
                     ? `${t.contribution} point${t.contribution === 1 ? "" : "s"}`
                     : `× ${Math.exp(t.contribution).toFixed(2)} mortality`}
@@ -178,9 +206,9 @@ function SourceList({ sources, used }: { sources: Source[]; used: string[] }) {
     <ul className="sources">
       {ordered.map((s) => (
         <li key={s.id}>
-          {used.includes(s.id) && <span className="tag">used here</span>} {s.citation}{" "}
+          {used.includes(s.id) && <span className="tag">used here</span>}{" "}
           <a href={s.url} target="_blank" rel="noopener noreferrer">
-            Link
+            {s.citation}
           </a>
           {s.licence && <span className="muted"> · {s.licence}</span>}
         </li>
@@ -190,22 +218,14 @@ function SourceList({ sources, used }: { sources: Source[]; used: string[] }) {
 }
 
 function Validation({ results }: { results: ValidationResult[] }) {
-  if (!results.length) return <p>No validation results have been published for this model yet.</p>;
+  if (!results.length) return <p>No validation results published for this model.</p>;
   const byDataset = new Map<string, ValidationResult[]>();
   for (const r of results) byDataset.set(r.dataset, [...(byDataset.get(r.dataset) ?? []), r]);
   return (
     <>
-      <p>
-        Tested only on real, published patient data, never data the model was built from. Each figure compares the
-        model's prediction with what actually happened.
-      </p>
       {[...byDataset].map(([dataset, rows]) => (
-        <details key={dataset} className="dataset">
-          <summary>
-            {dataset} <span className="muted">({rows[0]!.period})</span>
-          </summary>
-          <p className="muted">{rows[0]!.notes}</p>
-          <table className="table">
+        <Dropdown key={dataset} className="dataset" title={dataset} aside={<span className="muted">({rows[0]!.period})</span>}>
+          <table className="table accuracy">
             <thead>
               <tr>
                 <th scope="col">Measure</th>
@@ -223,9 +243,8 @@ function Validation({ results }: { results: ValidationResult[] }) {
               ))}
             </tbody>
           </table>
-        </details>
+        </Dropdown>
       ))}
     </>
   );
 }
-

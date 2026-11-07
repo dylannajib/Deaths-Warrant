@@ -1,7 +1,8 @@
 /**
  * Hostile and malformed uploads. The contract: whatever the file, the pipeline either returns
  * a report or throws one of our own errors with a readable message (UploadError while reading,
- * EvaluationError when a required input such as the birth date is missing). Never a crash,
+ * EvaluationError when a required input such as the birth date is missing, GroupMismatchError
+ * when the record has no diagnosis from the chosen disease group). Never a crash,
  * never a hang, never a change to JavaScript's built-in objects.
  */
 
@@ -9,7 +10,7 @@ import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
 import { EvaluationError } from "../engine/evaluate";
-import { runPrognosis } from "../engine/prognosis";
+import { GroupMismatchError, runPrognosis } from "../engine/prognosis";
 import { parseUpload, UploadError } from "./upload";
 import { REAL_SPECS } from "../testing/specs";
 
@@ -88,19 +89,20 @@ describe("fuzzing real document structure", () => {
   };
 
   it("only ever returns a report or throws our own errors (2,800 mutations)", { timeout: 120_000 }, () => {
-    let reports = 0;
+    let parsed = 0; // a report, or a refusal that came after reading the whole file
     for (let k = 0; k < 2800; k++) {
       const text = mutate(pick(fixtures));
       const spec = pick(specs);
       try {
         runPrognosis(text, spec, asOf);
-        reports += 1;
+        parsed += 1;
       } catch (e) {
-        if (!(e instanceof UploadError || e instanceof EvaluationError)) throw new Error(`crash on mutation ${k}: ${String(e)}`);
+        if (e instanceof GroupMismatchError) parsed += 1;
+        if (!(e instanceof UploadError || e instanceof EvaluationError || e instanceof GroupMismatchError)) throw new Error(`crash on mutation ${k}: ${String(e)}`);
         expect((e as Error).message.length).toBeGreaterThan(10);
       }
     }
-    expect(reports).toBeGreaterThan(100); // most light mutations still parse
+    expect(parsed).toBeGreaterThan(100); // most light mutations still parse
     expect(({} as Record<string, unknown>).polluted).toBeUndefined();
   });
 });

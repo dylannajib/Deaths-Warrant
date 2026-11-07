@@ -91,7 +91,7 @@ describe("FHIR JSON", () => {
     };
     const r = parseUpload(JSON.stringify(visit), asOf);
     expect(r.conditions[0]?.onset).toBe("2024-07-02");
-    expect(r.notes.join(" ")).toMatch(/start of the hospital visit/);
+    expect(r.notes.join(" ")).toMatch(/start of their hospital visit/);
   });
 
   it("marks diagnoses recorded during a hospital stay with the admission date", () => {

@@ -69,7 +69,7 @@ def uci(spec) -> list[dict[str, Any]]:
         raise SystemExit(f"missing {UCI}; see this module's docstring")
     with open(UCI, encoding="utf-8") as f:
         rows = list(csv.DictReader(f))
-    dataset = "UCI heart failure clinical records (Faisalabad, Pakistan; Ahmad et al. 2017)"
+    dataset = "UCI heart failure clinical records (Faisalabad, Pakistan, Ahmad et al. 2017)"
     period = "April-December 2015 (follow-up up to 285 days)"
     times = [float(r["time"]) / 365.25 for r in rows]
     events = [r["DEATH_EVENT"] == "1" for r in rows]

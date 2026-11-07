@@ -9,7 +9,7 @@
 @font-face {
   font-family: "Cormorant Garamond";
   font-style: italic;
-  font-weight: 400;
+  font-weight: 300 700;
   font-display: swap;
   src: url("/fonts/cormorant-garamond-italic-latin.woff2") format("woff2");
 }
@@ -47,6 +47,7 @@ body {
   line-height: 1.45;
 }
 a { color: inherit; }
+ul { list-style-type: circle; }
 :focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; border-radius: 2px; }
 .visually-hidden {
   position: absolute; width: 1px; height: 1px; overflow: hidden;
@@ -64,6 +65,17 @@ a { color: inherit; }
 .links img { flex: none; width: 1.5rem; height: 1.5rem; border-radius: 50%; object-fit: cover; }
 /* The founder picture is black on black: a ring gives it the same round outline as the GitHub mark. */
 .links img.ringed { box-shadow: 0 0 0 1px var(--ink); }
+.links h2 { margin: 0.9rem 0 0; font-size: 1.25rem; font-weight: 700; line-height: 1.5rem; }
+.links a.person { font-weight: 400; }
+
+/* Release notes, top right. Wide screens: in the black margin beside the paper column. */
+.release-notes { max-width: 46rem; margin: 0 auto; padding: 1.25rem 1.75rem; font-size: 1.05rem; }
+@media (min-width: 72rem) {
+  .release-notes { position: absolute; top: 0; right: 0; width: calc((100vw - 50rem) / 2); }
+}
+.release-notes h2 { margin: 0; font-size: 1.25rem; font-weight: 700; }
+.release-notes h3 { margin: 0.6rem 0 0; font-size: 1.05rem; font-weight: 700; }
+.release-notes ul { margin: 0.25rem 0 0; padding-left: 1.25rem; }
 
 /* The paper column holds the title and main texts, with the page's black showing either side. */
 .paper {
@@ -71,8 +83,8 @@ a { color: inherit; }
   --ink: #111111;
   --ink-2: #3a3a3a;
   --muted: #6b6b6b;
-  --rule: #c9c5bd;
-  --soft: #dedad3;
+  --rule: #3a3a3a; /* the same grey as the disclaimer text (--ink-2) */
+  --soft: rgba(0, 0, 0, 0.08);
   --warn: #8a3b12;
   --focus: #1a56db;
   color-scheme: light;
@@ -93,8 +105,7 @@ a { color: inherit; }
   font-weight: 400;
   line-height: 1.35;
 }
-.tagline { margin: 0.4rem 0 0; font-style: italic; font-size: 1.55rem; }
-.lede { margin: 0.6rem 0 0; font-size: 1.9rem; }
+.tagline { margin: 0.9rem 0 0; font-style: italic; font-size: 1.55rem; }
 
 .coverage { text-align: center; margin-top: 3.25rem; }
 .coverage h2 { margin: 0; font-size: 1.5rem; font-weight: 700; }
@@ -104,12 +115,14 @@ a { color: inherit; }
 .field { font-size: 1.5rem; }
 .upload label { cursor: pointer; }
 .upload label:focus-within { outline: 2px solid var(--focus); outline-offset: 3px; }
-.upload label:hover strong, .dropdown > button:hover { text-decoration: underline; }
+/* Only the title underlines on hover, not text beside it (e.g. a dataset's period). */
+.upload label:hover strong, .dropdown > button:hover .dropdown-title { text-decoration: underline; }
 .warn { color: var(--warn); }
 
 /* Dropdowns (disease group, See more, Reasoning): the content slides open below the heading. */
 .dropdown > button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
-.dropdown .arrow { display: inline-block; margin-right: 0.4rem; transition: transform 0.2s ease; }
+/* Bold everywhere: the regular weight's uneven strokes look like a tick once rotated. */
+.dropdown .arrow { display: inline-block; margin-right: 0.4rem; font-weight: 700; transition: transform 0.2s ease; }
 .dropdown > button[aria-expanded="true"] .arrow { transform: rotate(90deg); }
 .dropdown-body { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.25s ease, opacity 0.25s ease; }
 .dropdown > button[aria-expanded="true"] + .dropdown-body { grid-template-rows: 1fr; opacity: 1; }
@@ -132,10 +145,10 @@ a { color: inherit; }
 .run button:hover:not(:disabled) { text-decoration: underline; }
 .run button:disabled { color: var(--muted); cursor: not-allowed; }
 .clear {
-  display: block; margin: 1.5rem auto 0; font: inherit; color: var(--muted);
-  background: none; border: 0; text-decoration: underline; cursor: pointer;
+  display: block; margin: 2rem auto 0; font: inherit; font-size: 1.45rem; font-weight: 700;
+  color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer;
 }
-.clear:hover { color: var(--ink); }
+.clear:hover { text-decoration: underline; }
 
 .error { margin: 2rem auto 0; max-width: 34rem; color: var(--warn); text-align: center; }
 
@@ -143,36 +156,44 @@ a { color: inherit; }
 @keyframes appear { from { opacity: 0; transform: translateY(0.75rem); } }
 .result, .error { animation: appear 0.35s ease both; }
 .result { margin: 3rem auto 0; max-width: 40rem; }
-.headline { text-align: center; font-size: 1.9rem; margin: 0; }
-.headline strong { font-weight: 700; }
-.basis { text-align: center; color: var(--ink-2); margin: 0.25rem 0 0; }
-.warnings { margin: 1.5rem 0 0; padding: 0.75rem 1rem 0.75rem 2rem; background: var(--soft); color: var(--warn); border-radius: 4px; }
+/* The amount sits above its label. ResultView scales the amount to the label's width. */
+.headline { display: grid; justify-items: center; font-family: var(--display); font-size: 1.9rem; line-height: 1.5; margin: 0; }
+.headline span { white-space: nowrap; }
+.headline .amount { line-height: 1.1; }
+.warnings { margin: 1.5rem 0 0; padding: 0.75rem 1rem 0.75rem 2rem; background: var(--soft); color: var(--ink); border-radius: 4px; }
 .drop { margin-top: 1.5rem; border-top: 1px solid var(--rule); padding-top: 0.75rem; }
 .drop > button { font-weight: 700; font-size: 1.45rem; }
 .drop-body { padding-top: 0.75rem; }
-.reasoning h3 { font-size: 1.3rem; margin: 1.5rem 0 0.4rem; }
+.reasoning h3 { font-size: 1.3rem; font-style: italic; margin: 1.5rem 0 0.4rem; }
 .reasoning ul { padding-left: 1.25rem; }
 .dataset { margin: 0.6rem 0; }
-.dataset > summary { cursor: pointer; }
+.dataset > button { text-align: left; }
 .sources li { margin-bottom: 0.5rem; }
-.tag { font-size: 0.9rem; font-weight: 700; border: 1px solid var(--ink-2); border-radius: 3px; padding: 0 0.3rem; }
+.tag { font-size: 0.9rem; font-weight: 700; border: 1px solid var(--ink); border-radius: 3px; padding: 0 0.3rem; }
 
 .table { width: 100%; border-collapse: collapse; font-size: 1.05rem; margin: 0.5rem 0; }
 .table caption { text-align: left; font-weight: 700; padding-bottom: 0.25rem; }
 .table th, .table td { text-align: left; vertical-align: top; padding: 0.35rem 0.5rem 0.35rem 0; border-bottom: 1px solid var(--rule); }
+.table tr:last-child > * { border-bottom: 0; }
+.table thead tr:last-child > * { border-bottom: 1px solid var(--rule); }
 .table thead th { font-weight: 700; }
 .table tbody th { font-weight: 600; }
+/* Fixed column widths: equal for small tables, set per column for the wider ones. */
+.table.even, .table.inputs, .table.accuracy { table-layout: fixed; }
+.table.inputs th:nth-child(1) { width: 32%; }
+.table.inputs th:nth-child(2) { width: 28%; }
+.table.accuracy th:nth-child(1) { width: 64%; }
 .drop-body { overflow-wrap: anywhere; }
 
 /* Survival chart: one series in ink, recessive grid, hover crosshair */
 .chart { width: 100%; height: auto; display: block; margin: 1rem 0; touch-action: pan-y; }
 .chart .grid { stroke: var(--rule); stroke-width: 1; }
-.chart .tick { fill: var(--muted); font-size: 15px; font-family: var(--serif); }
+.chart .tick { fill: var(--ink); font-size: 15px; font-family: var(--serif); }
 .chart .line { fill: none; stroke: var(--ink); stroke-width: 2; stroke-linejoin: round; }
 .chart .area { fill: var(--ink); opacity: 0.06; }
-.chart .median line { stroke: var(--ink-2); stroke-width: 1; stroke-dasharray: 4 4; }
-.chart .median text { fill: var(--ink-2); font-size: 15px; font-family: var(--serif); font-style: italic; }
-.chart .crosshair line { stroke: var(--muted); stroke-width: 1; }
+.chart .median line { stroke: var(--ink); stroke-width: 1; stroke-dasharray: 4 4; }
+.chart .median text { fill: var(--ink); font-size: 15px; font-family: var(--serif); font-style: italic; }
+.chart .crosshair line { stroke: var(--ink); stroke-width: 1; }
 .chart .crosshair circle { fill: var(--ink); stroke: var(--bg); stroke-width: 2; }
 .chart .crosshair text { fill: var(--ink); font-size: 16px; font-weight: 700; font-family: var(--serif); paint-order: stroke; stroke: var(--bg); stroke-width: 4px; }
 
@@ -183,7 +204,7 @@ a { color: inherit; }
   body { font-size: 1.15rem; }
   .links { padding: 1rem 1rem 0; gap: 0.5rem 1.25rem; }
   .tagline { font-size: 1.35rem; }
-  .lede, .headline { font-size: 1.55rem; }
+  .headline { font-size: 1.55rem; }
   .field { font-size: 1.3rem; }
   .table { font-size: 0.98rem; }
   .chart .tick, .chart .median text { font-size: 24px; }

@@ -4,7 +4,7 @@
  "name": "Cancer",
  "version": "1.0.0",
  "order": 10,
- "description": "Population mortality for your age and sex combined with U.S. SEER cancer survival for your cancer site, stage and age at diagnosis, allowing for the time you have already survived since diagnosis.",
+ "description": "U.S. population mortality by age and sex, combined with SEER cancer survival by site, stage and age at diagnosis, conditional on years since diagnosis.",
  "group_codes": {
   "icd10": [
    "C00",
@@ -17368,7 +17368,7 @@
   {
    "id": "site_stage",
    "label": "Cancer site and stage (SEER)",
-   "description": "Relative survival for your cancer site, stage and age at diagnosis, diagnosed in the U.S. 2000-2022 and rescaled to 2016-2022 5-year survival. A recorded distant metastasis counts as distant stage, timed from the metastasis. SEER publishes survival up to 10 years after diagnosis; beyond that the 10th year's excess mortality is assumed to continue.",
+   "description": "SEER relative survival by cancer site, stage and age at diagnosis. U.S. diagnoses 2000-2022, rescaled to 2016-2022 5-year survival. A recorded distant metastasis sets the stage to distant and the time to the metastasis date. SEER data ends at 10 years after diagnosis. After 10 years, the year-10 excess mortality is applied.",
    "requires": [
     "site",
     "stage"
@@ -24596,7 +24596,7 @@
   {
    "id": "site",
    "label": "Cancer site, all stages (SEER)",
-   "description": "Your stage was not found in the record, so survival for all stages of your cancer site combined is used; the range is therefore wider. SEER publishes survival up to 10 years after diagnosis; beyond that the 10th year's excess mortality is assumed to continue.",
+   "description": "Stage not found in the record. SEER relative survival by cancer site and age at diagnosis, all stages combined. The range is wider than with a known stage. SEER data ends at 10 years after diagnosis. After 10 years, the year-10 excess mortality is applied.",
    "requires": [
     "site"
    ],
@@ -26902,7 +26902,7 @@
   {
    "id": "all_sites",
    "label": "All cancers combined (SEER)",
-   "description": "No cancer diagnosis was found in the record, so survival for all cancer sites combined is used. This is the least specific estimate. SEER publishes survival up to 10 years after diagnosis; beyond that the 10th year's excess mortality is assumed to continue.",
+   "description": "Cancer site not found in the record. SEER relative survival for all cancer sites combined, by age at diagnosis. This is the least specific layer. SEER data ends at 10 years after diagnosis. After 10 years, the year-10 excess mortality is applied.",
    "requires": [],
    "when": {},
    "survival": {
@@ -27205,7 +27205,7 @@
  "validation": [
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry): Harrell's C-index",
    "value": 0.675,
@@ -27214,7 +27214,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry): predicted 1-year survival",
    "value": 0.764,
@@ -27223,7 +27223,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry): observed 1-year survival (Kaplan-Meier)",
    "value": 0.799,
@@ -27232,7 +27232,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry): predicted 3-year survival",
    "value": 0.595,
@@ -27241,7 +27241,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry): observed 3-year survival (Kaplan-Meier)",
    "value": 0.569,
@@ -27250,7 +27250,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry): predicted 5-year survival",
    "value": 0.513,
@@ -27259,7 +27259,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry): observed 5-year survival (Kaplan-Meier)",
    "value": 0.459,
@@ -27268,7 +27268,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry): predicted median survival (years)",
    "value": 5.5,
@@ -27277,7 +27277,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry): observed median survival (years, Kaplan-Meier)",
    "value": 4.068,
@@ -27286,7 +27286,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23444,
    "metric": "Layer site_stage (registry): Harrell's C-index",
    "value": 0.679,
@@ -27295,7 +27295,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23444,
    "metric": "Layer site_stage (registry): predicted 1-year survival",
    "value": 0.761,
@@ -27304,7 +27304,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23444,
    "metric": "Layer site_stage (registry): observed 1-year survival (Kaplan-Meier)",
    "value": 0.799,
@@ -27313,7 +27313,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23444,
    "metric": "Layer site_stage (registry): predicted 3-year survival",
    "value": 0.59,
@@ -27322,7 +27322,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23444,
    "metric": "Layer site_stage (registry): observed 3-year survival (Kaplan-Meier)",
    "value": 0.57,
@@ -27331,7 +27331,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23444,
    "metric": "Layer site_stage (registry): predicted 5-year survival",
    "value": 0.508,
@@ -27340,7 +27340,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23444,
    "metric": "Layer site_stage (registry): observed 5-year survival (Kaplan-Meier)",
    "value": 0.46,
@@ -27349,7 +27349,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23444,
    "metric": "Layer site_stage (registry): predicted median survival (years)",
    "value": 5.25,
@@ -27358,7 +27358,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23444,
    "metric": "Layer site_stage (registry): observed median survival (years, Kaplan-Meier)",
    "value": 4.085,
@@ -27367,7 +27367,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 623,
    "metric": "Layer site (registry): Harrell's C-index",
    "value": 0.574,
@@ -27376,7 +27376,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 623,
    "metric": "Layer site (registry): predicted 1-year survival",
    "value": 0.885,
@@ -27385,7 +27385,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 623,
    "metric": "Layer site (registry): observed 1-year survival (Kaplan-Meier)",
    "value": 0.79,
@@ -27394,7 +27394,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 623,
    "metric": "Layer site (registry): predicted 3-year survival",
    "value": 0.786,
@@ -27403,7 +27403,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 623,
    "metric": "Layer site (registry): observed 3-year survival (Kaplan-Meier)",
    "value": 0.527,
@@ -27412,7 +27412,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 623,
    "metric": "Layer site (registry): predicted 5-year survival",
    "value": 0.717,
@@ -27421,7 +27421,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 623,
    "metric": "Layer site (registry): observed 5-year survival (Kaplan-Meier)",
    "value": 0.404,
@@ -27430,7 +27430,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 623,
    "metric": "Layer site (registry): predicted median survival (years)",
    "value": 12.25,
@@ -27439,7 +27439,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 623,
    "metric": "Layer site (registry): observed median survival (years, Kaplan-Meier)",
    "value": 3.468,
@@ -27448,7 +27448,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry + metastatic sample): Harrell's C-index",
    "value": 0.706,
@@ -27457,7 +27457,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry + metastatic sample): predicted 1-year survival",
    "value": 0.706,
@@ -27466,7 +27466,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.799,
@@ -27475,7 +27475,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry + metastatic sample): predicted 3-year survival",
    "value": 0.51,
@@ -27484,7 +27484,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.569,
@@ -27493,7 +27493,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry + metastatic sample): predicted 5-year survival",
    "value": 0.421,
@@ -27502,7 +27502,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.459,
@@ -27511,7 +27511,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry + metastatic sample): predicted median survival (years)",
    "value": 3.25,
@@ -27520,7 +27520,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 24067,
    "metric": "All patients (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 4.068,
@@ -27529,7 +27529,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 10934,
    "metric": "Deceased: median absolute error, predicted median vs years lived (years)",
    "value": 1.143,
@@ -27538,7 +27538,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 10934,
    "metric": "Deceased: share whose years lived fell in the predicted 25-75% range",
    "value": 0.508,
@@ -27547,7 +27547,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23793,
    "metric": "Layer site_stage (registry + metastatic sample): Harrell's C-index",
    "value": 0.706,
@@ -27556,7 +27556,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23793,
    "metric": "Layer site_stage (registry + metastatic sample): predicted 1-year survival",
    "value": 0.704,
@@ -27565,7 +27565,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23793,
    "metric": "Layer site_stage (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.799,
@@ -27574,7 +27574,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23793,
    "metric": "Layer site_stage (registry + metastatic sample): predicted 3-year survival",
    "value": 0.508,
@@ -27583,7 +27583,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23793,
    "metric": "Layer site_stage (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.568,
@@ -27592,7 +27592,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23793,
    "metric": "Layer site_stage (registry + metastatic sample): predicted 5-year survival",
    "value": 0.418,
@@ -27601,7 +27601,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23793,
    "metric": "Layer site_stage (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.458,
@@ -27610,7 +27610,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23793,
    "metric": "Layer site_stage (registry + metastatic sample): predicted median survival (years)",
    "value": 3.25,
@@ -27619,7 +27619,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 23793,
    "metric": "Layer site_stage (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 4.06,
@@ -27628,7 +27628,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 274,
    "metric": "Layer site (registry + metastatic sample): Harrell's C-index",
    "value": 0.654,
@@ -27637,7 +27637,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 274,
    "metric": "Layer site (registry + metastatic sample): predicted 1-year survival",
    "value": 0.829,
@@ -27646,7 +27646,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 274,
    "metric": "Layer site (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.823,
@@ -27655,7 +27655,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 274,
    "metric": "Layer site (registry + metastatic sample): predicted 3-year survival",
    "value": 0.708,
@@ -27664,7 +27664,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 274,
    "metric": "Layer site (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.629,
@@ -27673,7 +27673,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 274,
    "metric": "Layer site (registry + metastatic sample): predicted 5-year survival",
    "value": 0.636,
@@ -27682,7 +27682,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 274,
    "metric": "Layer site (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.529,
@@ -27691,7 +27691,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 274,
    "metric": "Layer site (registry + metastatic sample): predicted median survival (years)",
    "value": 10.0,
@@ -27700,7 +27700,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 274,
    "metric": "Layer site (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 5.192,
@@ -27709,7 +27709,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 4486,
    "metric": "Stage localized (registry + metastatic sample): Harrell's C-index",
    "value": 0.652,
@@ -27718,7 +27718,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 4486,
    "metric": "Stage localized (registry + metastatic sample): predicted 1-year survival",
    "value": 0.925,
@@ -27727,7 +27727,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 4486,
    "metric": "Stage localized (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.954,
@@ -27736,7 +27736,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 4486,
    "metric": "Stage localized (registry + metastatic sample): predicted 3-year survival",
    "value": 0.831,
@@ -27745,7 +27745,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 4486,
    "metric": "Stage localized (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.879,
@@ -27754,7 +27754,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 4486,
    "metric": "Stage localized (registry + metastatic sample): predicted 5-year survival",
    "value": 0.761,
@@ -27763,7 +27763,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 4486,
    "metric": "Stage localized (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.825,
@@ -27772,7 +27772,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 4486,
    "metric": "Stage localized (registry + metastatic sample): predicted median survival (years)",
    "value": 14.25,
@@ -27781,7 +27781,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 4486,
    "metric": "Stage localized (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 9.293,
@@ -27790,7 +27790,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5928,
    "metric": "Stage regional (registry + metastatic sample): Harrell's C-index",
    "value": 0.672,
@@ -27799,7 +27799,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5928,
    "metric": "Stage regional (registry + metastatic sample): predicted 1-year survival",
    "value": 0.844,
@@ -27808,7 +27808,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5928,
    "metric": "Stage regional (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.885,
@@ -27817,7 +27817,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5928,
    "metric": "Stage regional (registry + metastatic sample): predicted 3-year survival",
    "value": 0.688,
@@ -27826,7 +27826,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5928,
    "metric": "Stage regional (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.698,
@@ -27835,7 +27835,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5928,
    "metric": "Stage regional (registry + metastatic sample): predicted 5-year survival",
    "value": 0.609,
@@ -27844,7 +27844,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5928,
    "metric": "Stage regional (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.596,
@@ -27853,7 +27853,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5928,
    "metric": "Stage regional (registry + metastatic sample): predicted median survival (years)",
    "value": 9.25,
@@ -27862,7 +27862,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5928,
    "metric": "Stage regional (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 7.595,
@@ -27871,7 +27871,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 13379,
    "metric": "Stage distant (registry + metastatic sample): Harrell's C-index",
    "value": 0.611,
@@ -27880,7 +27880,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 13379,
    "metric": "Stage distant (registry + metastatic sample): predicted 1-year survival",
    "value": 0.569,
@@ -27889,7 +27889,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 13379,
    "metric": "Stage distant (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.707,
@@ -27898,7 +27898,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 13379,
    "metric": "Stage distant (registry + metastatic sample): predicted 3-year survival",
    "value": 0.319,
@@ -27907,7 +27907,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 13379,
    "metric": "Stage distant (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.409,
@@ -27916,7 +27916,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 13379,
    "metric": "Stage distant (registry + metastatic sample): predicted 5-year survival",
    "value": 0.219,
@@ -27925,7 +27925,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 13379,
    "metric": "Stage distant (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.281,
@@ -27934,7 +27934,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 13379,
    "metric": "Stage distant (registry + metastatic sample): predicted median survival (years)",
    "value": 1.5,
@@ -27943,7 +27943,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 13379,
    "metric": "Stage distant (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 2.189,
@@ -27952,7 +27952,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 7404,
    "metric": "Site lung (registry + metastatic sample): Harrell's C-index",
    "value": 0.675,
@@ -27961,7 +27961,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 7404,
    "metric": "Site lung (registry + metastatic sample): predicted 1-year survival",
    "value": 0.583,
@@ -27970,7 +27970,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 7404,
    "metric": "Site lung (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.743,
@@ -27979,7 +27979,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 7404,
    "metric": "Site lung (registry + metastatic sample): predicted 3-year survival",
    "value": 0.377,
@@ -27988,7 +27988,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 7404,
    "metric": "Site lung (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.517,
@@ -27997,7 +27997,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 7404,
    "metric": "Site lung (registry + metastatic sample): predicted 5-year survival",
    "value": 0.294,
@@ -28006,7 +28006,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 7404,
    "metric": "Site lung (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.404,
@@ -28015,7 +28015,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 7404,
    "metric": "Site lung (registry + metastatic sample): predicted median survival (years)",
    "value": 1.75,
@@ -28024,7 +28024,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 7404,
    "metric": "Site lung (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 3.23,
@@ -28033,7 +28033,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5356,
    "metric": "Site colorectal (registry + metastatic sample): Harrell's C-index",
    "value": 0.66,
@@ -28042,7 +28042,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5356,
    "metric": "Site colorectal (registry + metastatic sample): predicted 1-year survival",
    "value": 0.776,
@@ -28051,7 +28051,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5356,
    "metric": "Site colorectal (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.855,
@@ -28060,7 +28060,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5356,
    "metric": "Site colorectal (registry + metastatic sample): predicted 3-year survival",
    "value": 0.551,
@@ -28069,7 +28069,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5356,
    "metric": "Site colorectal (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.603,
@@ -28078,7 +28078,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5356,
    "metric": "Site colorectal (registry + metastatic sample): predicted 5-year survival",
    "value": 0.45,
@@ -28087,7 +28087,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5356,
    "metric": "Site colorectal (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.468,
@@ -28096,7 +28096,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5356,
    "metric": "Site colorectal (registry + metastatic sample): predicted median survival (years)",
    "value": 4.0,
@@ -28105,7 +28105,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5356,
    "metric": "Site colorectal (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 4.375,
@@ -28114,7 +28114,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5134,
    "metric": "Site breast (registry + metastatic sample): Harrell's C-index",
    "value": 0.671,
@@ -28123,7 +28123,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5134,
    "metric": "Site breast (registry + metastatic sample): predicted 1-year survival",
    "value": 0.859,
@@ -28132,7 +28132,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5134,
    "metric": "Site breast (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.869,
@@ -28141,7 +28141,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5134,
    "metric": "Site breast (registry + metastatic sample): predicted 3-year survival",
    "value": 0.703,
@@ -28150,7 +28150,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5134,
    "metric": "Site breast (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.68,
@@ -28159,7 +28159,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5134,
    "metric": "Site breast (registry + metastatic sample): predicted 5-year survival",
    "value": 0.602,
@@ -28168,7 +28168,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5134,
    "metric": "Site breast (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.584,
@@ -28177,7 +28177,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5134,
    "metric": "Site breast (registry + metastatic sample): predicted median survival (years)",
    "value": 8.75,
@@ -28186,7 +28186,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 5134,
    "metric": "Site breast (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 7.096,
@@ -28195,7 +28195,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3116,
    "metric": "Site prostate (registry + metastatic sample): Harrell's C-index",
    "value": 0.704,
@@ -28204,7 +28204,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3116,
    "metric": "Site prostate (registry + metastatic sample): predicted 1-year survival",
    "value": 0.896,
@@ -28213,7 +28213,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3116,
    "metric": "Site prostate (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.893,
@@ -28222,7 +28222,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3116,
    "metric": "Site prostate (registry + metastatic sample): predicted 3-year survival",
    "value": 0.732,
@@ -28231,7 +28231,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3116,
    "metric": "Site prostate (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.715,
@@ -28240,7 +28240,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3116,
    "metric": "Site prostate (registry + metastatic sample): predicted 5-year survival",
    "value": 0.626,
@@ -28249,7 +28249,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3116,
    "metric": "Site prostate (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.608,
@@ -28258,7 +28258,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3116,
    "metric": "Site prostate (registry + metastatic sample): predicted median survival (years)",
    "value": 8.75,
@@ -28267,7 +28267,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3116,
    "metric": "Site prostate (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 7.219,
@@ -28276,7 +28276,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3030,
    "metric": "Site pancreas (registry + metastatic sample): Harrell's C-index",
    "value": 0.632,
@@ -28285,7 +28285,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3030,
    "metric": "Site pancreas (registry + metastatic sample): predicted 1-year survival",
    "value": 0.425,
@@ -28294,7 +28294,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3030,
    "metric": "Site pancreas (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.617,
@@ -28303,7 +28303,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3030,
    "metric": "Site pancreas (registry + metastatic sample): predicted 3-year survival",
    "value": 0.207,
@@ -28312,7 +28312,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3030,
    "metric": "Site pancreas (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.276,
@@ -28321,7 +28321,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3030,
    "metric": "Site pancreas (registry + metastatic sample): predicted 5-year survival",
    "value": 0.156,
@@ -28330,7 +28330,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3030,
    "metric": "Site pancreas (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.174,
@@ -28339,7 +28339,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3030,
    "metric": "Site pancreas (registry + metastatic sample): predicted median survival (years)",
    "value": 1.0,
@@ -28348,7 +28348,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 3030,
    "metric": "Site pancreas (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 1.433,
@@ -28357,7 +28357,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 25,
    "metric": "Site anus (registry + metastatic sample): predicted 1-year survival",
    "value": 0.836,
@@ -28366,7 +28366,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 25,
    "metric": "Site anus (registry + metastatic sample): observed 1-year survival (Kaplan-Meier)",
    "value": 0.875,
@@ -28375,7 +28375,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 25,
    "metric": "Site anus (registry + metastatic sample): predicted 3-year survival",
    "value": 0.663,
@@ -28384,7 +28384,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 25,
    "metric": "Site anus (registry + metastatic sample): observed 3-year survival (Kaplan-Meier)",
    "value": 0.629,
@@ -28393,7 +28393,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 25,
    "metric": "Site anus (registry + metastatic sample): predicted 5-year survival",
    "value": 0.58,
@@ -28402,7 +28402,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 25,
    "metric": "Site anus (registry + metastatic sample): observed 5-year survival (Kaplan-Meier)",
    "value": 0.472,
@@ -28411,7 +28411,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 25,
    "metric": "Site anus (registry + metastatic sample): predicted median survival (years)",
    "value": 8.0,
@@ -28420,7 +28420,7 @@
   },
   {
    "dataset": "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)",
-   "period": "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot",
+   "period": "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot",
    "n": 25,
    "metric": "Site anus (registry + metastatic sample): observed median survival (years, Kaplan-Meier)",
    "value": 3.904,
@@ -29475,9 +29475,9 @@
  "sources": [
   {
    "id": "seer_explorer",
-   "citation": "SEER*Explorer: An interactive website for SEER cancer statistics. Surveillance Research Program, National Cancer Institute. SEER 21 registries; relative survival retrieved 2026-11-02.",
+   "citation": "SEER*Explorer: An interactive website for SEER cancer statistics. Surveillance Research Program, National Cancer Institute. SEER 21 registries, relative survival retrieved 2026-11-02.",
    "url": "https://seer.cancer.gov/statistics-network/explorer/",
-   "licence": "U.S. Government work (public domain); citation requested by NCI"
+   "licence": "U.S. Government work (public domain), citation requested by NCI"
   },
   {
    "id": "nchs_us_2024",
@@ -29489,13 +29489,13 @@
    "id": "msk_chord",
    "citation": "Jee J, et al. Automated real-world data integration improves cancer outcome prediction. Nature 2024. MSK-CHORD dataset via cBioPortal (msk_chord_2024).",
    "url": "https://www.cbioportal.org/study/summary?id=msk_chord_2024",
-   "licence": "CC BY-NC-ND 4.0 (used for testing only; data not redistributed)"
+   "licence": "CC BY-NC-ND 4.0 (testing only)"
   },
   {
    "id": "tcga_gdc",
-   "citation": "The Cancer Genome Atlas (TCGA) Research Network. Clinical data harmonised by the NCI Genomic Data Commons (Grossman RL, et al. N Engl J Med 2016;375:1109-1112), via cBioPortal (studies *_tcga_gdc).",
+   "citation": "The Cancer Genome Atlas (TCGA) Research Network. Clinical data harmonised by the NCI Genomic Data Commons (Grossman RL, et al. N Engl J Med 2016, 375:1109-1112), via cBioPortal (studies *_tcga_gdc).",
    "url": "https://www.cbioportal.org/datasets",
-   "licence": "NCI GDC open-access tier (used for testing only; not redistributed)"
+   "licence": "NCI GDC open-access tier (testing only)"
   }
  ]
 }

@@ -74,10 +74,10 @@ function resolveDates(record: PatientRecord, asOf: string): PatientRecord {
     const label = convention === "dmy" ? "day/month/year" : "month/day/year";
     notes.push(
       inferred
-        ? `Dates written like 03/04/2020 were read as ${label}, the convention used elsewhere in this file.`
+        ? `Dates such as 03/04/2020 read as ${label}, the convention used elsewhere in the file.`
         : byCountry
-          ? `Dates written like 03/04/2020 were read as ${label}, the usual convention in ${record.country}.`
-          : `Dates written like 03/04/2020 were assumed to be ${label}; the file gave no way to tell.`,
+          ? `Dates such as 03/04/2020 read as ${label}, the convention in ${record.country}.`
+          : `Dates such as 03/04/2020 read as ${label}. The file does not indicate the convention.`,
     );
   }
 
@@ -95,7 +95,7 @@ function resolveDates(record: PatientRecord, asOf: string): PatientRecord {
   out.conditions = record.conditions.map((c) => withDate(withDate(c, "onset", fix(c.onset)), "admitted", fix(c.admitted)));
   out.observations = record.observations.map((o) => withDate(o, "date", fix(o.date)));
   out.medications = record.medications.map((m) => withDate(m, "date", fix(m.date)));
-  if (invalid) notes.push(`${invalid} date(s) in the file could not be understood and were ignored.`);
+  if (invalid) notes.push(`${invalid} unreadable date(s) ignored.`);
   return out;
 }
 

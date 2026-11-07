@@ -52,7 +52,7 @@ from general.validation import (  # noqa: E402
 DATA = HERE.parents[2] / "data" / "msk_chord"
 OUT = HERE / "validation.json"
 DATASET = "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)"
-PERIOD = "MSK-IMPACT sequenced from 2014; outcomes to the 9 Sep 2023 data snapshot"
+PERIOD = "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot"
 MIN_GROUP = 20
 MIN_DEATHS = 20  # fewer deaths make the C-index too noisy to report
 YEARS = (1, 3, 5)

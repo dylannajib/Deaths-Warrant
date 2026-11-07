@@ -18,7 +18,7 @@ cohort. If the record lists no medications, medication use counts as unknown.
 
 **Heart failure and stroke** survival tables are turned into relative survival against the
 U.S. life table, so the result accounts for the years since diagnosis. Patients under 66 use
-the 66 to 74 stroke curve. An undated stroke falls back to the base layer.
+the 66-74 stroke curve. An undated stroke falls back to the base layer.
 
 **Base layer hazard ratios:**
 
@@ -38,14 +38,14 @@ Valvular disease adds no risk (no verified ratio found). Full citations and lice
 
 | Data | Patients | Result |
 |---|---|---|
-| FAR NHL, Czech outpatients, 2014 to 2017 | 1,088 | C-index 0.74. 2-year alive 79.7% vs 85.1% |
+| FAR NHL, Czech outpatients, 2014-2017 | 1,088 | C-index 0.74. 2-year alive 79.7% vs 85.1% |
 | UCI, Pakistani inpatients, 2015 | 299 | C-index 0.72. 6-month alive 89.6% vs 65.4% |
-| Brazil MAGGIC validation, 2008 to 2014 (published) | 866 | 3-year deaths 20.9% vs 33.4% |
-| Australia and New Zealand first strokes, 2008 to 2017 (Peng 2022) | 313,162 | 1/5/10-year alive 74.9/51.6/32.9% vs 73.0/52.8/36.4% |
-| England first strokes, 2013 to 2016 (Bray 2018) | SSNAP | 1-year alive 72.3% vs 73.6% |
+| Brazil MAGGIC validation, 2008-2014 (published) | 866 | 3-year deaths 20.9% vs 33.4% |
+| Australia and New Zealand first strokes, 2008-2017 (Peng 2022) | 313,162 | 1/5/10-year alive 74.9/51.6/32.9% vs 73.0/52.8/36.4% |
+| England first strokes, 2013-2016 (Bray 2018) | SSNAP | 1-year alive 72.3% vs 73.6% |
 
 MAGGIC is not recalibrated: modern outpatients are over-predicted, recent inpatients
 under-predicted. Taylor 2019 builds the heart-failure layer, so it is not used to test it.
 
-Limitations: MAGGIC data is from 1980 to 2006, the stroke curves come from ischaemic strokes
+Limitations: MAGGIC data is from 1980-2006, the stroke curves come from ischaemic strokes
 at 66+, and hazard ratios are constant across ages.
