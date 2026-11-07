@@ -45,6 +45,8 @@ body {
   font-family: var(--serif);
   font-size: 1.25rem;
   line-height: 1.45;
+  /* Full-height numbers: Cormorant's default old-style 0 and 1 read as "o" and "l". */
+  font-variant-numeric: lining-nums;
 }
 a { color: inherit; }
 ul { list-style-type: circle; }
@@ -71,9 +73,11 @@ ul { list-style-type: circle; }
 @media (min-width: 72rem) {
   .release-notes { position: absolute; top: 0; right: 0; width: calc((100vw - 50rem) / 2); }
 }
-.release-notes h2 { margin: 0; font-size: 1.25rem; font-weight: 700; }
+.release-notes h2 { margin: 0; font-size: 1.25rem; font-weight: 700; text-align: center; }
 .release-notes .release { margin-top: 0.6rem; }
 .release-notes .release > button { font-weight: 700; text-align: left; }
+.release-notes a { text-decoration: none; }
+.release-notes a:hover { text-decoration: underline; }
 .release-notes ul { margin: 0.25rem 0 0; padding-left: 1.25rem; }
 
 /* The paper column holds the title and main texts, with the page's black showing either side. */
@@ -82,7 +86,7 @@ ul { list-style-type: circle; }
   --ink: #111111;
   --ink-2: #3a3a3a;
   --muted: #6b6b6b;
-  --rule: #6b6b6b; /* the same grey as muted text (--muted) */
+  --rule: rgb(107 107 107 / 0.5); /* the muted grey at 50% opacity */
   --soft: rgba(0, 0, 0, 0.08);
   --warn: #8a3b12;
   --focus: #1a56db;
@@ -97,10 +101,12 @@ ul { list-style-type: circle; }
 .page { max-width: 46rem; margin: 0 auto; padding: 0 1rem; }
 
 .hero { text-align: center; margin-top: 3rem; }
+/* The title and the result's number share one size. */
+.paper { --title-size: clamp(2.5rem, 8vw, 4.25rem); }
 .hero h1 {
   margin: 0;
   font-family: var(--display);
-  font-size: clamp(2.5rem, 8vw, 4.25rem);
+  font-size: var(--title-size);
   font-weight: 400;
   line-height: 1.35;
 }
@@ -128,7 +134,7 @@ ul { list-style-type: circle; }
 }
 .dropdown > button[aria-expanded="true"] .arrow { transform: rotate(90deg); }
 .dropdown-body { display: grid; grid-template-rows: 0fr; opacity: 0; transition: grid-template-rows 0.25s ease, opacity 0.25s ease; }
-.dropdown > button[aria-expanded="true"] + .dropdown-body { grid-template-rows: 1fr; opacity: 1; }
+.dropdown > button[aria-expanded="true"] ~ .dropdown-body { grid-template-rows: 1fr; opacity: 1; }
 .dropdown-body > div { min-height: 0; overflow: hidden; }
 .picker fieldset { border: 0; margin: 0; padding: 0; display: grid; justify-content: center; justify-items: start; gap: 0.5rem; }
 .picker legend + .option { margin-top: 0.75rem; }
@@ -158,19 +164,36 @@ ul { list-style-type: circle; }
   margin: 2rem auto 0; max-width: 34rem; padding: 0.75rem 1rem; white-space: pre-line;
   color: var(--ink); background: var(--soft); border-radius: 4px; text-align: center;
 }
+.error p { margin: 0; }
+/* Asking for an input the record lacks: "Enter age: [  ] years" on one line, Continue below. */
+.ask { margin-top: 0.75rem; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 0.75rem 0.5rem; }
+.ask > button { flex-basis: 100%; }
+/* Number box with our own white up and down buttons in place of the browser's spinner. */
+.ask .number { position: relative; display: inline-flex; }
+.ask input[type="number"] { appearance: textfield; padding-right: 1.6rem; }
+.ask input::-webkit-inner-spin-button, .ask input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.ask .steps {
+  position: absolute; top: 3px; right: 3px; bottom: 3px; width: 1.1rem;
+  display: grid; grid-template-rows: 1fr 1fr; background: #ffffff; border-radius: 2px;
+}
+.ask .steps button { display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--ink); cursor: pointer; }
+.ask .steps button:hover { background: var(--soft); }
+.ask input, .ask select { font: inherit; width: 7rem; padding: 0.1rem 0.4rem; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 3px; }
+.ask > button { font: inherit; font-weight: 700; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; }
+.ask > button:hover { text-decoration: underline; }
 
 /* Result: fades and slides in when it appears */
 @keyframes appear { from { opacity: 0; transform: translateY(0.75rem); } }
 .result { animation: appear 0.35s ease both; }
 .result { margin: 3rem auto 0; max-width: 40rem; }
-/* The amount sits above its label. ResultView scales the amount to the label's width. */
-.headline { display: grid; justify-items: center; font-size: 1.9rem; line-height: 1.5; margin: 0; }
+/* The amount sits above its label. ResultView fits both to their visible glyphs and sets the gap.
+   The bottom padding (not margin, which would merge with the next margin) makes the label-to-See More gap match the Run Prognosis-to-amount gap. */
+.headline { display: grid; justify-items: center; font-size: 1.9rem; line-height: 1.5; margin: 0; padding-bottom: 1.17rem; }
 .headline span { white-space: nowrap; }
-.headline .amount { font-family: var(--display); line-height: 1.1; }
-.headline .label { font-style: italic; margin-top: 0.5rem; }
+.headline .amount { font-family: var(--display); font-size: var(--title-size); line-height: 1.35; }
 .warnings { margin: 1.5rem 0 0; padding: 0.75rem 1rem 0.75rem 2rem; background: var(--soft); color: var(--ink); border-radius: 4px; }
 .drop { margin-top: 1.5rem; padding-top: calc(0.75rem + 1px); } /* +1px keeps the gap of the removed line */
-.drop > button { display: block; margin: 0 auto; font-weight: 700; font-size: 1.45rem; }
+.drop > button { font-weight: 700; font-size: 1.45rem; }
 .drop-body { padding-top: 0.75rem; }
 .reasoning h3 { font-size: 1.3rem; font-style: italic; margin: 1.5rem 0 0.4rem; }
 .reasoning ul { padding-left: 1.25rem; }

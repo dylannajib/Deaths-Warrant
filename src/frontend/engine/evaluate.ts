@@ -20,6 +20,16 @@ export type InputStatus = "observed" | "missing" | "implausible" | "unused";
 /** A required input (such as the birth date) is missing: a problem with the record, not a bug. */
 export class EvaluationError extends RecordError {}
 
+/**
+ * The browser's EvaluationError for a missing required input. It carries the input so the page
+ * can ask the user for it. The Python reference raises a plain EvaluationError with the same message.
+ */
+export class MissingInputError extends EvaluationError {
+  constructor(readonly input: Input) {
+    super(`${input.label} is required but was not found in the record`);
+  }
+}
+
 export interface EvaluationResult {
   model: string;
   model_version: string;
@@ -53,7 +63,7 @@ function resolveInputs(spec: ModelSpec, observed: Observed) {
       status[i.id] = "observed";
     } else status[i.id] = "implausible";
     if (!(i.id in values) && i.missing === null) {
-      throw new EvaluationError(`${i.label} is required but was not found in the record`);
+      throw new MissingInputError(i);
     }
   }
   return { values, status };

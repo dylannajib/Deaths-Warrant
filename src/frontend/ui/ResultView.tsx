@@ -4,13 +4,11 @@ import { useLayoutEffect, useRef } from "react";
 import type { PrognosisReport } from "../engine/prognosis";
 import type { Source, ValidationResult } from "../engine/spec";
 import { Dropdown } from "./Dropdown";
+import { formatDate } from "../parsing/dates";
 import { formatAssumed, formatDuration, formatPercent, formatRange, formatRemaining, formatValue, listInWords } from "./format";
 import { SurvivalChart } from "./SurvivalChart";
 
 const FORMAT_LABEL = { "fhir-json": "FHIR JSON", "fhir-xml": "FHIR XML", ccda: "C-CDA" } as const;
-
-/** The largest the amount may grow, as a multiple of the label size (a lone "1" would be huge). */
-const MAX_AMOUNT_SCALE = 6;
 
 export function ResultView({ report }: { report: PrognosisReport }) {
   return (
@@ -33,24 +31,29 @@ export function ResultView({ report }: { report: PrognosisReport }) {
   );
 }
 
+/** Gap between the amount and its label, as a share of the label's font size. */
+const HEADLINE_GAP_EM = 0.45;
+
 /**
- * The width of a span's visible glyphs, and how far to shift it so they sit centred in its box.
- * Fonts leave uneven space beside their glyphs (handwriting and italics most of all), so
- * centring the boxes does not make the text look centred.
+ * Fit a one-line span's box to its visible glyphs, and centre those glyphs in it.
+ * Fonts leave uneven space around their glyphs (Beth Ellen and italics most of all), so
+ * without this the gap and centring between the amount and its label vary with the text.
  */
-function ink(el: HTMLElement): { width: number; shift: number } {
+function fitToGlyphs(el: HTMLElement): void {
+  el.style.margin = el.style.transform = "";
   const ctx = document.createElement("canvas").getContext("2d");
-  if (!ctx) return { width: el.getBoundingClientRect().width, shift: 0 };
+  if (!ctx) return;
   const cs = getComputedStyle(el);
   ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
   const m = ctx.measureText(el.textContent ?? "");
-  return {
-    width: m.actualBoundingBoxLeft + m.actualBoundingBoxRight,
-    shift: (m.width - m.actualBoundingBoxRight + m.actualBoundingBoxLeft) / 2,
-  };
+  const height = el.getBoundingClientRect().height;
+  const baseline = (height - m.fontBoundingBoxAscent - m.fontBoundingBoxDescent) / 2 + m.fontBoundingBoxAscent;
+  el.style.marginTop = `${m.actualBoundingBoxAscent - baseline}px`;
+  el.style.marginBottom = `${baseline + m.actualBoundingBoxDescent - height}px`;
+  el.style.transform = `translateX(${(m.width - m.actualBoundingBoxRight + m.actualBoundingBoxLeft) / 2}px)`;
 }
 
-/** The amount above its label, scaled so the two are the same width and visibly centred. */
+/** The amount above its label: visibly centred, with the same gap whatever the text. */
 function Headline({ parts: [amount, label] }: { parts: [string, string] }) {
   const amountRef = useRef<HTMLSpanElement>(null);
   const labelRef = useRef<HTMLSpanElement>(null);
@@ -59,13 +62,15 @@ function Headline({ parts: [amount, label] }: { parts: [string, string] }) {
       const a = amountRef.current;
       const l = labelRef.current;
       if (!a || !l) return;
-      a.style.fontSize = "1em";
-      const scale = ink(l).width / ink(a).width;
-      a.style.fontSize = `${Math.min(scale, MAX_AMOUNT_SCALE)}em`;
-      for (const el of [a, l]) el.style.transform = `translateX(${ink(el).shift}px)`;
+      fitToGlyphs(a);
+      fitToGlyphs(l);
+      const gap = HEADLINE_GAP_EM * parseFloat(getComputedStyle(l).fontSize);
+      l.style.marginTop = `${parseFloat(l.style.marginTop) + gap}px`;
     };
     fit();
-    void document.fonts.ready.then(fit); // widths change once the web font arrives
+    void document.fonts.ready.then(fit); // glyph sizes change once the web fonts arrive
+    window.addEventListener("resize", fit); // the amount's size follows the window width
+    return () => window.removeEventListener("resize", fit);
   }, [amount, label]);
   return (
     <p className="headline">
@@ -175,7 +180,7 @@ function Reasoning({ report }: { report: PrognosisReport }) {
 
       <h3>Assumptions</h3>
       <ul>
-        <li>Date of estimate: {report.asOf}.</li>
+        <li>Date of estimate: {formatDate(report.asOf)}.</li>
         <li>File format: {FORMAT_LABEL[report.format]}.</li>
         <li>Population mortality: United States life tables, by age and sex.</li>
         <li>Missing inputs are averaged over published population data. This widens the range.</li>

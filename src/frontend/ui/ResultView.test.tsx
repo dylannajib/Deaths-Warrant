@@ -33,7 +33,7 @@ function report(observed: Record<string, number | string | boolean>, overrides: 
 describe("ResultView", () => {
   it("shows the headline, both dropdowns and what was read", () => {
     const html = renderToStaticMarkup(<ResultView report={report({ age: 60, score: 4, flag: false })} />);
-    expect(html).toContain('<p class="headline"><span class="amount">3.5</span><span class="label">Years Left</span></p>');
+    expect(html).toContain('<p class="headline"><span class="amount">3.5</span><span class="label">years left</span></p>');
     expect(html).toContain("<th scope=\"col\">25-75% range</th>");
     expect(html).toContain("See More</span></button>");
     expect(html).toContain("Reasoning</span></button>");
@@ -55,7 +55,7 @@ describe("ResultView", () => {
   it("shows 20+ with the computed value when beyond the reliable range", () => {
     const r = report({ age: 0, sex: "female" });
     const html = renderToStaticMarkup(<ResultView report={{ ...r, model: { ...r.model, max_reliable_years: 10 }, result: { ...r.result, beyond_reliable: true } }} />);
-    expect(html).toContain('<span class="amount">10+</span><span class="label">Years Left</span>');
+    expect(html).toContain('<span class="amount">10+</span><span class="label">years left</span>');
     expect(html).toContain("Computed median: 11.6 years");
   });
 

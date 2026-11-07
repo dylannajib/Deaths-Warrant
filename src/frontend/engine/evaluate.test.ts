@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { evaluate, EvaluationError, populationCumHazard, solveTime, type Observed } from "./evaluate";
+import { evaluate, EvaluationError, MissingInputError, populationCumHazard, solveTime, type Observed } from "./evaluate";
 import type { ModelSpec } from "./spec";
 
 interface Golden {
@@ -39,6 +39,18 @@ describe("evaluator details", () => {
 
   it("requires mandatory inputs", () => {
     expect(() => evaluate(fixture, { score: 4 })).toThrow(EvaluationError);
+  });
+
+  it("names the missing input, so the page can ask the user for it", () => {
+    let error: unknown;
+    try {
+      evaluate(fixture, { score: 4, age: 500 }); // implausible counts as missing
+    } catch (e) {
+      error = e;
+    }
+    expect(error).toBeInstanceOf(MissingInputError);
+    expect((error as MissingInputError).input.id).toBe("age");
+    expect((error as MissingInputError).message).toBe("Age is required but was not found in the record");
   });
 
   it("reports which inputs were assumed", () => {

@@ -8,6 +8,18 @@
 
 export type Convention = "dmy" | "mdy";
 
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+/**
+ * An ISO date for display as "day month year", e.g. "2026-11-01" becomes "1 Nov 2026", so the
+ * order is never ambiguous. A time after the date is dropped. Anything else is returned as is.
+ */
+export function formatDate(iso: string): string {
+  const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(iso);
+  if (!m) return iso;
+  return `${Number(m[3])} ${MONTHS[Number(m[2]) - 1]} ${Number(m[1])}`;
+}
+
 const ISO = /^(\d{4})(?:-(\d{2})(?:-(\d{2}))?)?(?:T.*)?$/;
 const HL7 = /^(\d{4})(?:(\d{2})(?:(\d{2})(?:\d{2,6}(?:\.\d+)?)?)?)?(?:[+-]\d{4})?$/;
 const YMD_SLASH = /^(\d{4})[/.](\d{1,2})[/.](\d{1,2})$/;

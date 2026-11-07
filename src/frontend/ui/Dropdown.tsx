@@ -6,11 +6,13 @@ interface Props {
   title: ReactNode;
   /** Shown after the title, without the hover underline (e.g. a dataset's period). */
   aside?: ReactNode;
+  /** Shown after the heading but outside its button, so it can hold its own link. */
+  after?: ReactNode;
   className?: string;
   children: ReactNode;
 }
 
-export function Dropdown({ title, aside, className = "", children }: Props) {
+export function Dropdown({ title, aside, after, className = "", children }: Props) {
   const [open, setOpen] = useState(false);
   const id = useId();
   return (
@@ -20,6 +22,7 @@ export function Dropdown({ title, aside, className = "", children }: Props) {
         <span className="dropdown-title">{title}</span>
         {aside && <> {aside}</>}
       </button>
+      {after && <> {after}</>}
       <div id={id} className="dropdown-body" inert={!open}>
         <div>{children}</div>
       </div>

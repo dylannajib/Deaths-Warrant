@@ -17,13 +17,11 @@ function durationParts(years: number): [string, string] {
   return whole(days * 24, "hour");
 }
 
-const capitalise = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
-
-/** The headline as [amount, label], e.g. ["4.5", "Years Left"]. ["20+", "Years Left"] beyond the reliable range. */
+/** The headline as [amount, label], e.g. ["4.5", "years left"]. ["20+", "years left"] beyond the reliable range. */
 export function formatRemaining(medianYears: number | null, maxReliableYears: number): [string, string] {
-  if (medianYears === null || medianYears > maxReliableYears) return [`${maxReliableYears}+`, "Years Left"];
+  if (medianYears === null || medianYears > maxReliableYears) return [`${maxReliableYears}+`, "years left"];
   const [n, unit] = durationParts(medianYears);
-  return [n, `${capitalise(unit)} Left`];
+  return [n, `${unit} left`];
 }
 
 /** A duration in words: "4.5 years", "8 months", "2 weeks", or "more than 60 years". */
@@ -41,9 +39,12 @@ export function formatRange(low: number | null, high: number | null): string {
   return unitA === unitB ? `${a}-${b} ${unitB}` : `${a} ${unitA}-${b} ${unitB}`;
 }
 
+/** A label inside a sentence: "Age" becomes "age", but acronyms such as "NYHA class" keep their capitals. */
+export const lowerFirst = (w: string) => (/^[A-Z][a-z]/.test(w) ? w.charAt(0).toLowerCase() + w.slice(1) : w);
+
 /** Items in a sentence: "a", "a or b", "a, b or c" (with joiner "or"). Acronyms keep their capitals. */
 export function listInWords(items: string[], joiner: "and" | "or"): string {
-  const words = items.map((w) => (/^[A-Z][a-z]/.test(w) ? w.charAt(0).toLowerCase() + w.slice(1) : w));
+  const words = items.map(lowerFirst);
   return words.length < 2 ? words.join("") : `${words.slice(0, -1).join(", ")} ${joiner} ${words.at(-1)}`;
 }
 

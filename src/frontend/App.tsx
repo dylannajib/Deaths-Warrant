@@ -4,12 +4,15 @@ import { useEffect, useRef, useState } from "react";
 import founderPfp from "./assets/founder-pfp.png";
 import githubLogo from "./assets/github-logo.webp";
 import { MODELS } from "./engine/models";
+import type { Observed } from "./engine/evaluate";
 import type { PrognosisReport } from "./engine/prognosis";
+import type { Input } from "./engine/spec";
 import { SOFT_LIMIT_BYTES } from "./parsing/upload";
+import { AskInput } from "./ui/AskInput";
 import { Dropdown } from "./ui/Dropdown";
 import { ReleaseNotes } from "./ui/ReleaseNotes";
 import { ResultView } from "./ui/ResultView";
-import { runInWorker } from "./worker/client";
+import { RunError, runInWorker } from "./worker/client";
 
 const REPO_URL = "https://github.com/dylannajib/Deaths-Warrant";
 const FOUNDER_URL = "https://github.com/dylannajib";
@@ -23,6 +26,9 @@ export function App() {
   const [report, setReport] = useState<PrognosisReport | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
+  // Values the user typed in for required inputs the record lacks, and the one being asked for.
+  const [entered, setEntered] = useState<Observed>({});
+  const [missing, setMissing] = useState<Input | null>(null);
   const upload = useRef<HTMLInputElement>(null);
 
   // The file is only read during a run. The page lets go of it, and of the result (which shows
@@ -36,23 +42,29 @@ export function App() {
     if (upload.current) upload.current.value = "";
     setReport(null);
     setError(null);
+    setEntered({});
+    setMissing(null);
   };
   useEffect(() => {
     window.addEventListener("pagehide", clearAll);
     return () => window.removeEventListener("pagehide", clearAll);
   }, []);
 
-  const run = async () => {
+  const run = async (values: Observed = entered) => {
     if (!file || !modelId) return;
     setBusy(true);
     setError(null);
+    setMissing(null);
     setReport(null);
     const id = ++runId.current;
     try {
-      const result = await runInWorker(file, modelId);
+      const result = await runInWorker(file, modelId, values);
       if (id === runId.current) setReport(result);
     } catch (e) {
-      if (id === runId.current) setError(e instanceof Error ? e.message : String(e));
+      if (id === runId.current) {
+        setError(e instanceof Error ? e.message : String(e));
+        setMissing(e instanceof RunError ? e.missing : null);
+      }
     } finally {
       setBusy(false);
     }
@@ -107,6 +119,8 @@ export function App() {
                     setFile(e.target.files?.[0] ?? null);
                     setReport(null);
                     setError(null);
+                    setEntered({});
+                    setMissing(null);
                   }}
                 />
               </label>
@@ -139,16 +153,28 @@ export function App() {
           </section>
 
           <div className="run">
-            <button type="button" onClick={run} disabled={!file || !modelId || busy}>
+            <button type="button" onClick={() => run()} disabled={!file || !modelId || busy}>
               {busy ? "Running…" : "Run Prognosis"}
             </button>
           </div>
 
           <div aria-live="polite">
             {error && (
-              <p className="error" role="alert">
-                {error}
-              </p>
+              <div className="error" role="alert">
+                <p>{error}</p>
+                {missing && (
+                  <AskInput
+                    key={missing.id}
+                    input={missing}
+                    disabled={busy}
+                    onSubmit={(value) => {
+                      const values = { ...entered, [missing.id]: value };
+                      setEntered(values);
+                      void run(values);
+                    }}
+                  />
+                )}
+              </div>
             )}
             {report && (
               <>
@@ -163,7 +189,7 @@ export function App() {
 
         <footer className="disclaimer">
           <p>Death’s Warrant is not a clinically-validated tool. Treat your results as an estimate subject to change.</p>
-          <p>Any data you upload is read, analysed then discarded locally in your browser.</p>
+          <p>Any data you upload is read, analysed and then discarded locally in your browser.</p>
         </footer>
       </div>
 

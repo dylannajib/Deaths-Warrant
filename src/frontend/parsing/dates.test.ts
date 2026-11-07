@@ -1,7 +1,15 @@
 import { describe, expect, it } from "vitest";
-import { conventionForCountry, inferConvention, parseDate, yearsBetween } from "./dates";
+import { conventionForCountry, formatDate, inferConvention, parseDate, yearsBetween } from "./dates";
 
 const asOf = "2026-11-02";
+
+describe("formatDate", () => {
+  it("shows day month year", () => {
+    expect(formatDate("2026-11-01")).toBe("1 Nov 2026");
+    expect(formatDate("2025-02-28T13:45:00Z")).toBe("28 Feb 2025");
+    expect(formatDate("not a date")).toBe("not a date");
+  });
+});
 
 describe("parseDate", () => {
   it.each([

@@ -3,7 +3,7 @@
  * values plus a plain-language note of where each came from (shown in Reasoning).
  */
 
-import { yearsBetween } from "../parsing/dates";
+import { formatDate, yearsBetween } from "../parsing/dates";
 import type { Code, Observation, PatientRecord } from "../parsing/record";
 import type { Observed } from "./evaluate";
 import type { CodeSet, ExtractRule, ModelSpec, Value } from "./spec";
@@ -50,14 +50,14 @@ function latestObservation(record: PatientRecord, rule: { loinc: string[]; snome
 function yearsSince(matches: ReturnType<typeof matchingConditions>, asOf: string): [Value | null, string] {
   const onsets = matches.map((m) => m.cond.onset).filter((d): d is string => !!d).sort();
   if (!onsets[0]) return [null, "No dated matching diagnosis"];
-  return [Math.max(0, yearsBetween(onsets[0], asOf)), `Earliest matching diagnosis dated ${onsets[0]}`];
+  return [Math.max(0, yearsBetween(onsets[0], asOf)), `Earliest matching diagnosis dated ${formatDate(onsets[0])}`];
 }
 
 function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value | null, string] {
   switch (rule.rule) {
     case "age": {
       if (!record.birthDate) return [null, "No birth date in the record"];
-      return [yearsBetween(record.birthDate, asOf), `From birth date ${record.birthDate}`];
+      return [yearsBetween(record.birthDate, asOf), `From birth date ${formatDate(record.birthDate)}`];
     }
     case "sex":
       return record.sex ? [record.sex, "From the patient's recorded sex"] : [null, "Sex not recorded as female or male"];
@@ -65,14 +65,14 @@ function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value |
       const o = latestObservation(record, rule, asOf, rule.max_age_days, (x) => x.value !== undefined && Object.hasOwn(rule.units, (x.unit ?? "").toLowerCase()));
       if (!o) return [null, "No usable measurement in the record"];
       const value = o.value! * rule.units[(o.unit ?? "").toLowerCase()]!;
-      return [value, `Latest measurement: ${o.value} ${o.unit ?? ""}`.trim() + (o.date ? ` on ${o.date}` : "")];
+      return [value, `Latest measurement: ${o.value} ${o.unit ?? ""}`.trim() + (o.date ? ` on ${formatDate(o.date)}` : "")];
     }
     case "observation_coded": {
       const key = (o: Observation) =>
         [...(o.valueCodes ?? []).map((c) => `${c.system}:${c.code}`), ...(o.valueText ? [`text:${o.valueText.trim().toLowerCase()}`] : [])].find((k) => Object.hasOwn(rule.values, k));
       const o = latestObservation(record, rule, asOf, rule.max_age_days, (x) => key(x) !== undefined);
       if (!o) return [null, "Not recorded"];
-      return [rule.values[key(o)!]!, `Recorded as ${o.valueCodes?.[0] ? describe(o.valueCodes[0]) : o.valueText}` + (o.date ? ` on ${o.date}` : "")];
+      return [rule.values[key(o)!]!, `Recorded as ${o.valueCodes?.[0] ? describe(o.valueCodes[0]) : o.valueText}` + (o.date ? ` on ${formatDate(o.date)}` : "")];
     }
     case "condition_category": {
       for (const cat of rule.categories) {
@@ -89,7 +89,7 @@ function apply(rule: ExtractRule, record: PatientRecord, asOf: string): [Value |
           .sort((a, b) => (b.cond.admitted! > a.cond.admitted! ? 1 : -1));
         const m = stays[0];
         return m
-          ? [true, `Hospital stay from ${m.cond.admitted} with diagnosis ${describe(m.hit)}`]
+          ? [true, `Hospital stay from ${formatDate(m.cond.admitted!)} with diagnosis ${describe(m.hit)}`]
           : [false, `No hospital stay with this diagnosis in the last ${days} days (assumed none)`];
       }
       const m = matchingConditions(record, rule.codes)[0];

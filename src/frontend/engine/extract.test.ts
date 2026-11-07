@@ -73,14 +73,14 @@ describe("extractInputs", () => {
       return extractInputs(admitted, { ...record, conditions: [cond] }, "2026-11-02");
     };
     expect(at("2026-06-01").observed.stay).toBe(true);
-    expect(at("2026-06-01").provenance.stay).toMatch(/Hospital stay from 2026-06-01/);
+    expect(at("2026-06-01").provenance.stay).toMatch(/Hospital stay from 1 Jun 2026/);
     expect(at("2026-04-01").observed.stay).toBe(false); // over 180 days ago
     expect(at("2027-01-01").observed.stay).toBe(false); // after the as-of date
     expect(at(undefined).observed.stay).toBe(false); // diagnosis outside any hospital stay
   });
 
   it("ignores measurements in unknown units", () => {
-    expect(provenance.creat).toMatch(/100 umol\/L on 2025-01-01/);
+    expect(provenance.creat).toMatch(/100 umol\/L on 1 Jan 2025/);
   });
 
   it("matches the disease group by code prefix", () => {
