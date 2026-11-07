@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://deathswarrant.pages.dev/sitemap.xml
