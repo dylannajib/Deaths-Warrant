@@ -31,7 +31,7 @@ on every case in each model's `golden.json`.
 | Group | Method | Accuracy (see [TESTING.md](TESTING.md)) |
 |---|---|---|
 | Cancer | U.S. life tables × SEER relative survival by site, stage and age | C-index 0.71 on 24,067 MSK-CHORD patients |
-| Cardiovascular | MAGGIC, heart failure and stroke survival by age, or hazard ratios | C-index 0.74 on 1,088 FAR NHL patients |
+| Cardiovascular | MAGGIC, heart failure and stroke survival by age, or hazard ratios | C-index 0.74 on 1,084 FAR NHL patients |
 | Chronic lower respiratory | ADO index, or hazard ratios for COPD, bronchiectasis, asthma | C-index 0.78 on 2,602 NHANES patients |
 
 Each model's `sources.md` has its method, sources and results.

@@ -20,7 +20,6 @@ Writes ``validation.json`` (aggregate results only, every group n >= 20).
 
 from __future__ import annotations
 
-import math
 import sys
 from pathlib import Path
 from typing import Any
@@ -29,10 +28,17 @@ HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parents[1] / "backend")]  # model.py, general
 from model import CONDITIONS, build  # noqa: E402
 
-from general.evaluate import evaluate, population_cum_hazard, survival_function  # noqa: E402
+from general.authoring import population_survival  # noqa: E402
+from general.evaluate import (  # noqa: E402
+    HORIZON_YEARS,
+    SURVIVAL_TIMES,
+    evaluate,
+    survival_function,
+)
 from general.registry import load_life_table  # noqa: E402
 from general.sources.xpt import read_xpt  # noqa: E402
 from general.validation import (  # noqa: E402
+    MIN_GROUP,
     calibration_at,
     harrell_c,
     kaplan_meier,
@@ -51,8 +57,6 @@ CYCLES = {  # 2007-2010 cycles excluded: their follow-up starts before the 2010+
     "J": "2017_2018",
 }
 NONE = {key: False for key in CONDITIONS}
-YEARS = (1, 3, 5)
-MIN_GROUP = 20
 
 # Park et al. Korean J Intern Med 2019: COPD diagnosed 2003-2013, n = 14,127, 58.8% male.
 PARK_N, PARK_MALE = 14_127, 0.588
@@ -127,11 +131,13 @@ def nhanes(spec) -> list[dict[str, Any]]:
         times = [p["years"] for p, _ in pairs]
         events = [p["died"] for p, _ in pairs]
         n = len(pairs)
-        medians = [r["median_years"] if r["median_years"] is not None else 60.0 for _, r in pairs]
+        medians = [
+            r["median_years"] if r["median_years"] is not None else HORIZON_YEARS for _, r in pairs
+        ]
         out.append(
             result_row(meta, n, f"{name}: Harrell's C-index", harrell_c(times, events, medians))
         )
-        for t in YEARS:
+        for t in SURVIVAL_TIMES:
             pred, obs = calibration_at(
                 t, times, events, [r["survival_at"][str(t)] for _, r in pairs]
             )
@@ -162,7 +168,7 @@ def park(spec) -> list[dict[str, Any]]:
     return out
 
 
-def _life_expectancy(s, horizon: float = 60.0, step: float = 0.05) -> float:
+def _life_expectancy(s, horizon: float = HORIZON_YEARS, step: float = 0.05) -> float:
     """Trapezoidal integral of S(t) over [0, horizon]."""
     n = round(horizon / step)
     return step * (sum(s(k * step) for k in range(1, n)) + 0.5 * (s(0.0) + s(horizon)))
@@ -181,13 +187,7 @@ def bhatt(spec) -> list[dict[str, Any]]:
     meta = {"dataset": dataset, "period": period, "notes": notes, "source": "bhatt_2026"}
     table = load_life_table("us_2024")
 
-    def population(t: float) -> float:
-        return sum(
-            w * math.exp(-population_cum_hazard(q, 65, t))
-            for q, w in ((table.female, BHATT_FEMALE), (table.male, 1 - BHATT_FEMALE))
-        )
-
-    e_pop = _life_expectancy(population)
+    e_pop = _life_expectancy(lambda t: population_survival(table, 65, t, 1 - BHATT_FEMALE))
     out = []
     for stage, fev1 in GOLD_FEV1.items():
         e = 0.0

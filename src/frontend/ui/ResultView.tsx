@@ -13,7 +13,7 @@ const FORMAT_LABEL = { "fhir-json": "FHIR JSON", "fhir-xml": "FHIR XML", ccda: "
 export function ResultView({ report }: { report: PrognosisReport }) {
   return (
     <section className="result" aria-label="Your result">
-      <Headline parts={formatRemaining(report.result.median_years, report.model.max_reliable_years)} />
+      <Headline parts={formatRemaining(report.result, report.model.max_reliable_years)} />
       {report.warnings.length > 0 && (
         <ul className="warnings">
           {report.warnings.map((w) => (
@@ -34,6 +34,8 @@ export function ResultView({ report }: { report: PrognosisReport }) {
 /** Gap between the amount and its label, as a share of the label's font size. */
 const HEADLINE_GAP_EM = 0.45;
 
+let measureCtx: CanvasRenderingContext2D | null | undefined; // made once, reused on every fit
+
 /**
  * Fit a one-line span's box to its visible glyphs, and centre those glyphs in it.
  * Fonts leave uneven space around their glyphs (Beth Ellen and italics most of all), so
@@ -41,11 +43,14 @@ const HEADLINE_GAP_EM = 0.45;
  */
 function fitToGlyphs(el: HTMLElement): void {
   el.style.margin = el.style.transform = "";
-  const ctx = document.createElement("canvas").getContext("2d");
+  measureCtx ??= document.createElement("canvas").getContext("2d");
+  const ctx = measureCtx;
   if (!ctx) return;
   const cs = getComputedStyle(el);
   ctx.font = `${cs.fontStyle} ${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
   const m = ctx.measureText(el.textContent ?? "");
+  // Older browsers lack the font box metrics, so leave the span as the browser laid it out.
+  if (!Number.isFinite(m.fontBoundingBoxAscent) || !Number.isFinite(m.fontBoundingBoxDescent)) return;
   const height = el.getBoundingClientRect().height;
   const baseline = (height - m.fontBoundingBoxAscent - m.fontBoundingBoxDescent) / 2 + m.fontBoundingBoxAscent;
   el.style.marginTop = `${m.actualBoundingBoxAscent - baseline}px`;
@@ -65,7 +70,7 @@ function Headline({ parts: [amount, label] }: { parts: [string, string] }) {
       fitToGlyphs(a);
       fitToGlyphs(l);
       const gap = HEADLINE_GAP_EM * parseFloat(getComputedStyle(l).fontSize);
-      l.style.marginTop = `${parseFloat(l.style.marginTop) + gap}px`;
+      l.style.marginTop = `${(parseFloat(l.style.marginTop) || 0) + gap}px`;
     };
     fit();
     void document.fonts.ready.then(fit); // glyph sizes change once the web fonts arrive
@@ -182,7 +187,7 @@ function Reasoning({ report }: { report: PrognosisReport }) {
       <ul>
         <li>Date of estimate: {formatDate(report.asOf)}.</li>
         <li>File format: {FORMAT_LABEL[report.format]}.</li>
-        <li>Population mortality: United States life tables, by age and sex.</li>
+        {model.population && <li>Population mortality: {model.population}, by age and sex.</li>}
         <li>Missing inputs are averaged over published population data. This widens the range.</li>
         {report.notes.map((n) => (
           <li key={n}>{n}</li>

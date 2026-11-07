@@ -9,7 +9,7 @@
 
 import { SCHEMA_VERSION, type ModelSpec } from "./spec";
 
-export type ModelSummary = Pick<ModelSpec, "schema_version" | "id" | "name" | "order" | "description">;
+type ModelSummary = Pick<ModelSpec, "schema_version" | "id" | "name" | "order" | "description">;
 
 const summaries = import.meta.glob<ModelSummary>(["../../prognosis-models/*/summary.json", "!../../prognosis-models/_*/summary.json"], {
   eager: true,

@@ -420,6 +420,7 @@
  "life_tables": {
   "flat": {
    "source": "test",
+   "label": "Flat test table",
    "female": [
     0.05,
     0.05

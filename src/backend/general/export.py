@@ -1,4 +1,4 @@
-"""Export every model's ``spec.json``, ``golden.json`` and ``summary.json``.
+"""Export every model's ``spec.json``, ``golden.json`` and ``summary.json`` (not for ``_`` folders).
 
 python -m general.export          # (re)write the files
 python -m general.export --check  # CI: fail if committed files are stale
@@ -37,12 +37,11 @@ def render(folder: ModelFolder) -> dict[str, str]:
         layers_hit = {g["expected"]["layer"]["id"] for g in golden}
         if layers_hit != {layer.id for layer in spec.layers}:
             raise ValueError(f"{folder.id}: golden inputs must exercise every layer")
-        return {
-            "spec.json": _dump(spec.model_dump(mode="json")),
-            "golden.json": _dump(golden),
+        files = {"spec.json": _dump(spec.model_dump(mode="json")), "golden.json": _dump(golden)}
+        if not folder.id.startswith("_"):  # hidden folders are never listed on the page
             # What the page needs before a model is chosen. The full spec loads only in the worker.
-            "summary.json": _dump(spec.model_dump(mode="json", include=SUMMARY_KEYS)),
-        }
+            files["summary.json"] = _dump(spec.model_dump(mode="json", include=SUMMARY_KEYS))
+        return files
     except Exception as e:
         e.add_note(f"while exporting the model in {folder.path}")  # keeps the original traceback
         raise

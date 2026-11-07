@@ -2,13 +2,14 @@ import { describe, expect, it } from "vitest";
 import { chartEndYears, formatAssumed, formatDuration, formatPercent, formatRange, formatRemaining, formatValue, listInWords } from "./format";
 
 describe("formatRemaining", () => {
-  it("shows years to one decimal place", () => expect(formatRemaining(2.44, 20)).toEqual(["2.4", "years left"]));
-  it("switches to months under a year", () => expect(formatRemaining(0.6, 20)).toEqual(["7", "months left"]));
-  it("switches to weeks under a month", () => expect(formatRemaining(14 / 365.25, 20)).toEqual(["2", "weeks left"]));
-  it("switches to days under a week", () => expect(formatRemaining(1 / 365.25, 20)).toEqual(["1", "day left"]));
-  it("switches to hours under a day", () => expect(formatRemaining(0.25 / 365.25, 20)).toEqual(["6", "hours left"]));
-  it("caps beyond the reliable range", () => expect(formatRemaining(23, 20)).toEqual(["20+", "years left"]));
-  it("caps beyond the horizon", () => expect(formatRemaining(null, 20)).toEqual(["20+", "years left"]));
+  const r = (median: number | null) => ({ median_years: median, beyond_reliable: median === null || median > 20 });
+  it("shows years to one decimal place", () => expect(formatRemaining(r(2.44), 20)).toEqual(["2.4", "years left"]));
+  it("switches to months under a year", () => expect(formatRemaining(r(0.6), 20)).toEqual(["7", "months left"]));
+  it("switches to weeks under a month", () => expect(formatRemaining(r(14 / 365.25), 20)).toEqual(["2", "weeks left"]));
+  it("switches to days under a week", () => expect(formatRemaining(r(1 / 365.25), 20)).toEqual(["1", "day left"]));
+  it("switches to hours under a day", () => expect(formatRemaining(r(0.25 / 365.25), 20)).toEqual(["6", "hours left"]));
+  it("caps beyond the reliable range", () => expect(formatRemaining(r(23), 20)).toEqual(["20+", "years left"]));
+  it("caps beyond the horizon", () => expect(formatRemaining(r(null), 20)).toEqual(["20+", "years left"]));
 });
 
 describe("display helpers", () => {

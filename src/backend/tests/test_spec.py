@@ -46,7 +46,11 @@ def test_fixture_is_valid():
         ({"group_codes": {"icd10": ["i50.1"]}}, "upper-case"),
         ({"sources": [{"id": "x", "citation": "x", "url": "javascript:alert(1)"}]}, "should match"),
         (
-            {"life_tables": {"flat": {"source": "x", "female": [1.0, 0.5], "male": [0.1, 0.1]}}},
+            {
+                "life_tables": {
+                    "flat": {"source": "x", "label": "x", "female": [1.0, 0.5], "male": [0.1, 0.1]}
+                }
+            },
             r"\[0, 1\)",
         ),
         ({"surprise": True}, "Extra inputs"),

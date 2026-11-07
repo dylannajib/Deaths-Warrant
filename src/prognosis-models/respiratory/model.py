@@ -19,9 +19,13 @@ from pathlib import Path
 from typing import Any
 
 from general.authoring import (
+    NCHS_US_2024,
     Condition,
     bands,
     codes,
+    condition_present,
+    group_codes,
+    hr_term,
     load_json,
     snomed_sets,
     validation_results,
@@ -46,10 +50,6 @@ CONDITIONS: dict[str, Condition] = {
     "bronchiectasis": Condition("Bronchiectasis", ["J47"], ["494"], 2.2, "quint_2016"),
     "asthma": Condition("Asthma", ["J45", "J46"], ["493"], 1.38, "zhang_2022"),
 }
-
-
-def _codes(key: str) -> dict[str, list[str]]:
-    return codes(CONDITIONS[key], SNOMED[key])
 
 
 # ---------------------------------------------------------------- updated ADO index
@@ -130,7 +130,6 @@ def _mmrc_rule() -> dict[str, Any]:
 
 
 def build() -> ModelSpec:
-    present = lambda codes: {"rule": "condition_present", "codes": codes}  # noqa: E731
     spec = {
         "id": "respiratory",
         "name": "Chronic lower respiratory disease",
@@ -141,12 +140,7 @@ def build() -> ModelSpec:
             "breathlessness, airflow obstruction). Otherwise U.S. population mortality is "
             "multiplied by a published hazard ratio for each recorded condition."
         ),
-        # The group is the diagnoses this model scores, so a record with none of them is flagged.
-        "group_codes": {
-            "icd10": sorted({p for c in CONDITIONS.values() for p in c.icd10}),
-            "icd9": sorted({p for c in CONDITIONS.values() for p in c.icd9}),
-            "snomed": sorted({c for key in CONDITIONS for c in SNOMED[key]}, key=int),
-        },
+        "group_codes": group_codes(CONDITIONS, SNOMED),
         "inputs": [
             {
                 "id": "age",
@@ -170,8 +164,13 @@ def build() -> ModelSpec:
                 "source": "puhan_2012",
             },
             *(
-                {"id": key, "label": label, "type": "boolean", "extract": present(_codes(key))}
-                for key, label in ((k, c.label) for k, c in CONDITIONS.items())
+                {
+                    "id": key,
+                    "label": c.label,
+                    "type": "boolean",
+                    "extract": condition_present(codes(c, SNOMED[key])),
+                }
+                for key, c in CONDITIONS.items()
             ),
             {
                 "id": "fev1_pct",
@@ -232,21 +231,14 @@ def build() -> ModelSpec:
                 "survival": {
                     "type": "life_table_ph",
                     "life_table": "us_2024",
-                    "terms": [
-                        {
-                            "kind": "category",
-                            "input": key,
-                            "values": {"true": round(math.log(hr), 6), "false": 0.0},
-                        }
-                        for key, hr in ((k, c.hr) for k, c in CONDITIONS.items())
-                    ],
+                    "terms": [hr_term(key, c.hr) for key, c in CONDITIONS.items()],
                 },
-                "sources": sorted({c.source for c in CONDITIONS.values()} | {"nchs_us_2024"}),
+                "sources": sorted({c.source for c in CONDITIONS.values()} | {NCHS_US_2024["id"]}),
             },
         ],
         "life_tables": {"us_2024": load_life_table("us_2024").model_dump()},
         "validation": validation_results(VALIDATION_FILE),
-        "sources": [*SOURCES["model"], *SOURCES["validation"]],
+        "sources": [*SOURCES["model"], NCHS_US_2024, *SOURCES["validation"]],
     }
     return ModelSpec.model_validate(spec)
 

@@ -800,6 +800,7 @@
  "life_tables": {
   "us_2024": {
    "source": "nchs_us_2024",
+   "label": "United States life tables, 2024",
    "female": [
     0.00516108050942421,
     0.0003555437724571675,
@@ -1395,7 +1396,7 @@
   },
   {
    "id": "nhanes_lmf_2019",
-   "citation": "National Center for Health Statistics. NHANES 2007-2018 (demographics, medical conditions questionnaire) linked to the National Death Index, public-use linked mortality files with follow-up through 31 December 2019.",
+   "citation": "National Center for Health Statistics. NHANES 2011-2018 (demographics, medical conditions questionnaire) linked to the National Death Index, public-use linked mortality files with follow-up through 31 December 2019.",
    "url": "https://www.cdc.gov/nchs/linked-data/mortality-files/index.html",
    "licence": "U.S. Government work (public domain), used for testing only"
   },

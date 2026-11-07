@@ -15,9 +15,11 @@ from typing import Any
 from .evaluate import evaluate
 from .spec import ModelSpec
 
+MIN_GROUP = 20  # smallest group whose results may be published (as ValidationResult.n)
+
 
 def kaplan_meier(times: Sequence[float], events: Sequence[bool]) -> list[tuple[float, float]]:
-    """Kaplan–Meier survival estimate as (time, S(time)) steps at each event time."""
+    """Kaplan-Meier survival estimate as (time, S(time)) steps at each event time."""
     data = sorted(zip(times, events, strict=True))
     at_risk = len(data)
     s = 1.0
@@ -89,7 +91,7 @@ def harrell_c(times: Sequence[float], events: Sequence[bool], predicted: Sequenc
 def calibration_at(
     t: float, times: Sequence[float], events: Sequence[bool], predicted_survival: Sequence[float]
 ) -> tuple[float, float]:
-    """(mean predicted S(t), observed Kaplan–Meier S(t)) for the cohort."""
+    """(mean predicted S(t), observed Kaplan-Meier S(t)) for the cohort."""
     observed = km_at(kaplan_meier(times, events), t)
     return sum(predicted_survival) / len(predicted_survival), observed
 

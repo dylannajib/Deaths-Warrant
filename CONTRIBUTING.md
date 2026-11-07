@@ -27,6 +27,22 @@ def golden_inputs() -> list[dict]: ...   # test inputs that reach every layer
 * **Source data:** a script in your folder (like `cancer/build_seer.py`) downloads the
   published table into `data/` and writes a small JSON file next to it. Commit the JSON.
 
+What the existing models rely on:
+
+* **Helpers:** `general.authoring` has `Condition` (a diagnosis with its codes, hazard ratio
+  and source), `codes`, `condition_present`, `group_codes`, `hr_term`, `bands`,
+  `population_survival`, `load_json` and `NCHS_US_2024`, the citation of the U.S. life table
+  loaded with `general.registry.load_life_table("us_2024")`.
+* **SNOMED CT:** list root concepts in `snomed_roots.json`, then run
+  `python -m general.sources.snomed <id>` from `src/backend` to write the expanded
+  `snomed_sets.json`. Read it with `general.authoring.snomed_sets(HERE)`.
+* **Citations:** `cardiovascular/` and `respiratory/` keep theirs in `sources.json`, as a
+  `"model"` list (coefficient sources) and a `"validation"` list (test data). `build()` adds
+  `NCHS_US_2024` after the model list. `cancer/` writes its citations in `model.py`, because
+  the SEER citation includes the retrieval date from `seer_relative_survival.json`.
+* **Validation results:** `build()` loads them with
+  `validation_results(HERE / "validation.json")`, so run `validate.py` before exporting.
+
 ## 2. Validate on real patients
 
 Write `validate.py` (see `cardiovascular/validate.py`). It reads real, published patient data
@@ -44,6 +60,7 @@ CI fails if a model has no validation results.
 ```bash
 cd src/backend
 ../../.venv/bin/python -m general.export   # writes spec.json, golden.json, summary.json
+../../.venv/bin/ruff check . ../prognosis-models && ../../.venv/bin/ruff format --check . ../prognosis-models
 ../../.venv/bin/python -m pytest
 cd ../frontend && npm test                 # checks TypeScript matches Python
 ```

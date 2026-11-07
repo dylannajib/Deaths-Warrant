@@ -15,7 +15,6 @@ import { parseUpload, UploadError } from "./upload";
 import { REAL_SPECS } from "../testing/specs";
 
 const asOf = "2026-11-03";
-const specs = REAL_SPECS;
 const fixtures = ["ccda-ccd-1.xml", "ccda-ccd-2.xml", "ccda-discharge-summary.xml", "fhir-r4-patient-example.xml",
   "fhir-r4-patient-example.json", "fhir-r4-document-example-dischargesummary.xml", "fhir-r4-document-example-dischargesummary.json"]
   .map((name) => readFileSync(join(__dirname, "fixtures", name), "utf-8")); // prettier-ignore
@@ -53,7 +52,7 @@ describe("known attacks", () => {
   });
 
   it("rejects binary, empty and non-record files", () => {
-    rejects("\u0000\u0001ELF", /UploadError|binary|not a/i);
+    rejects("\u0000\u0001ELF", /not a text file/);
     rejects("", /Unrecognised file/);
     rejects("[1, 2, 3]", /FHIR/);
     rejects(`{"resourceType":"Observation"}`, /Bundle or Patient/);
@@ -92,7 +91,7 @@ describe("fuzzing real document structure", () => {
     let parsed = 0; // a report, or a refusal that came after reading the whole file
     for (let k = 0; k < 2800; k++) {
       const text = mutate(pick(fixtures));
-      const spec = pick(specs);
+      const spec = pick(REAL_SPECS);
       try {
         runPrognosis(text, spec, asOf);
         parsed += 1;

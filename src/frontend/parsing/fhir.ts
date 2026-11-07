@@ -69,10 +69,11 @@ const verification = (r: Obj): string | undefined => {
   return codings(v)[0]?.code ?? str(v);
 };
 
-// Classes in INPATIENT_ACT_CODES are hospital stays. Other classes (MIMIC records emergency
-// admissions as EMER) count when the encounter records an admission and ends on a later day.
-
-/** Start of the encounter if it was a hospital (inpatient) stay. */
+/**
+ * Start of the encounter if it was a hospital (inpatient) stay. Classes in INPATIENT_ACT_CODES
+ * are hospital stays. Other classes (MIMIC records emergency admissions as EMER) count when the
+ * encounter records an admission and ends on a later day.
+ */
 function admissionStart(encounter: Obj | undefined): string | undefined {
   if (!encounter) return undefined;
   const start = str(first(get(encounter, "period", "start")));
@@ -215,7 +216,7 @@ function observationsFrom(r: Obj, date: string | undefined): Observation[] {
   };
   const out: Observation[] = [];
   const main = make(first(r.code), r);
-  if (main && (main.value !== undefined || main.valueCodes || main.valueText)) out.push(main);
+  if (main && (main.value !== undefined || main.valueCodes?.length || main.valueText)) out.push(main);
   for (const comp of objs(r.component)) {
     const o = make(first(comp.code), comp);
     if (o) out.push(o);

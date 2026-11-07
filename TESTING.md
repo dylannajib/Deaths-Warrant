@@ -2,16 +2,30 @@
 
 ## Run everything
 
+These are the commands CI runs on every push.
+
 ```bash
-cd src/backend && ../../.venv/bin/ruff check . ../prognosis-models && ../../.venv/bin/python -m pytest && ../../.venv/bin/python -m general.export --check
+cd src/backend
+../../.venv/bin/ruff check . ../prognosis-models
+../../.venv/bin/ruff format --check . ../prognosis-models
+../../.venv/bin/python -m pytest -q
+../../.venv/bin/python -m general.export --check
 ```
 
 ```bash
-cd src/frontend && npm test && npm run build
+cd src/frontend
+npm ci
+npm audit --audit-level=high
+npm run typecheck
+npm test
+npm run build
 ```
 
-CI runs both on every push. Tests that need real patient data are skipped when the data is
-absent. Each `validate.py` says how to download its data into the git-ignored `data/`.
+Tests that need real patient data are skipped when the data is absent. Each `validate.py`
+says how to download its data into the git-ignored `data/`. `cancer/validate_tcga.py`
+downloads its own data from the public cBioPortal API on first run. For the MIMIC-IV FHIR demo
+end-to-end tests, run `../../.venv/bin/python -m general.sources.mimic_fhir_demo` from
+`src/backend` first. It downloads the demo into `data/mimic_fhir_demo/`.
 
 ## What the suites check
 
@@ -36,7 +50,7 @@ onwards. Published cohorts are used if their follow-up runs past 2010.
 |---|---|---|---|
 | Cancer | MSK-CHORD, 24,067 patients (2014-2023) | 71% | 1/3/5 y: 71/51/42% vs 80/57/46% |
 | Cancer | TCGA, 4,709 patients (diagnosed 2010-2013) | 74% | 1/3/5 y: 83/69/62% vs 89/70/61% |
-| Heart failure | FAR NHL, 1,088 outpatients (2014-2017) | 74% | 2 y: 79.7% vs 85.1% |
+| Heart failure | FAR NHL, 1,084 outpatients (2014-2017) | 74% | 2 y: 79.7% vs 85.1% |
 | Heart failure | UCI, 299 inpatients (2015) | 72% | 6 months: 89.6% vs 65.4% |
 | Heart failure | Brazil MAGGIC validation (2008-2014) | | 3-year deaths: 20.9% vs 33.4% |
 | Stroke | Australia and New Zealand, 313,162 (2008-2017) | | 1/5/10 y: 74.9/51.6/32.9% vs 73.0/52.8/36.4% |

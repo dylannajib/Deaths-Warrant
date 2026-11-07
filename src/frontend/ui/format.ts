@@ -1,6 +1,6 @@
 /** Display formatting shared by the result views. Pure functions, unit-tested. */
 
-import { HORIZON_YEARS } from "../engine/evaluate";
+import { HORIZON_YEARS, type EvaluationResult } from "../engine/evaluate";
 import type { Value, WeightedValue } from "../engine/spec";
 
 /** A duration as [number, unit]: years to one decimal, then months, weeks, days or hours. */
@@ -18,9 +18,9 @@ function durationParts(years: number): [string, string] {
 }
 
 /** The headline as [amount, label], e.g. ["4.5", "years left"]. ["20+", "years left"] beyond the reliable range. */
-export function formatRemaining(medianYears: number | null, maxReliableYears: number): [string, string] {
-  if (medianYears === null || medianYears > maxReliableYears) return [`${maxReliableYears}+`, "years left"];
-  const [n, unit] = durationParts(medianYears);
+export function formatRemaining(result: Pick<EvaluationResult, "median_years" | "beyond_reliable">, maxReliableYears: number): [string, string] {
+  if (result.beyond_reliable || result.median_years === null) return [`${maxReliableYears}+`, "years left"];
+  const [n, unit] = durationParts(result.median_years);
   return [n, `${unit} left`];
 }
 
@@ -32,8 +32,7 @@ export function formatDuration(years: number | null): string {
 
 /** A range of durations: "1.8-4.9 years", "8 months-2.5 years", or "1.8 years or more". */
 export function formatRange(low: number | null, high: number | null): string {
-  if (high === null) return `${formatDuration(low)} or more`;
-  if (low === null) return formatDuration(low);
+  if (low === null || high === null) return `${formatDuration(low)} or more`;
   const [a, unitA] = durationParts(low);
   const [b, unitB] = durationParts(high);
   return unitA === unitB ? `${a}-${b} ${unitB}` : `${a} ${unitA}-${b} ${unitB}`;
@@ -75,6 +74,5 @@ export function formatAssumed(assumed: WeightedValue[], unit: string | null = nu
 /** Where the survival chart's x-axis should end: when survival falls below 2%, at most 30 y. */
 export function chartEndYears(curve: [number, number][]): number {
   const fall = curve.find(([, s]) => s < 0.02)?.[0] ?? curve.at(-1)?.[0] ?? 30;
-  const nice = [2, 5, 10, 15, 20, 25, 30].find((y) => y >= fall) ?? 30;
-  return nice;
+  return [2, 5, 10, 15, 20, 25, 30].find((y) => y >= fall) ?? 30;
 }

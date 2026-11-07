@@ -90,6 +90,7 @@ ul { list-style-type: circle; }
   --soft: rgba(0, 0, 0, 0.08);
   --warn: #8a3b12;
   --focus: #1a56db;
+  --title-size: clamp(2.5rem, 8vw, 4.25rem); /* the title and the result's number share one size */
   color-scheme: light;
   max-width: 50rem;
   min-height: 100vh;
@@ -101,8 +102,6 @@ ul { list-style-type: circle; }
 .page { max-width: 46rem; margin: 0 auto; padding: 0 1rem; }
 
 .hero { text-align: center; margin-top: 3rem; }
-/* The title and the result's number share one size. */
-.paper { --title-size: clamp(2.5rem, 8vw, 4.25rem); }
 .hero h1 {
   margin: 0;
   font-family: var(--display);
@@ -167,7 +166,6 @@ ul { list-style-type: circle; }
 .error p { margin: 0; }
 /* Asking for an input the record lacks: "Enter age: [  ] years" on one line, Continue below. */
 .ask { margin-top: 0.75rem; display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: 0.75rem 0.5rem; }
-.ask > button { flex-basis: 100%; }
 /* Number box with our own white up and down buttons in place of the browser's spinner. */
 .ask .number { position: relative; display: inline-flex; }
 .ask input[type="number"] { appearance: textfield; padding-right: 1.6rem; }
@@ -179,22 +177,21 @@ ul { list-style-type: circle; }
 .ask .steps button { display: grid; place-items: center; padding: 0; border: 0; background: none; color: var(--ink); cursor: pointer; }
 .ask .steps button:hover { background: var(--soft); }
 .ask input, .ask select { font: inherit; width: 7rem; padding: 0.1rem 0.4rem; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 3px; }
-.ask > button { font: inherit; font-weight: 700; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; }
+.ask > button { flex-basis: 100%; font: inherit; font-weight: 700; color: var(--ink); background: none; border: 0; padding: 0; cursor: pointer; }
 .ask > button:hover { text-decoration: underline; }
 
 /* Result: fades and slides in when it appears */
 @keyframes appear { from { opacity: 0; transform: translateY(0.75rem); } }
-.result { animation: appear 0.35s ease both; }
-.result { margin: 3rem auto 0; max-width: 40rem; }
+.result { margin: 3rem auto 0; max-width: 40rem; animation: appear 0.35s ease both; }
 /* The amount sits above its label. ResultView fits both to their visible glyphs and sets the gap.
    The bottom padding (not margin, which would merge with the next margin) makes the label-to-See More gap match the Run Prognosis-to-amount gap. */
 .headline { display: grid; justify-items: center; font-size: 1.9rem; line-height: 1.5; margin: 0; padding-bottom: 1.17rem; }
 .headline span { white-space: nowrap; }
 .headline .amount { font-family: var(--display); font-size: var(--title-size); line-height: 1.35; }
 .warnings { margin: 1.5rem 0 0; padding: 0.75rem 1rem 0.75rem 2rem; background: var(--soft); color: var(--ink); border-radius: 4px; }
-.drop { margin-top: 1.5rem; padding-top: calc(0.75rem + 1px); } /* +1px keeps the gap of the removed line */
+.drop { margin-top: 1.5rem; padding-top: calc(0.75rem + 1px); }
 .drop > button { font-weight: 700; font-size: 1.45rem; }
-.drop-body { padding-top: 0.75rem; }
+.drop-body { padding-top: 0.75rem; overflow-wrap: anywhere; }
 .reasoning h3 { font-size: 1.3rem; font-style: italic; margin: 1.5rem 0 0.4rem; }
 .reasoning ul { padding-left: 1.25rem; }
 .dataset { margin: 0.6rem 0; }
@@ -215,7 +212,6 @@ ul { list-style-type: circle; }
 .table.inputs th:nth-child(1) { width: 32%; }
 .table.inputs th:nth-child(2) { width: 28%; }
 .table.accuracy th:nth-child(1) { width: 64%; }
-.drop-body { overflow-wrap: anywhere; }
 
 /* Survival chart: one series in ink, recessive grid, hover crosshair */
 .chart { width: 100%; height: auto; display: block; margin: 1rem 0; touch-action: pan-y; }

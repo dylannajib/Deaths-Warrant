@@ -4868,6 +4868,7 @@
  "life_tables": {
   "us_2024": {
    "source": "nchs_us_2024",
+   "label": "United States life tables, 2024",
    "female": [
     0.00516108050942421,
     0.0003555437724571675,

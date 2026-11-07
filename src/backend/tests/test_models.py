@@ -54,7 +54,7 @@ def test_cancer_newly_diagnosed_one_year_survival_is_population_times_relative()
     expected = (
         math.exp(-population_cum_hazard(q, 70, 1))
         * CANCER.relative_curve("lung", "65_74", "distant")[0][0]
-    )  # noqa: E501
+    )
     assert result["survival_at"]["1"] == pytest.approx(expected)
 
 

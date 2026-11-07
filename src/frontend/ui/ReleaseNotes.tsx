@@ -1,5 +1,6 @@
 /** What changed in each release, newest first. Add a release by adding an entry at the top. */
 
+import { githubProfile } from "../links";
 import { Dropdown } from "./Dropdown";
 
 const RELEASES = [
@@ -21,7 +22,7 @@ export function ReleaseNotes() {
           className="release"
           title={`v${r.version} - ${r.date}`}
           after={
-            <a href={`https://github.com/${r.author}`} target="_blank" rel="noopener noreferrer">
+            <a href={githubProfile(r.author)} target="_blank" rel="noopener noreferrer">
               (@{r.author})
             </a>
           }

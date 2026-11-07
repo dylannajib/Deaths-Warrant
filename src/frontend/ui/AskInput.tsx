@@ -6,7 +6,6 @@ import { formatValue, lowerFirst } from "./format";
 
 interface Props {
   input: Input;
-  disabled: boolean;
   onSubmit: (value: Value) => void;
 }
 
@@ -18,7 +17,7 @@ function Chevron({ up }: { up: boolean }) {
   );
 }
 
-export function AskInput({ input, disabled, onSubmit }: Props) {
+export function AskInput({ input, onSubmit }: Props) {
   const [text, setText] = useState("");
   const id = useId();
   // The browser checks required, min and max before this runs, so the value is in range.
@@ -64,7 +63,7 @@ export function AskInput({ input, disabled, onSubmit }: Props) {
         </select>
       )}
       {input.type === "number" && input.unit && <span>{input.unit}</span>}
-      <button type="submit" disabled={disabled}>
+      <button type="submit">
         Continue
       </button>
     </form>

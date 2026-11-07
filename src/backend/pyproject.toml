@@ -3,7 +3,6 @@ name = "deaths-warrant-pipeline"
 version = "0.1.0"
 description = "Offline pipeline that builds, exports and validates Death's Warrant prognosis models."
 requires-python = ">=3.14"
-dependencies = ["pydantic>=2.12,<3"]
 
 [tool.ruff]
 line-length = 100

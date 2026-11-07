@@ -1,7 +1,0 @@
-{
- "schema_version": 1,
- "id": "fixture",
- "name": "Fixture",
- "order": 100,
- "description": "Unit-test spec"
-}

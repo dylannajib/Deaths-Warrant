@@ -53,12 +53,6 @@
    "citation": "Jacobsen MB, Petersen JK, Modin D, et al. Long term mortality in patients with hypertrophic cardiomyopathy - a Danish nationwide study. Am Heart J Plus 2023, 25:100244. HR 1.48 (1.18-1.84).",
    "url": "https://doi.org/10.1016/j.ahjo.2022.100244",
    "licence": "CC BY-NC-ND 4.0"
-  },
-  {
-   "id": "nchs_us_2024",
-   "citation": "Arias E, Xu JQ, Kochanek K. United States life tables, 2024. National Vital Statistics Reports vol 75 no 5. National Center for Health Statistics.",
-   "url": "https://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/NVSR/75-05/",
-   "licence": "U.S. Government work (public domain)"
   }
  ],
  "validation": [

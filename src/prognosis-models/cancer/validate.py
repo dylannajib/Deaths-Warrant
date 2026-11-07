@@ -30,17 +30,18 @@ from __future__ import annotations
 import csv
 import re
 import sys
-from collections.abc import Iterator
+from collections.abc import Callable, Iterator
 from multiprocessing import Pool
 from pathlib import Path
 from typing import Any
 
 HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parents[1] / "backend")]  # model.py, general
-from model import SITES, build  # noqa: E402
+from model import SITES, STAGES, build  # noqa: E402
 
-from general.evaluate import evaluate  # noqa: E402
+from general.evaluate import HORIZON_YEARS, SURVIVAL_TIMES, evaluate  # noqa: E402
 from general.validation import (  # noqa: E402
+    MIN_GROUP,
     calibration_at,
     harrell_c,
     kaplan_meier,
@@ -53,9 +54,7 @@ DATA = HERE.parents[2] / "data" / "msk_chord"
 OUT = HERE / "validation.json"
 DATASET = "MSK-CHORD (Memorial Sloan Kettering, Jee et al. 2024)"
 PERIOD = "MSK-IMPACT sequenced from 2014, outcomes to the 9 Sep 2023 data snapshot"
-MIN_GROUP = 20
 MIN_DEATHS = 20  # fewer deaths make the C-index too noisy to report
-YEARS = (1, 3, 5)
 
 STAGE = {
     "Localized": "localized",
@@ -96,11 +95,11 @@ def cohort() -> list[dict[str, Any]]:
     for r in _rows("data_timeline_diagnosis.txt"):
         if r["SUBTYPE"] == "Primary":
             primaries.setdefault(r["PATIENT_ID"], []).append(r)
-    first_sample: dict[str, str] = {}
+    first_sample: dict[str, tuple[str, str]] = {}  # patient -> (sample id, sample type)
     for r in _rows("data_clinical_sample.txt"):
         pid, sid = r["PATIENT_ID"], r["SAMPLE_ID"]
         if pid not in first_sample or sid < first_sample[pid][0]:
-            first_sample[pid] = (sid, r["SAMPLE_TYPE"])  # type: ignore[assignment]
+            first_sample[pid] = (sid, r["SAMPLE_TYPE"])
     patients = []
     for p in _rows("data_clinical_patient.txt"):
         pid = p["PATIENT_ID"]
@@ -152,12 +151,12 @@ def predict(observed: dict[str, Any]) -> dict[str, Any]:
     if _SPEC is None:
         _SPEC = build()
     r = evaluate(_SPEC, observed)
-    horizon = 60.0  # evaluator horizon: a median beyond it is reported as None
+    # A quantile beyond the evaluator's horizon is reported as None.
     return {
         "layer": r["layer"]["id"],
-        "median": r["median_years"] if r["median_years"] is not None else horizon,
-        "low": r["range_low_years"] if r["range_low_years"] is not None else horizon,
-        "high": r["range_high_years"] if r["range_high_years"] is not None else horizon,
+        "median": r["median_years"] if r["median_years"] is not None else HORIZON_YEARS,
+        "low": r["range_low_years"] if r["range_low_years"] is not None else HORIZON_YEARS,
+        "high": r["range_high_years"] if r["range_high_years"] is not None else HORIZON_YEARS,
         "survival_at": r["survival_at"],
         "curve": [s for _, s in r["curve"]],
         "curve_step": r["curve"][1][0],
@@ -172,7 +171,7 @@ def metrics(
     group: list[tuple[dict[str, Any], dict[str, Any]]],
     notes: str,
     meta: dict[str, str] = MSK_CHORD,
-    years: tuple[int, ...] = YEARS,
+    years: tuple[int, ...] = SURVIVAL_TIMES,
 ) -> list[dict]:
     if len(group) < MIN_GROUP:
         return []
@@ -218,6 +217,8 @@ def years_lived(
     so these figures complement, and do not replace, the censoring-aware metrics above.
     """
     dead = [(p, pred) for p, pred in group if p["died"]]
+    if len(dead) < MIN_GROUP:
+        return []
     errors = sorted(abs(pred["median"] - p["years"]) for p, pred in dead)
     within = sum(pred["low"] <= p["years"] <= pred["high"] for p, pred in dead) / len(dead)
     meta = {**meta, "notes": notes + " Deceased patients only, so biased towards short survival."}
@@ -235,6 +236,32 @@ def years_lived(
             within,
         ),
     ]
+
+
+def subgroups(
+    pairs: list[tuple[dict[str, Any], dict[str, Any]]],
+    notes: str,
+    suffix: str = "",
+    meta: dict[str, str] = MSK_CHORD,
+    stage_of: Callable[[dict[str, Any]], str | None] | None = None,
+    top_sites: int = 0,
+) -> list[dict]:
+    """Metrics per layer, then (with ``stage_of``) per stage and for the most common sites."""
+    out = []
+    for layer in ("site_stage", "site", "all_sites"):
+        group = [x for x in pairs if x[1]["layer"] == layer]
+        out += metrics(f"Layer {layer}{suffix}", group, notes, meta)
+    if stage_of is None:
+        return out
+    for stage in STAGES:
+        group = [x for x in pairs if stage_of(x[0]) == stage]
+        out += metrics(f"Stage {stage}{suffix}", group, notes, meta)
+    sites: dict[str, list] = {}
+    for x in pairs:
+        sites.setdefault(x[0]["observed"]["site"], []).append(x)
+    for site, group in sorted(sites.items(), key=lambda kv: -len(kv[1]))[:top_sites]:
+        out += metrics(f"Site {site}{suffix}", group, notes, meta)
+    return out
 
 
 def main() -> None:
@@ -257,19 +284,15 @@ def main() -> None:
             results += metrics(f"All patients ({label})", pairs, notes)
             if with_met:
                 results += years_lived(pairs, notes)
-            for layer in ("site_stage", "site", "all_sites"):
-                results += metrics(
-                    f"Layer {layer} ({label})", [x for x in pairs if x[1]["layer"] == layer], notes
+                results += subgroups(
+                    pairs,
+                    notes,
+                    f" ({label})",
+                    stage_of=lambda p: _scenario(p, True)["stage"],
+                    top_sites=6,
                 )
-            if with_met:
-                for stage in ("localized", "regional", "distant"):
-                    group = [x for x in pairs if _scenario(x[0], True)["stage"] == stage]
-                    results += metrics(f"Stage {stage} ({label})", group, notes)
-                sites: dict[str, list] = {}
-                for x in pairs:
-                    sites.setdefault(x[0]["observed"]["site"], []).append(x)
-                for site, group in sorted(sites.items(), key=lambda kv: -len(kv[1]))[:6]:
-                    results += metrics(f"Site {site} ({label})", group, notes)
+            else:
+                results += subgroups(pairs, notes, f" ({label})")
             summary[label] = len(pairs)
     write_results(OUT, results, cohort=summary)
 

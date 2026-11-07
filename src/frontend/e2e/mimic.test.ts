@@ -19,7 +19,6 @@ import { REAL_SPECS } from "../testing/specs";
 const DATA = join(__dirname, "../../../data/mimic_fhir_demo");
 const BUNDLES = join(DATA, "bundles");
 const available = existsSync(BUNDLES);
-const specs = REAL_SPECS;
 // Independent ICD patterns per group. A group without one is not cross-checked.
 const ICD: Record<string, RegExp | undefined> = {
   cancer: /^(C\d|1[4-9]\d|20[0-8])/, // malignant neoplasms (ICD-10 C, ICD-9 140-208)
@@ -42,7 +41,7 @@ describe.skipIf(!available)("MIMIC-IV FHIR demo, end to end", () => {
       const asOf = latestDate(record)!;
       expect(asOf).toBeTruthy();
       const codes = record.conditions.flatMap((c) => c.codes.filter((x) => x.system === "icd9" || x.system === "icd10").map((x) => x.code));
-      for (const spec of specs) {
+      for (const spec of REAL_SPECS) {
         const s = (summary[spec.id] ??= { patients: 0, groupMatch: 0, icdInGroup: 0, agreement: 0 });
         s.patients! += 1;
         const matched = recordMatchesGroup(spec, record);
@@ -102,7 +101,7 @@ describe.skipIf(!available)("MIMIC-IV FHIR demo, end to end", () => {
     }
     const text = JSON.stringify({ ...bundle, entry: entries });
     const started = performance.now();
-    const report = runPrognosis(text, specs.find((s) => s.id === "cardiovascular")!, latestDate(parseUpload(readFileSync(largest, "utf-8"), "2200-01-01"))!);
+    const report = runPrognosis(text, REAL_SPECS.find((s) => s.id === "cardiovascular")!, latestDate(parseUpload(readFileSync(largest, "utf-8"), "2200-01-01"))!);
     const seconds = (performance.now() - started) / 1000;
     expect(report.result.median_years === null || report.result.median_years > 0).toBe(true);
     expect(seconds).toBeLessThan(60);

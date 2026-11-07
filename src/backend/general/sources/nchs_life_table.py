@@ -38,7 +38,7 @@ def probabilities(rows: list[list[str]], sex: str) -> list[float]:
 
 
 def main() -> None:
-    table = {"source": SOURCE}
+    table = {"source": SOURCE, "label": "United States life tables, 2024"}
     for sex, name in TABLES.items():
         table[sex] = probabilities(read_rows(fetch(BASE + name, f"nchs_2024_{name}")), sex)
         assert len(table[sex]) == 101

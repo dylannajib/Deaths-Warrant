@@ -30,7 +30,7 @@ HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parents[1] / "backend")]  # model.py, general
 from model import CONDITIONS, ROMAN, build  # noqa: E402
 
-from general.evaluate import evaluate  # noqa: E402
+from general.evaluate import HORIZON_YEARS, evaluate  # noqa: E402
 from general.validation import (  # noqa: E402
     calibration_at,
     curve_at,
@@ -93,7 +93,8 @@ def uci(spec) -> list[dict[str, Any]]:
                 "diabetes": r["diabetes"] == "1",
             }
             result = evaluate(spec, observed)
-            medians.append(result["median_years"] if result["median_years"] is not None else 60.0)
+            median = result["median_years"]
+            medians.append(median if median is not None else HORIZON_YEARS)
             half_year.append(curve_at(result, 0.5))
         notes = (
             "Patient-level, predicted at enrolment from age, sex, ejection fraction, creatinine,"

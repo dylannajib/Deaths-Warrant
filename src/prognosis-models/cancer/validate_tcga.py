@@ -34,7 +34,7 @@ from typing import Any
 
 HERE = Path(__file__).resolve().parent
 sys.path[:0] = [str(HERE), str(HERE.parents[1] / "backend")]  # validate.py, general
-from validate import metrics, predict, site_of, years_lived  # noqa: E402
+from validate import metrics, predict, site_of, subgroups, years_lived  # noqa: E402
 
 from general.validation import write_results  # noqa: E402
 
@@ -143,17 +143,9 @@ def main() -> None:
         " (median about 2 years), so 5-year figures rest on few patients still at risk."
     )
     results = metrics("All patients", pairs, notes, META) + years_lived(pairs, notes, META)
-    for layer in ("site_stage", "site", "all_sites"):
-        group = [x for x in pairs if x[1]["layer"] == layer]
-        results += metrics(f"Layer {layer}", group, notes, META)
-    for stage in ("localized", "regional", "distant"):
-        group = [x for x in pairs if x[0]["observed"]["stage"] == stage]
-        results += metrics(f"Stage {stage}", group, notes, META)
-    sites: dict[str, list] = {}
-    for x in pairs:
-        sites.setdefault(x[0]["observed"]["site"], []).append(x)
-    for site, group in sorted(sites.items(), key=lambda kv: -len(kv[1]))[:8]:
-        results += metrics(f"Site {site}", group, notes, META)
+    results += subgroups(
+        pairs, notes, meta=META, stage_of=lambda p: p["observed"]["stage"], top_sites=8
+    )
     cohort_summary = {"patients": len(pairs), "deaths": sum(p["died"] for p in patients)}
     write_results(OUT, results, cohort=cohort_summary)
 

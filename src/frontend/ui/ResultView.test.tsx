@@ -2,7 +2,7 @@ import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
 import fixture from "../../prognosis-models/_fixture/spec.json";
 import { evaluate } from "../engine/evaluate";
-import type { PrognosisReport } from "../engine/prognosis";
+import { reportModel, type PrognosisReport } from "../engine/prognosis";
 import type { ModelSpec } from "../engine/spec";
 import { ResultView } from "./ResultView";
 
@@ -10,7 +10,6 @@ const spec = fixture as unknown as ModelSpec;
 
 function report(observed: Record<string, number | string | boolean>, overrides: Partial<PrognosisReport> = {}): PrognosisReport {
   const result = evaluate(spec, observed);
-  const layer = spec.layers.find((l) => l.id === result.layer.id)!;
   return {
     format: "fhir-json",
     asOf: "2026-11-03",
@@ -19,10 +18,7 @@ function report(observed: Record<string, number | string | boolean>, overrides: 
     warnings: [],
     notes: [],
     model: {
-      id: spec.id, name: spec.name, version: spec.version, description: spec.description,
-      max_reliable_years: spec.max_reliable_years,
-      layer: { label: layer.label, description: layer.description, sources: layer.sources, kind: "hazard" },
-      inputs: Object.fromEntries(spec.inputs.map((i) => [i.id, { label: i.label, unit: null, source: null }])),
+      ...reportModel(spec, result),
       sources: [{ id: "s1", citation: "A published source.", url: "https://example.org/", licence: "CC BY 4.0" }],
       validation: [],
     },

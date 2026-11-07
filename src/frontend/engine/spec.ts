@@ -106,6 +106,7 @@ export interface RelativeSurvivalCurve {
 
 interface LifeTable {
   source: string;
+  label: string;
   female: number[];
   male: number[];
 }
@@ -151,6 +152,11 @@ export interface ModelSpec {
   max_reliable_years: number;
   validation: ValidationResult[];
   sources: Source[];
+}
+
+/** The name of the life table a layer's survival function reads, or null if it reads none. */
+export function lifeTableOf(survival: Survival): string | null {
+  return survival.type === "weibull_ph" ? null : survival.life_table;
 }
 
 /** Inputs a layer's survival function reads, in first-use order (the evaluation order). */

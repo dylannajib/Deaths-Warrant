@@ -19,7 +19,7 @@ import math
 from pathlib import Path
 from typing import Any
 
-from general.authoring import load_json, snomed_sets, validation_results
+from general.authoring import NCHS_US_2024, load_json, snomed_sets, validation_results
 from general.registry import load_life_table
 from general.spec import ModelSpec
 
@@ -207,15 +207,16 @@ def relative_curve(site: str, age: str, stage: str) -> tuple[list[float], str]:
     return out, note
 
 
-def _curves(site_keys: list[str], stages: list[str] | None) -> list[dict[str, Any]]:
+def _curves(sites: list[str] | None, stages: list[str] | None) -> list[dict[str, Any]]:
+    """Curves per site and stage. None means all sites (or all stages) combined, unmatched."""
     curves = []
-    for site in site_keys:
+    for site in sites or [OTHER]:
         for stage in stages or ["all"]:
-            match = {"site": site} if stages is None else {"site": site, "stage": stage}
-            if not site_keys[0]:  # all-sites layer: no keys
-                match = {}
+            match = {} if sites is None else {"site": site}
+            if stages is not None:
+                match["stage"] = stage
             for age, age_lt in AGE_BANDS:
-                relative, note = relative_curve(site or OTHER, age, stage)
+                relative, note = relative_curve(site, age, stage)
                 curves.append(
                     {"match": match, "age_lt": age_lt, "relative": relative, "note": note}
                 )
@@ -367,7 +368,7 @@ def build() -> ModelSpec:
                 + EXTRAPOLATION,
                 [],
                 [],
-                _curves([""], None),
+                _curves(None, None),
             ),
         ],
         "life_tables": {"us_2024": load_life_table("us_2024").model_dump()},
@@ -383,15 +384,7 @@ def build() -> ModelSpec:
                 "url": "https://seer.cancer.gov/statistics-network/explorer/",
                 "licence": "U.S. Government work (public domain), citation requested by NCI",
             },
-            {
-                "id": "nchs_us_2024",
-                "citation": (
-                    "Arias E, Xu JQ, Kochanek K. United States life tables, 2024. National Vital"
-                    " Statistics Reports vol 75 no 5. National Center for Health Statistics."
-                ),
-                "url": "https://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/NVSR/75-05/",
-                "licence": "U.S. Government work (public domain)",
-            },
+            NCHS_US_2024,
             {
                 "id": "msk_chord",
                 "citation": (

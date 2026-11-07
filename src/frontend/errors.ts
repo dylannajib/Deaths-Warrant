@@ -7,7 +7,7 @@
  * happened, and the full stack trace goes to the browser console.
  */
 
-export const ISSUES_URL = "https://github.com/dylannajib/Deaths-Warrant/issues";
+import { ISSUES_URL } from "./links";
 
 export class RecordError extends Error {
   constructor(message: string) {

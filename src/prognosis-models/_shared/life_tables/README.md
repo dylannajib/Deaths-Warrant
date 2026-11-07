@@ -1,6 +1,6 @@
 # Life tables
 
-Each file holds `{source, female, male}`: the yearly chance of death q(x) for ages 0, 1, 2 and
+Each file holds `{source, label, female, male}`: the yearly chance of death q(x) for ages 0, 1, 2 and
 so on. The last age repeats. Load one with `general.registry.load_life_table(name)`.
 
 `us_2024.json`: Arias E, et al. *United States life tables, 2024.* NVSR 75(5), NCHS, tables 2

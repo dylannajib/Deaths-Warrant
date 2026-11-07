@@ -9,7 +9,7 @@ import { defineConfig } from "vitest/config";
 // whose policy comes from its own HTTP response headers, so the HTTP headers below are the
 // authoritative policy: the build writes them to dist/_headers (Cloudflare Pages) and
 // `vite preview` sends them too. They add frame-ancestors, which a meta tag cannot carry.
-export const CSP = [
+const CSP = [
   "default-src 'self'",
   "script-src 'self'",
   "style-src 'self'",

@@ -457,6 +457,7 @@ class LifeTable(_Strict):
     """Annual probability of death q(x) for integer ages 0..len-1. The last age repeats."""
 
     source: str
+    label: str  # shown to the user, e.g. "United States life tables, 2024"
     female: list[float] = Field(min_length=2)
     male: list[float] = Field(min_length=2)
 
@@ -506,7 +507,7 @@ class ModelSpec(_Strict):
     version: str
     order: int = 100  # position in the disease-group picker
     description: str
-    group_codes: CodeSet  # used to warn when the record does not match the chosen group
+    group_codes: CodeSet  # a record with none of these codes is refused for this group
     inputs: list[Input]
     layers: list[Layer] = Field(min_length=1)
     life_tables: dict[str, LifeTable] = {}

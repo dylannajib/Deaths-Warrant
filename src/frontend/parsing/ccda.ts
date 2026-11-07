@@ -10,7 +10,7 @@
  */
 
 import { RecordError } from "../errors";
-import { INPATIENT_ACT_CODES, makeCode, type Code, type Observation, type PatientRecord } from "./record";
+import { INPATIENT_ACT_CODES, makeCode, type Code, type Condition, type Medication, type Observation, type PatientRecord } from "./record";
 import { attr, child, children, descendants, type XmlElement } from "./xml";
 
 const PROBLEM_OBSERVATION = "2.16.840.1.113883.10.20.22.4.4";
@@ -41,7 +41,8 @@ function textOf(el: XmlElement | undefined): string | undefined {
 function dateOf(el: XmlElement): string | undefined {
   const eff = child(el, "effectiveTime");
   if (!eff) return undefined;
-  return attr(eff, "value") ?? attr(child(eff, "low") ?? eff, "value") ?? undefined;
+  const low = child(eff, "low");
+  return attr(eff, "value") ?? (low && attr(low, "value"));
 }
 
 function isInpatient(code: XmlElement | undefined): boolean {
@@ -83,12 +84,15 @@ export function readCcda(root: XmlElement): PatientRecord {
   const role = child(targets[0]!, "patientRole");
   const patient = role && child(role, "patient");
   if (patient) {
-    const birth = attr(child(patient, "birthTime") ?? patient, "value");
-    if (birth && child(patient, "birthTime")) record.birthDate = birth;
-    const gender = attr(child(patient, "administrativeGenderCode") ?? patient, "code");
+    const birthTime = child(patient, "birthTime");
+    const birth = birthTime && attr(birthTime, "value");
+    if (birth) record.birthDate = birth;
+    const genderCode = child(patient, "administrativeGenderCode");
+    const gender = genderCode && attr(genderCode, "code");
     if (gender === "F") record.sex = "female";
     if (gender === "M") record.sex = "male";
-    if (child(patient, "deceasedInd") && attr(child(patient, "deceasedInd")!, "value") === "true") record.deceased = true;
+    const deceased = child(patient, "deceasedInd");
+    if (deceased && attr(deceased, "value") === "true") record.deceased = true;
   }
   const country = role && children(role, "addr").map((a) => child(a, "country")?.text.trim()).find(Boolean);
   if (country) record.country = country;
@@ -103,7 +107,7 @@ export function readCcda(root: XmlElement): PatientRecord {
       const codes = codesOf(value);
       const text = textOf(value);
       if (!codes.length && !text) continue;
-      const condition: PatientRecord["conditions"][number] = { codes };
+      const condition: Condition = { codes };
       if (text) condition.text = text;
       if (date) condition.onset = date;
       const admitted = stays.get(obs);
@@ -141,9 +145,10 @@ export function readCcda(root: XmlElement): PatientRecord {
     const material = descendants(sa, "manufacturedMaterial")[0];
     const codeEl = material && child(material, "code");
     const codes = codesOf(codeEl);
-    const text = textOf(codeEl) ?? material?.children.find((c) => c.local === "name")?.text.trim();
+    const name = material && child(material, "name");
+    const text = textOf(codeEl) ?? name?.text.trim();
     if (!codes.length && !text) continue;
-    const med: PatientRecord["medications"][number] = { codes };
+    const med: Medication = { codes };
     if (text) med.text = text;
     const date = dateOf(sa);
     if (date) med.date = date;

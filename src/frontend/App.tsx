@@ -3,10 +3,11 @@
 import { useEffect, useRef, useState } from "react";
 import founderPfp from "./assets/founder-pfp.png";
 import githubLogo from "./assets/github-logo.webp";
-import { MODELS } from "./engine/models";
 import type { Observed } from "./engine/evaluate";
+import { MODELS } from "./engine/models";
 import type { PrognosisReport } from "./engine/prognosis";
 import type { Input } from "./engine/spec";
+import { githubProfile, REPO_URL } from "./links";
 import { SOFT_LIMIT_BYTES } from "./parsing/upload";
 import { AskInput } from "./ui/AskInput";
 import { Dropdown } from "./ui/Dropdown";
@@ -14,8 +15,13 @@ import { ReleaseNotes } from "./ui/ReleaseNotes";
 import { ResultView } from "./ui/ResultView";
 import { RunError, runInWorker } from "./worker/client";
 
-const REPO_URL = "https://github.com/dylannajib/Deaths-Warrant";
-const FOUNDER_URL = "https://github.com/dylannajib";
+const FOUNDER = "dylannajib";
+
+/** A failed run: the message, and the required input to ask the user for when that is what failed. */
+interface Failure {
+  message: string;
+  missing: Input | null;
+}
 
 const sizeLabel = (bytes: number) =>
   bytes >= 1e6 ? `${(bytes / 1e6).toFixed(1)} MB` : `${Math.max(1, Math.round(bytes / 1e3))} KB`;
@@ -24,26 +30,28 @@ export function App() {
   const [file, setFile] = useState<File | null>(null);
   const [modelId, setModelId] = useState<string | null>(null);
   const [report, setReport] = useState<PrognosisReport | null>(null);
-  const [error, setError] = useState<string | null>(null);
+  const [failure, setFailure] = useState<Failure | null>(null);
   const [busy, setBusy] = useState(false);
-  // Values the user typed in for required inputs the record lacks, and the one being asked for.
+  // Values the user typed in for required inputs the record lacks.
   const [entered, setEntered] = useState<Observed>({});
-  const [missing, setMissing] = useState<Input | null>(null);
   const upload = useRef<HTMLInputElement>(null);
+
+  // runId is bumped whenever the outcome is dropped, so a run still in flight cannot bring it back.
+  const runId = useRef(0);
+  const resetOutcome = () => {
+    runId.current += 1;
+    setReport(null);
+    setFailure(null);
+  };
 
   // The file is only read during a run. The page lets go of it, and of the result (which shows
   // details from the record), when the user clears the result or leaves the page.
-  // runId is bumped on every clear, so a run still in flight cannot bring back its result.
-  const runId = useRef(0);
   const clearAll = () => {
-    runId.current += 1;
+    resetOutcome();
     setFile(null);
     setModelId(null);
-    if (upload.current) upload.current.value = "";
-    setReport(null);
-    setError(null);
     setEntered({});
-    setMissing(null);
+    if (upload.current) upload.current.value = "";
   };
   useEffect(() => {
     window.addEventListener("pagehide", clearAll);
@@ -52,18 +60,15 @@ export function App() {
 
   const run = async (values: Observed = entered) => {
     if (!file || !modelId) return;
+    resetOutcome();
     setBusy(true);
-    setError(null);
-    setMissing(null);
-    setReport(null);
-    const id = ++runId.current;
+    const id = runId.current;
     try {
       const result = await runInWorker(file, modelId, values);
       if (id === runId.current) setReport(result);
     } catch (e) {
       if (id === runId.current) {
-        setError(e instanceof Error ? e.message : String(e));
-        setMissing(e instanceof RunError ? e.missing : null);
+        setFailure({ message: e instanceof Error ? e.message : String(e), missing: e instanceof RunError ? e.missing : null });
       }
     } finally {
       setBusy(false);
@@ -73,9 +78,10 @@ export function App() {
   // Clicking the checked group again unchecks it (a radio's change event never fires for that).
   const choose = (id: string | null) => {
     setModelId(id);
-    setReport(null);
+    resetOutcome();
   };
 
+  const missing = failure?.missing;
   return (
     <>
       <nav className="links" aria-label="Project links">
@@ -84,10 +90,10 @@ export function App() {
           GitHub Repository
         </a>
         <h2>Contributors</h2>
-        <a className="person" href={FOUNDER_URL} target="_blank" rel="noopener noreferrer">
+        <a className="person" href={githubProfile(FOUNDER)} target="_blank" rel="noopener noreferrer">
           <img src={founderPfp} alt="" width={24} height={24} />
           <span>
-            <strong>Founder</strong> @dylannajib
+            <strong>Founder</strong> @{FOUNDER}
           </span>
         </a>
       </nav>
@@ -117,10 +123,8 @@ export function App() {
                   accept=".json,.xml,application/json,application/xml,text/xml"
                   onChange={(e) => {
                     setFile(e.target.files?.[0] ?? null);
-                    setReport(null);
-                    setError(null);
                     setEntered({});
-                    setMissing(null);
+                    resetOutcome();
                   }}
                 />
               </label>
@@ -159,14 +163,13 @@ export function App() {
           </div>
 
           <div aria-live="polite">
-            {error && (
+            {failure && (
               <div className="error" role="alert">
-                <p>{error}</p>
+                <p>{failure.message}</p>
                 {missing && (
                   <AskInput
                     key={missing.id}
                     input={missing}
-                    disabled={busy}
                     onSubmit={(value) => {
                       const values = { ...entered, [missing.id]: value };
                       setEntered(values);

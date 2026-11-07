@@ -6,19 +6,19 @@ import type { SourceFormat } from "../parsing/record";
 import { latestDate, parseUpload } from "../parsing/upload";
 import { evaluate, type EvaluationResult, type Observed } from "./evaluate";
 import { extractInputs, recordMatchesGroup } from "./extract";
-import { isScoreForm, type ModelSpec, type Source, type ValidationResult } from "./spec";
+import { isScoreForm, lifeTableOf, type ModelSpec, type Source, type ValidationResult } from "./spec";
 
 const STALE_AFTER_YEARS = 1;
 
 /** The parts of the spec the Reasoning panel shows (the page never loads the full spec). */
 interface ReportModel {
-  id: string;
   name: string;
   version: string;
-  description: string;
   max_reliable_years: number;
+  /** The population life table the layer uses, e.g. "United States life tables, 2024", or null. */
+  population: string | null;
   layer: { label: string; description: string; sources: string[]; kind: "points" | "hazard" };
-  inputs: Record<string, { label: string; unit: string | null; source: string | null }>;
+  inputs: Record<string, { label: string; unit: string | null }>;
   sources: Source[];
   validation: ValidationResult[];
 }
@@ -35,17 +35,17 @@ export interface PrognosisReport {
   notes: string[];
 }
 
-function reportModel(spec: ModelSpec, result: EvaluationResult): ReportModel {
+export function reportModel(spec: ModelSpec, result: EvaluationResult): ReportModel {
   const layer = spec.layers.find((l) => l.id === result.layer.id)!;
+  const table = lifeTableOf(layer.survival);
   return {
-    id: spec.id,
     name: spec.name,
     version: spec.version,
-    description: spec.description,
     max_reliable_years: spec.max_reliable_years,
+    population: table === null ? null : spec.life_tables[table]!.label,
     layer: { label: layer.label, description: layer.description, sources: layer.sources, kind: isScoreForm(layer.survival) ? "points" : "hazard" },
     inputs: Object.fromEntries(
-      spec.inputs.map((i) => [i.id, { label: i.label, unit: i.type === "number" ? i.unit : null, source: i.source }]),
+      spec.inputs.map((i) => [i.id, { label: i.label, unit: i.type === "number" ? i.unit : null }]),
     ),
     sources: spec.sources,
     validation: spec.validation,

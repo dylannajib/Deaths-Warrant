@@ -1,7 +1,7 @@
 """Unit-test fixture model (not a real model, not patient data).
 
 Round-number coefficients make the maths checkable by hand. It is exported like a real model
-so the TypeScript evaluator is held to the Python reference before any disease model exists.
+so the TypeScript evaluator is held to the Python reference on every survival form.
 The picker never shows it: folders starting with ``_`` are excluded from the app.
 """
 
@@ -171,7 +171,14 @@ FIXTURE_SPEC = {
             },
         },
     ],
-    "life_tables": {"flat": {"source": "test", "female": [0.05, 0.05], "male": [0.1, 0.1]}},
+    "life_tables": {
+        "flat": {
+            "source": "test",
+            "label": "Flat test table",
+            "female": [0.05, 0.05],
+            "male": [0.1, 0.1],
+        }
+    },
 }
 
 

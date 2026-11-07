@@ -15,7 +15,7 @@ const SURVIVAL_TIMES = [1, 3, 5] as const;
 
 export type Observed = Record<string, Value | null | undefined>;
 type SurvivalFn = (t: number) => number;
-export type InputStatus = "observed" | "missing" | "implausible" | "unused";
+type InputStatus = "observed" | "missing" | "implausible" | "unused";
 
 /** A required input (such as the birth date) is missing: a problem with the record, not a bug. */
 export class EvaluationError extends RecordError {}
@@ -114,7 +114,7 @@ function excessKnots(relative: number[]): number[] {
 }
 
 /** Linear between whole years. Beyond the last year, the last year's slope continues. */
-export function excessCumHazard(knots: number[], t: number): number {
+function excessCumHazard(knots: number[], t: number): number {
   const n = knots.length - 1;
   if (t >= n) return knots[n]! + (knots[n]! - knots[n - 1]!) * (t - n);
   const k = Math.floor(t);

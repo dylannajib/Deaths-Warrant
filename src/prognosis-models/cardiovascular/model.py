@@ -28,14 +28,18 @@ from pathlib import Path
 from typing import Any
 
 from general.authoring import (
+    NCHS_US_2024,
     Condition,
     bands,
     codes,
+    condition_present,
+    group_codes,
+    hr_term,
     load_json,
+    population_survival,
     snomed_sets,
     validation_results,
 )
-from general.evaluate import population_cum_hazard
 from general.registry import load_life_table
 from general.spec import ModelSpec
 
@@ -84,16 +88,10 @@ CONDITIONS: dict[str, Condition] = {
     ),
     "cardiomyopathy": Condition("Cardiomyopathy", ["I42", "I43"], ["425"], 1.48, "jacobsen_2023"),
 }
-DIABETES = (
-    {"icd10": ["E10", "E11", "E12", "E13", "E14"], "icd9": ["250"], "snomed": SNOMED["diabetes"]},
-    1.9,
-)
+# Scored, but not part of the group: diabetes alone is not cardiovascular disease.
+DIABETES = Condition("Diabetes", ["E10", "E11", "E12", "E13", "E14"], ["250"], 1.9, "erfc_2015")
 COPD = {"icd10": ["J43", "J44"], "icd9": ["491", "492", "496"], "snomed": SNOMED["copd"]}
-
-
-def _codes(key: str) -> dict[str, list[str]]:
-    return codes(CONDITIONS[key], SNOMED[key])
-
+HF_CODES = codes(CONDITIONS["heart_failure"], SNOMED["heart_failure"])
 
 # A stroke itself, without sequelae (I69, ICD-9 438) or "history of stroke" SNOMED concepts.
 STROKE_EVENT_CODES = {
@@ -371,7 +369,6 @@ def _boolean(id_: str, label: str, extract: dict[str, Any], missing: list | None
 
 
 def _inputs() -> list[dict[str, Any]]:
-    present = lambda codes: {"rule": "condition_present", "codes": codes}  # noqa: E731
     return [
         {
             "id": "age",
@@ -391,9 +388,14 @@ def _inputs() -> list[dict[str, Any]]:
             "missing": MAGGIC_MISSING["sex"],
             "source": "maggic_2013",
         },
-        *(_boolean(key, c.label, present(_codes(key))) for key, c in CONDITIONS.items()),
-        _boolean("diabetes", "Diabetes", present(DIABETES[0])),
-        _boolean("copd", "COPD", present(COPD)),
+        *(
+            _boolean(key, c.label, condition_present(codes(c, SNOMED[key])))
+            for key, c in CONDITIONS.items()
+        ),
+        _boolean(
+            "diabetes", DIABETES.label, condition_present(codes(DIABETES, SNOMED["diabetes"]))
+        ),
+        _boolean("copd", "COPD", condition_present(COPD)),
         _number(
             "ef", "Left ventricular ejection fraction", "%", 5, 90, EF_LOINC, {"%": 1, "": 1}, 730
         ),
@@ -449,8 +451,7 @@ def _inputs() -> list[dict[str, Any]]:
             "hf_admission",
             f"Hospital stay for heart failure in the last {ADMITTED_WITHIN_DAYS} days",
             {
-                "rule": "condition_present",
-                "codes": _codes("heart_failure"),
+                **condition_present(HF_CODES),
                 "admitted_within_days": ADMITTED_WITHIN_DAYS,
             },
             [{"value": False, "weight": 1.0}],
@@ -484,7 +485,7 @@ def _inputs() -> list[dict[str, Any]]:
             "unit": "years",
             "min": 0,
             "max": 100,
-            "extract": {"rule": "years_since_condition", "codes": _codes("heart_failure")},
+            "extract": {"rule": "years_since_condition", "codes": HF_CODES},
             "missing": MAGGIC_MISSING["hf_years"],
             "source": "maggic_2013",
         },
@@ -517,17 +518,10 @@ def _inputs() -> list[dict[str, Any]]:
     ]
 
 
-def _base_terms() -> list[dict[str, Any]]:
-    terms = [
-        {"kind": "category", "input": key, "values": {"true": round(math.log(hr), 6), "false": 0.0}}
-        for key, c in CONDITIONS.items()
-        if (hr := c.hr) is not None
-    ]
-    diabetes_ln_hr = round(math.log(DIABETES[1]), 6)
-    terms.append(
-        {"kind": "category", "input": "diabetes", "values": {"true": diabetes_ln_hr, "false": 0.0}}
-    )
-    return terms
+BASE_CONDITIONS = {
+    **{key: c for key, c in CONDITIONS.items() if c.hr is not None},
+    "diabetes": DIABETES,
+}
 
 
 # Taylor et al. BMJ 2019, Table 3: survival 1, 5, 10, 15 years after a heart failure diagnosis
@@ -553,13 +547,10 @@ def heart_failure_curves() -> list[dict[str, Any]]:
     table = load_life_table("us_2024")
     curves = []
     for age_lt, age, published in TAYLOR_SURVIVAL:
-
-        def pop(t: float, age: float = age) -> float:
-            return TAYLOR_MALE * math.exp(-population_cum_hazard(table.male, age, t)) + (
-                1 - TAYLOR_MALE
-            ) * math.exp(-population_cum_hazard(table.female, age, t))
-
-        knots = {0: 0.0} | {t: -math.log(min(1.0, s / pop(t))) for t, s in published.items()}
+        knots = {0: 0.0} | {
+            t: -math.log(min(1.0, s / population_survival(table, age, t, TAYLOR_MALE)))
+            for t, s in published.items()
+        }
         years = sorted(knots)
         relative, prev = [], 1.0
         for k in range(1, years[-1] + 1):
@@ -604,10 +595,7 @@ def stroke_curves() -> list[dict[str, Any]]:
     early = EARLY_DAYS / 365.25
     curves = []
     for age_lt, age, observed in TONG_SURVIVAL_5Y:
-        pop = TONG_MALE * math.exp(-population_cum_hazard(table.male, age, 5)) + (
-            1 - TONG_MALE
-        ) * math.exp(-population_cum_hazard(table.female, age, 5))
-        x5 = -math.log(observed / pop)
+        x5 = -math.log(observed / population_survival(table, age, 5, TONG_MALE))
         relative = [
             round(
                 math.exp(
@@ -639,12 +627,7 @@ def build() -> ModelSpec:
             "after stroke by age. Other cardiovascular disease uses U.S. population mortality "
             "multiplied by published hazard ratios."
         ),
-        # The group is the diagnoses this model scores, so a record with none of them is flagged.
-        "group_codes": {
-            "icd10": sorted({p for c in CONDITIONS.values() for p in c.icd10}),
-            "icd9": sorted({p for c in CONDITIONS.values() for p in c.icd9}),
-            "snomed": sorted({c for key in CONDITIONS for c in SNOMED[key]}, key=int),
-        },
+        "group_codes": group_codes(CONDITIONS, SNOMED),
         "inputs": _inputs(),
         "layers": [
             {
@@ -718,9 +701,9 @@ def build() -> ModelSpec:
                     "U.S. Medicare patients aged 66 or over, admitted 2008-2012. Applied "
                     "relative to population survival, conditional on years since the stroke. "
                     "Share of deaths in the first 28 days: Shiga stroke register, Japan, 2011. "
-                    "Patients under 66 use the 66-74 curve. Haemorrhagic strokes use the same "
+                    "Patients under 66 use the 66 to 74 curve. Haemorrhagic strokes use the same "
                     "curves (5-year survival 55% against 59% for ischaemic strokes in the Shiga "
-                    "register). After 5 years, the year 1-5 excess mortality is applied. Other"
+                    "register). After 5 years, the year 1 to 5 excess mortality is applied. Other"
                     " recorded conditions are not added, because the cohort already included "
                     "them."
                 ),
@@ -748,25 +731,17 @@ def build() -> ModelSpec:
                 "survival": {
                     "type": "life_table_ph",
                     "life_table": "us_2024",
-                    "terms": _base_terms(),
+                    "terms": [hr_term(key, c.hr) for key, c in BASE_CONDITIONS.items()],
                 },
                 "sources": [
-                    s["id"]
-                    for s in SOURCES["model"]
-                    if s["id"]
-                    not in (
-                        "maggic_2013",
-                        "michaels_2020",
-                        "taylor_2019",
-                        "tong_2021",
-                        "takashima_2020",
-                    )
+                    *dict.fromkeys(c.source for c in BASE_CONDITIONS.values()),
+                    NCHS_US_2024["id"],
                 ],
             },
         ],
         "life_tables": {"us_2024": load_life_table("us_2024").model_dump()},
         "validation": validation_results(VALIDATION_FILE),
-        "sources": [*SOURCES["model"], *SOURCES["validation"]],
+        "sources": [*SOURCES["model"], NCHS_US_2024, *SOURCES["validation"]],
     }
     return ModelSpec.model_validate(spec)
 

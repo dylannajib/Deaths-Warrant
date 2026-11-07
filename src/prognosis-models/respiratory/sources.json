@@ -23,18 +23,12 @@
    "citation": "Quint JK, Millett ER, Joshi M, et al. Changes in the incidence, prevalence and mortality of bronchiectasis in the UK from 2004 to 2013: a population-based cohort study. Eur Respir J 2016, 47:186-193. Age-adjusted comparative mortality figure vs the general population: women 2.26, men 2.14 (2.2 used).",
    "url": "https://doi.org/10.1183/13993003.01033-2015",
    "licence": null
-  },
-  {
-   "id": "nchs_us_2024",
-   "citation": "Arias E, Xu JQ, Kochanek K. United States life tables, 2024. National Vital Statistics Reports vol 75 no 5. National Center for Health Statistics.",
-   "url": "https://ftp.cdc.gov/pub/Health_Statistics/NCHS/Publications/NVSR/75-05/",
-   "licence": "U.S. Government work (public domain)"
   }
  ],
  "validation": [
   {
    "id": "nhanes_lmf_2019",
-   "citation": "National Center for Health Statistics. NHANES 2007-2018 (demographics, medical conditions questionnaire) linked to the National Death Index, public-use linked mortality files with follow-up through 31 December 2019.",
+   "citation": "National Center for Health Statistics. NHANES 2011-2018 (demographics, medical conditions questionnaire) linked to the National Death Index, public-use linked mortality files with follow-up through 31 December 2019.",
    "url": "https://www.cdc.gov/nchs/linked-data/mortality-files/index.html",
    "licence": "U.S. Government work (public domain), used for testing only"
   },

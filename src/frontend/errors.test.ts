@@ -1,5 +1,6 @@
 import { describe, expect, it, vi } from "vitest";
-import { describeFailure, ISSUES_URL, RecordError } from "./errors";
+import { describeFailure, RecordError } from "./errors";
+import { ISSUES_URL } from "./links";
 import { XmlError } from "./parsing/xml";
 import { parseUpload, UploadError } from "./parsing/upload";
 
