@@ -2,6 +2,8 @@
 
 A free, open-source, prognostic life expectancy estimator. Upload your patient record (FHIR JSON, FHIR XML or C-CDA), pick your disease group, and get an estimate of how many years you likely have left with the reasoning behind it.
 
+**Live site: https://deathswarrant.pages.dev**
+
 ## Privacy
 
 Death's Warrant runs in your browser, in a Web Worker that is thrown away after each run. It hosts no server, database, analytics or third-party script,
@@ -51,6 +53,17 @@ cd src/backend && ../../.venv/bin/python -m pytest && ../../.venv/bin/python -m 
 ```bash
 cd src/frontend && npm ci && npm test && npm run dev
 ```
+
+## Deployment
+
+The site is a Cloudflare Pages project (`deathswarrant`) published by direct upload. To publish
+the current commit, from `src/frontend`:
+
+```bash
+npm run build && npx wrangler pages deploy dist --project-name deathswarrant --branch main
+```
+
+The build writes `dist/_headers`, which Cloudflare serves as the HTTP security headers.
 
 ## Dependencies
 
